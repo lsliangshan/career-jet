@@ -1,7 +1,7 @@
 <template>
   <view
     class="w-full h-[100rpx] fixed left-0 z-10 pl-[32rpx] pr-[32rpx] box-border flex flex-row items-center justify-center"
-    :style="{ bottom: safeBottom + 'px' }"
+    :style="{ bottom: safeBottom != 0 ? safeBottom + 'px' : '32rpx' }"
   >
     <view
       class="w-full h-full bg-[#fff] rounded-[50rpx] overflow-hidden flex flex-row items-center justify-between"

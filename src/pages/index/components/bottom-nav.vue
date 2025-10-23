@@ -4,7 +4,7 @@
     :style="{ bottom: safeBottom != 0 ? safeBottom + 'px' : '32rpx' }"
   >
     <view
-      class="w-full h-full bg-[#fff] rounded-[50rpx] overflow-hidden flex flex-row items-center justify-between"
+      class="w-full h-full bg-[#fff] rounded-[50rpx] overflow-hidden shadow-[0_0_30rpx_2rpx_rgba(0,0,0,0.1)] flex flex-row items-center justify-between"
     >
       <view
         class="w-full h-full flex flex-col items-center justify-center"
@@ -13,12 +13,12 @@
         @click="changeTab(index)"
       >
         <image
-          :src="index === activeIndex ? item.activeIcon : item.icon"
+          :src="index === currentIndex ? item.activeIcon : item.icon"
           class="w-[48rpx] h-[48rpx]"
         />
         <text
-          class="text-[24rpx]"
-          :class="[index === activeIndex ? 'text-[#000]' : 'text-[#c8c8c8]']"
+          class="text-[24rpx] transition-all duration-300"
+          :class="[index === currentIndex ? 'text-[#000]' : 'text-[#c8c8c8]']"
           >{{ item.label }}</text
         >
       </view>
@@ -29,13 +29,16 @@
 <script setup lang="ts">
 import { tabbars } from "@/config/config";
 import { ref } from "vue";
+import { useNavStore } from "../stores/nav";
+import { storeToRefs } from "pinia";
 
-const activeIndex = ref(0);
+const navStore = useNavStore();
+const { currentIndex } = storeToRefs(navStore);
 
 const safeBottom = uni.getSystemInfoSync().safeAreaInsets?.bottom || 0;
 
 function changeTab(index: number) {
-  activeIndex.value = index;
+  navStore.changeTab(index);
 }
 </script>
 

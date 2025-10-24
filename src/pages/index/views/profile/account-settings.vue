@@ -3,7 +3,7 @@
     <view class="w-full h-[64rpx] mb-[12rpx] flex flex-row items-center">
       <text
         class="text-[24rpx] text-[#888] text-shadow-[0_0_10rpx_rgba(255,255,255,0.1)]"
-        >账号设置</text
+        >账号管理</text
       >
     </view>
     <view class="w-full rounded-[8rpx] overflow-hidden flex flex-col">
@@ -22,7 +22,9 @@
           <view
             class="h-full shrink-0 flex flex-row items-center justify-center"
           >
-            <text class="text-[28rpx] text-[#888] mr-[12rpx]">智联账号</text>
+            <text class="text-[28rpx] text-[#888] mr-[12rpx]">{{
+              isZhaopinLoggedIn ? zhaopinLoginInfo?.phonenum : "去登录"
+            }}</text>
             <image
               class="w-[30rpx] h-[30rpx]"
               src="@static/icon_arraw_right.png"
@@ -55,7 +57,9 @@
           <view
             class="h-full shrink-0 flex flex-row items-center justify-center"
           >
-            <text class="text-[28rpx] text-[#888] mr-[12rpx]">Boss账号</text>
+            <text class="text-[28rpx] text-[#888] mr-[12rpx]">{{
+              isBossLoggedIn ? bossLoginInfo?.phonenum : "去登录"
+            }}</text>
             <image
               class="w-[30rpx] h-[30rpx]"
               src="@static/icon_arraw_right.png"
@@ -68,11 +72,36 @@
 </template>
 
 <script setup lang="ts">
-import { useTLoginStore } from "../../stores/tlogin";
+import { computed } from "vue";
+import { ThirdPartLoginType, useTLoginStore } from "../../stores/tlogin";
 import { storeToRefs } from "pinia";
 
 const tLoginStore = useTLoginStore();
-const { getCustomLoginInfo } = storeToRefs(tLoginStore);
+const { customLoginInfo } = storeToRefs(tLoginStore);
+
+// const zhaopinLoginInfo = ref<CustomLoginInfo>();
+// const bossLoginInfo = ref<CustomLoginInfo>();
+
+const zhaopinLoginInfo = computed(() => {
+  return customLoginInfo.value[ThirdPartLoginType.ZHAOPIN];
+});
+
+const bossLoginInfo = computed(() => {
+  return customLoginInfo.value[ThirdPartLoginType.BOSS];
+});
+
+const isZhaopinLoggedIn = computed(() => {
+  return (
+    zhaopinLoginInfo.value?.expireAt &&
+    zhaopinLoginInfo.value.expireAt > Date.now()
+  );
+});
+
+const isBossLoggedIn = computed(() => {
+  return (
+    bossLoginInfo.value?.expireAt && bossLoginInfo.value.expireAt > Date.now()
+  );
+});
 
 function handleZhaopinLogin() {
   uni.navigateTo({

@@ -98,28 +98,29 @@
 
 <script setup lang="ts">
 import { onLoad } from "@dcloudio/uni-app";
-import { CustomLoginInfo, ThirdPartLoginType } from "../index/stores/tlogin";
+import { ThirdPartLoginType } from "../index/stores/tlogin";
 import { computed, ref } from "vue";
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import { useTLoginStore } from "../index/stores/tlogin";
 import { requestThirdPartLogin, requestThirdPartSmsCode } from "@/request";
+import { storeToRefs } from "pinia";
 
 const loginType = ref(ThirdPartLoginType.ZHAOPIN);
 
 const tLoginStore = useTLoginStore();
-
-const customLoginInfo = ref<CustomLoginInfo>();
+const { customLoginInfo } = storeToRefs(tLoginStore);
 
 const sessionId = ref("");
 
 const isLoginLoading = ref(false);
 
+const loginInfo = computed(() => {
+  return customLoginInfo.value[loginType.value];
+});
+
 const isLoggedIn = computed(() => {
-  return (
-    customLoginInfo.value?.expireAt &&
-    customLoginInfo.value.expireAt > Date.now()
-  );
+  return loginInfo.value?.expireAt && loginInfo.value.expireAt > Date.now();
 });
 
 // 手机号
@@ -156,9 +157,9 @@ onLoad((options) => {
     return;
   }
   loginType.value = type;
-  customLoginInfo.value = tLoginStore.getCustomLoginInfo(type);
+  // customLoginInfo.value = tLoginStore.getCustomLoginInfo(type);
 
-  phonenum.value = customLoginInfo.value?.phonenum || "";
+  phonenum.value = loginInfo.value?.phonenum || "";
 });
 
 function handleGetVerifyCode() {
@@ -250,6 +251,15 @@ function handleLogin() {
         phonenum: phonenum.value,
         cookie: res.data.cookies,
       });
+
+      uni.navigateBack({
+        complete: () => {
+          uni.showToast({
+            title: "登录成功",
+            icon: "none",
+          });
+        },
+      });
     } else {
       uni.showToast({
         title: res.message || "登录失败",
@@ -261,7 +271,13 @@ function handleLogin() {
   });
 }
 
-function handleLogout() {}
+function handleLogout() {
+  tLoginStore.removeCustomLoginInfo(loginType.value);
+  uni.showToast({
+    title: "退出登录成功",
+    icon: "none",
+  });
+}
 
 function handlePhonenumChange(e: any) {
   phonenum.value = e.detail.value;

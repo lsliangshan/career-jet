@@ -78,8 +78,20 @@ export const useTLoginStore = defineStore("tlogin", () => {
     }
   }
 
+  function removeCustomLoginInfo(type: ThirdPartLoginType) {
+    customLoginInfo.value[type] = {
+      type: type,
+      phonenum: "",
+      cookie: [],
+      expireAt: 0,
+    };
+    uni.setStorageSync(CUSTOM_LOGIN_INFO_KEY, customLoginInfo.value);
+  }
+
   return {
+    customLoginInfo,
     getCustomLoginInfo,
     setCustomLoginInfo,
+    removeCustomLoginInfo,
   };
 });

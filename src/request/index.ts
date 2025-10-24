@@ -4,7 +4,7 @@ export function requestThirdPartSmsCode(params: {
 }) {
   return new Promise((resolve) => {
     uni.request({
-      url: "http://127.0.0.1:4000/crawlerjet/third/get-sms-code",
+      url: "http://10.2.6.210:4000/crawlerjet/third/get-sms-code",
       method: "POST",
       data: {
         phonenum: params.phonenum,
@@ -31,7 +31,7 @@ export function requestThirdPartLogin(params: {
 }) {
   return new Promise((resolve) => {
     uni.request({
-      url: "http://127.0.0.1:4000/crawlerjet/third/login",
+      url: "http://10.2.6.210:4000/crawlerjet/third/login",
       method: "POST",
       data: {
         sessionId: params.sessionId,

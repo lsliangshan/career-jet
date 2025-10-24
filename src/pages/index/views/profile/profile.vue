@@ -50,6 +50,7 @@
             <view class="flex flex-row items-center">
               <view
                 class="h-[100rpx] w-full pl-[24rpx] pr-[24rpx] box-border bg-[#fff] active:bg-[#fafafa] flex flex-row items-center justify-between"
+                @click="handleEditFollowedCity"
               >
                 <view class="flex flex-row items-center">
                   <image
@@ -90,6 +91,12 @@ const { followedPosition, followedCity } = storeToRefs(profileStore);
 function handleEditFollowedPosition() {
   uni.navigateTo({
     url: "/pages/edit-followed-data/edit-followed-data?type=followedPosition",
+  });
+}
+
+function handleEditFollowedCity() {
+  uni.navigateTo({
+    url: "/pages/edit-followed-data/edit-followed-data?type=followedCity",
   });
 }
 </script>

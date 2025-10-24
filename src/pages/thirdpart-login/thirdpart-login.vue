@@ -18,6 +18,7 @@
               type="number"
               :value="phonenum"
               focus
+              :disabled="!!isLoggedIn"
               placeholder="请输入"
               @input="handlePhonenumChange"
             />
@@ -25,6 +26,7 @@
         </view>
         <view
           class="w-full h-[100rpx] pl-[24rpx] pr-[24rpx] box-border flex flex-row items-center bg-[#fff]"
+          v-if="!isLoggedIn"
         >
           <view class="w-[100rpx] h-full shrink-0 flex flex-row items-center">
             <text class="text-[28rpx] text-[#333]">验证码</text>
@@ -64,6 +66,7 @@
 
         <view
           class="w-full h-[120rpx] pl-[24rpx] pr-[24rpx] box-border flex flex-row items-center justify-center"
+          v-if="!isLoggedIn"
         >
           <view
             class="h-[64rpx] pl-[24rpx] pr-[24rpx] box-border flex flex-row items-center justify-center rounded-[8rpx] overflow-hidden"
@@ -75,6 +78,17 @@
             @click="handleLogin"
           >
             <text class="text-[28rpx] text-[#fff]">登录</text>
+          </view>
+        </view>
+        <view
+          class="w-full h-[120rpx] pl-[24rpx] pr-[24rpx] box-border flex flex-row items-center justify-center"
+          v-else
+        >
+          <view
+            class="h-[64rpx] pl-[24rpx] pr-[24rpx] bg-[#ff3333] active:bg-[#e62e2e] box-border flex flex-row items-center justify-center rounded-[8rpx] overflow-hidden"
+            @click="handleLogout"
+          >
+            <text class="text-[28rpx] text-[#fff]">退出登录</text>
           </view>
         </view>
       </view>
@@ -100,6 +114,13 @@ const customLoginInfo = ref<CustomLoginInfo>();
 const sessionId = ref("");
 
 const isLoginLoading = ref(false);
+
+const isLoggedIn = computed(() => {
+  return (
+    customLoginInfo.value?.expireAt &&
+    customLoginInfo.value.expireAt > Date.now()
+  );
+});
 
 // 手机号
 const phonenum = ref("");
@@ -136,6 +157,7 @@ onLoad((options) => {
   }
   loginType.value = type;
   customLoginInfo.value = tLoginStore.getCustomLoginInfo(type);
+
   phonenum.value = customLoginInfo.value?.phonenum || "";
 });
 
@@ -216,7 +238,6 @@ function handleLogin() {
     code: verifyCode.value,
     type: loginType.value,
   }).then((res: any) => {
-    console.log(">>>>>>>>>>> requestThirdPartLogin", res);
     if (
       res.code == 200 &&
       res.data &&
@@ -228,7 +249,6 @@ function handleLogin() {
         type: loginType.value,
         phonenum: phonenum.value,
         cookie: res.data.cookies,
-        isLogin: true,
       });
     } else {
       uni.showToast({
@@ -240,6 +260,8 @@ function handleLogin() {
     isLoginLoading.value = false;
   });
 }
+
+function handleLogout() {}
 
 function handlePhonenumChange(e: any) {
   phonenum.value = e.detail.value;

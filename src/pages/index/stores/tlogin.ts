@@ -1,6 +1,6 @@
 import { requestThirdPartSmsCode } from "@/request";
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 export enum ThirdPartLoginType {
   ZHAOPIN = "zhaopin",
@@ -23,11 +23,13 @@ export interface CustomLoginInfo {
   expireAt: number;
 }
 
+const CUSTOM_LOGIN_INFO_KEY = "customLoginInfo";
+
 export const useTLoginStore = defineStore("tlogin", () => {
   const customLoginInfo = ref<Record<ThirdPartLoginType, CustomLoginInfo>>({
     [ThirdPartLoginType.ZHAOPIN]: {
       type: ThirdPartLoginType.ZHAOPIN,
-      phonenum: "10032132100",
+      phonenum: "",
       cookie: [],
       expireAt: 0,
     },
@@ -37,6 +39,13 @@ export const useTLoginStore = defineStore("tlogin", () => {
       cookie: [],
       expireAt: 0,
     },
+  });
+
+  onMounted(() => {
+    const localCustomLoginInfo = uni.getStorageSync(CUSTOM_LOGIN_INFO_KEY);
+    if (localCustomLoginInfo) {
+      customLoginInfo.value = localCustomLoginInfo;
+    }
   });
 
   function getCustomLoginInfo(type: ThirdPartLoginType) {
@@ -60,7 +69,7 @@ export const useTLoginStore = defineStore("tlogin", () => {
         expireAt,
       };
 
-      uni.setStorageSync("customLoginInfo", customLoginInfo.value);
+      uni.setStorageSync(CUSTOM_LOGIN_INFO_KEY, customLoginInfo.value);
     } else if (params.type === ThirdPartLoginType.BOSS) {
       customLoginInfo.value[ThirdPartLoginType.BOSS] = {
         ...customLoginInfo.value[ThirdPartLoginType.BOSS],

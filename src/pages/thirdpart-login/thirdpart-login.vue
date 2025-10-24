@@ -89,12 +89,17 @@ import { computed, ref } from "vue";
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import { useTLoginStore } from "../index/stores/tlogin";
+import { requestThirdPartLogin, requestThirdPartSmsCode } from "@/request";
 
 const loginType = ref(ThirdPartLoginType.ZHAOPIN);
 
 const tLoginStore = useTLoginStore();
 
 const customLoginInfo = ref<CustomLoginInfo>();
+
+const sessionId = ref("");
+
+const isLoginLoading = ref(false);
 
 // 手机号
 const phonenum = ref("");
@@ -142,10 +147,26 @@ function handleGetVerifyCode() {
     });
     return;
   }
+
   startVerifyCodeTimer();
-  uni.showToast({
-    title: "获取验证码",
-    icon: "none",
+
+  requestThirdPartSmsCode({
+    phonenum: phonenum.value,
+    type: loginType.value,
+  }).then((res: any) => {
+    if (res.code == 200 && res.data && res.data.sessionId) {
+      sessionId.value = res.data.sessionId;
+      uni.showToast({
+        title: "验证码发送成功",
+        icon: "none",
+      });
+    } else {
+      uni.showToast({
+        title: res.message || "验证码发送失败",
+        icon: "none",
+      });
+      stopVerifyCodeTimer();
+    }
   });
 }
 
@@ -170,9 +191,53 @@ function handleLogin() {
   if (!canLogin.value) {
     return;
   }
-  uni.showToast({
-    title: "登录中...",
-    icon: "none",
+  if (!sessionId.value) {
+    uni.showToast({
+      title: "请先获取验证码",
+      icon: "none",
+    });
+    return;
+  }
+  if (!verifyCode.value) {
+    uni.showToast({
+      title: "请输入验证码",
+      icon: "none",
+    });
+    return;
+  }
+  if (isLoginLoading.value) {
+    return;
+  }
+
+  isLoginLoading.value = true;
+
+  requestThirdPartLogin({
+    sessionId: sessionId.value,
+    code: verifyCode.value,
+    type: loginType.value,
+  }).then((res: any) => {
+    console.log(">>>>>>>>>>> requestThirdPartLogin", res);
+    if (
+      res.code == 200 &&
+      res.data &&
+      res.data.cookies &&
+      res.data.cookies.length > 0
+    ) {
+      // 登录成功
+      tLoginStore.setCustomLoginInfo({
+        type: loginType.value,
+        phonenum: phonenum.value,
+        cookie: res.data.cookies,
+        isLogin: true,
+      });
+    } else {
+      uni.showToast({
+        title: res.message || "登录失败",
+        icon: "none",
+      });
+    }
+
+    isLoginLoading.value = false;
   });
 }
 

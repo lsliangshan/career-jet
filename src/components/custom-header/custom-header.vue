@@ -12,12 +12,9 @@
       <view
         class="absolute left-0 top-0 w-[88rpx] h-[88rpx] shrink-0 flex flex-row items-center justify-center"
         @click="handleBack"
+        v-if="showBack"
       >
-        <image
-          v-if="showBack"
-          class="w-[30rpx] h-[30rpx]"
-          src="@static/icon_back.png"
-        ></image>
+        <image class="w-[30rpx] h-[30rpx]" src="@static/icon_back.png"></image>
       </view>
       <view class="w-full h-full flex flex-row items-center justify-center">
         <text class="text-[32rpx] font-bold text-[#000]">{{ title }}</text>

@@ -11,3 +11,12 @@ page {
   height: 100%;
   background-color: #f5f5f5;
 }
+
+/* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
+@font-face {
+  font-family: "钉钉进步体 Regular";font-weight: 400;src: url("//at.alicdn.com/wf/webfont/TYBLhu3HLrUy/AZHvMatbc9ee.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/TYBLhu3HLrUy/rdiSjdaOopv5.woff") format("woff");font-variation-settings: normal;font-display: swap;
+}
+
+.webfont {
+  font-family: "钉钉进步体 Regular";font-variation-settings: normal; /* Chrome 140 以下版本需要 */}

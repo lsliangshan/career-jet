@@ -74,10 +74,27 @@
               canLogin
                 ? 'bg-[#42b983] active:bg-[#36ad6a]'
                 : 'bg-[#c8c8c8] pointer-events-none',
+              isLoginLoading ? 'bg-[#c8c8c8] pointer-events-none' : '',
             ]"
             @click="handleLogin"
           >
-            <text class="text-[28rpx] text-[#fff]">登录</text>
+            <view
+              class="w-[30rpx] h-[30rpx] mr-[12rpx] animate-spin flex flex-row items-center justify-center"
+              v-if="isLoginLoading"
+            >
+              <image
+                src="../../static/icon_loading_white.png"
+                class="w-[30rpx] h-[30rpx]"
+              ></image>
+            </view>
+            <text
+              class="text-[28rpx] text-[#fff]"
+              :class="[
+                isLoginLoading ? 'text-[#c8c8c8] pointer-events-none' : '',
+              ]"
+            >
+              {{ isLoginLoading ? "登录中..." : "登录" }}
+            </text>
           </view>
         </view>
         <view
@@ -233,6 +250,10 @@ function handleLogin() {
   }
 
   isLoginLoading.value = true;
+  uni.showLoading({
+    mask: true,
+    title: "登录中...",
+  });
 
   requestThirdPartLogin({
     sessionId: sessionId.value,

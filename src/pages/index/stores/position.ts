@@ -116,10 +116,20 @@ export const usePositionStore = defineStore("position", () => {
     uni.setStorageSync(BOSS_POSITIONS_KEY, bossPositions.value);
   }
 
+  function getPositionDetail(number: string, type: SupportedPlatform) {
+    if (type === SupportedPlatform.ZHAOPIN) {
+      return zhaopinPositions.value.list.find((item: any) => item.number === number);
+    } else if (type === SupportedPlatform.BOSS) {
+      return bossPositions.value.list.find((item: any) => item.number === number);
+    }
+    return null;
+  }
+
   return {
     zhaopinPositions,
     bossPositions,
     setZhaopinPositions,
     setBossPositions,
+    getPositionDetail,
   };
 });

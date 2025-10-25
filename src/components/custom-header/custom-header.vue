@@ -14,7 +14,7 @@
         @click="handleBack"
         v-if="showBack"
       >
-        <image class="w-[30rpx] h-[30rpx]" src="@static/icon_back.png"></image>
+        <image class="w-[40rpx] h-[40rpx]" src="@static/icon_back.png"></image>
       </view>
       <view class="w-full h-full flex flex-row items-center justify-center">
         <text class="text-[32rpx] font-bold text-[#000]">{{ title }}</text>

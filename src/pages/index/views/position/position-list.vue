@@ -6,7 +6,7 @@
       v-for="position in renderPositions"
       :key="position.id"
     >
-      <PositionCard :info="position" />
+      <PositionCard :info="position" :type="type" />
     </view>
 
     <view

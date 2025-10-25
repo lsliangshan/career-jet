@@ -1,6 +1,7 @@
 <template>
   <view
     class="w-full bg-[#fff] rounded-[12rpx] p-[24rpx] box-border flex flex-col gap-[24rpx] active:bg-[#f8f8f8] transition-all duration-300"
+    @click="handleClick"
   >
     <view class="w-full flex flex-row items-center gap-[36rpx]">
       <view
@@ -67,10 +68,12 @@
 </template>
 
 <script setup lang="ts">
+import { SupportedPlatform } from "@/types";
 import { ref } from "vue";
 
 interface Props {
   info: any;
+  type: SupportedPlatform;
 }
 
 const props = defineProps<Props>();
@@ -81,6 +84,12 @@ const renderImage = ref<string>(props.info.companyLogo || defaultCompanyLogo);
 
 function handleImageError(e: any) {
   renderImage.value = defaultCompanyLogo;
+}
+
+function handleClick() {
+  uni.navigateTo({
+    url: `/pages/position-detail/position-detail?number=${props.info.number}&type=${props.type}`,
+  });
 }
 </script>
 

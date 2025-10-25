@@ -116,7 +116,7 @@
 <script setup lang="ts">
 import { onLoad } from "@dcloudio/uni-app";
 import { ThirdPartLoginType } from "../index/stores/tlogin";
-import { computed, ref } from "vue";
+import { computed, getCurrentInstance, ref } from "vue";
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import { useTLoginStore } from "../index/stores/tlogin";
@@ -127,6 +127,9 @@ const loginType = ref(ThirdPartLoginType.ZHAOPIN);
 
 const tLoginStore = useTLoginStore();
 const { customLoginInfo } = storeToRefs(tLoginStore);
+
+const instance = getCurrentInstance()?.proxy as any;
+const eventChannel = instance?.getOpenerEventChannel();
 
 const sessionId = ref("");
 
@@ -271,6 +274,12 @@ function handleLogin() {
         type: loginType.value,
         phonenum: phonenum.value,
         cookie: res.data.cookies,
+      });
+
+      eventChannel.emit("loginSuccess", {
+        type: loginType.value,
+        phonenum: phonenum.value,
+        cookie: loginInfo.value?.cookie,
       });
 
       uni.navigateBack({

@@ -24,7 +24,6 @@
 
 <script setup lang="ts">
 import BottomNav from "./components/bottom-nav.vue";
-import { tabbars } from "@/config/config";
 import position from "./views/position/position.vue";
 import deliver from "./views/deliver/deliver.vue";
 import profile from "./views/profile/profile.vue";

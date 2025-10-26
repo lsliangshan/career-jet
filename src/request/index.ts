@@ -22,7 +22,7 @@ export function requestThirdPartSmsCode(params: {
         resolve({
           code: 1000,
           message: err.errMsg,
-          data: null,
+          data: {},
         });
       },
     });
@@ -50,7 +50,7 @@ export function requestThirdPartLogin(params: {
         resolve({
           code: 1000,
           message: err.errMsg,
-          data: null,
+          data: {},
         });
       },
     });
@@ -78,7 +78,33 @@ export function requestDailyPositions(params: {
         resolve({
           code: 1000,
           message: err.errMsg,
-          data: null,
+          data: {},
+        });
+      },
+    });
+  });
+}
+
+export function requestValidateLoginStatus(params: {
+  type: SupportedPlatform | string;
+  cookies: any[];
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/crawlerjet/validate/login/status`,
+      method: "POST",
+      data: {
+        cookies: params.cookies,
+        type: params.type,
+      },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (err) => {
+        resolve({
+          code: 1000,
+          message: err.errMsg,
+          data: {},
         });
       },
     });

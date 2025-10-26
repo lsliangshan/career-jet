@@ -72,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { ThirdPartLoginType, useTLoginStore } from "../../stores/tlogin";
 import { storeToRefs } from "pinia";
 
@@ -101,6 +101,13 @@ const isBossLoggedIn = computed(() => {
   return (
     bossLoginInfo.value?.expireAt && bossLoginInfo.value.expireAt > Date.now()
   );
+});
+
+onMounted(async () => {
+  await Promise.all([
+    tLoginStore.validateLoginStatus(ThirdPartLoginType.ZHAOPIN),
+    tLoginStore.validateLoginStatus(ThirdPartLoginType.BOSS),
+  ]);
 });
 
 function handleZhaopinLogin() {

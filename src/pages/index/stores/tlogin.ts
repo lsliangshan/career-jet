@@ -88,10 +88,32 @@ export const useTLoginStore = defineStore("tlogin", () => {
     uni.setStorageSync(CUSTOM_LOGIN_INFO_KEY, customLoginInfo.value);
   }
 
+  function validateZhaopinLoginStatus() {}
+
+  function validateBossLoginStatus() {}
+
+  async function validateLoginStatus(type: ThirdPartLoginType) {
+    if (customLoginInfo.value[type].expireAt && customLoginInfo.value[type].expireAt > Date.now()) {
+      customLoginInfo.value[type] = {
+        type,
+        cookie: [],
+        phonenum: '',
+        expireAt: 0,
+      }
+      return;
+    }
+    if (type === ThirdPartLoginType.ZHAOPIN) {
+       await validateZhaopinLoginStatus();
+    } else if (type === ThirdPartLoginType.BOSS) {
+       await validateBossLoginStatus();
+    }
+  }
+
   return {
     customLoginInfo,
     getCustomLoginInfo,
     setCustomLoginInfo,
     removeCustomLoginInfo,
+    validateLoginStatus,
   };
 });

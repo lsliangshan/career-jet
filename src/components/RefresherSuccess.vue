@@ -29,7 +29,7 @@ watch(
       const timer = setTimeout(() => {
         emit("update:modelValue", false);
         clearTimeout(timer);
-      }, 2000);
+      }, 3000);
     }
   },
   {
@@ -44,7 +44,9 @@ watch(
   justify-content: center;
   align-items: center;
   border-radius: 44rpx;
-  width: 262rpx;
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+  box-sizing: border-box;
   height: 60rpx;
   background: #426eff;
 

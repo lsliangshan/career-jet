@@ -55,7 +55,7 @@
           v-for="platform in supportedPlatforms"
           :key="platform.name"
         >
-          <PositionList :type="platform.type" />
+          <PositionList :currentIndex="currentIndex" :type="platform.type" />
         </swiper-item>
       </swiper>
     </Layout>

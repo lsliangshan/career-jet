@@ -32,7 +32,7 @@ export const usePositionStore = defineStore("position", () => {
   const profileStore = useProfileStore();
   const { followedPosition, followedCity } = storeToRefs(profileStore);
 
-  const date = ref((new Date()).toLocaleDateString().replaceAll('/', '-'));
+  const date = ref(new Date().toLocaleDateString().replaceAll("/", "-"));
 
   onMounted(async () => {
     const localZhaopinPositions = uni.getStorageSync(ZHAOPIN_POSITIONS_KEY);
@@ -47,10 +47,20 @@ export const usePositionStore = defineStore("position", () => {
     await getPositions();
   });
 
-  function getZhaopinPositions() {
+  function getZhaopinPositions(refresh: boolean = false) {
     return new Promise((resolve) => {
-      if (zhaopinPositions.value.date === date.value && zhaopinPositions.value.list.length > 0) {
-        resolve(true);
+      if (
+        zhaopinPositions.value.date === date.value &&
+        zhaopinPositions.value.list.length > 0 &&
+        !refresh
+      ) {
+        resolve({
+          code: 1000,
+          message: "没有更新",
+          data: {
+            list: zhaopinPositions.value.list,
+          },
+        });
         return;
       }
 
@@ -59,20 +69,33 @@ export const usePositionStore = defineStore("position", () => {
         job: followedPosition.value,
         city: followedCity.value,
       }).then((res: any) => {
-        console.log('>>>>>>>......... 1', res);
         if (res.code === 200) {
-          
           setZhaopinPositions(res.data.list);
-          resolve(true);
+          resolve({
+            code: 200,
+            message: "更新成功",
+            data: {
+              list: res.data.list,
+            },
+          });
         } else {
-          resolve(false);
+          resolve({
+            code: 1000,
+            message: "更新失败",
+            data: {
+              list: [],
+            },
+          });
         }
       });
-    })
+    });
   }
   function getBossPositions() {
     return new Promise((resolve) => {
-      if (bossPositions.value.date === date.value && bossPositions.value.list.length > 0) {
+      if (
+        bossPositions.value.date === date.value &&
+        bossPositions.value.list.length > 0
+      ) {
         resolve(true);
       }
 
@@ -82,14 +105,14 @@ export const usePositionStore = defineStore("position", () => {
         city: followedCity.value,
       }).then((res: any) => {
         if (res.code === 200) {
-          console.log('>>>>>>>......... 2', res.data.list);
+          console.log(">>>>>>>......... 2", res.data.list);
           setBossPositions(res.data.list);
           resolve(true);
         } else {
           resolve(false);
         }
       });
-    })
+    });
   }
 
   function getPositions() {
@@ -118,9 +141,13 @@ export const usePositionStore = defineStore("position", () => {
 
   function getPositionDetail(number: string, type: SupportedPlatform) {
     if (type === SupportedPlatform.ZHAOPIN) {
-      return zhaopinPositions.value.list.find((item: any) => item.number === number);
+      return zhaopinPositions.value.list.find(
+        (item: any) => item.number === number
+      );
     } else if (type === SupportedPlatform.BOSS) {
-      return bossPositions.value.list.find((item: any) => item.number === number);
+      return bossPositions.value.list.find(
+        (item: any) => item.number === number
+      );
     }
     return null;
   }
@@ -128,6 +155,7 @@ export const usePositionStore = defineStore("position", () => {
   return {
     zhaopinPositions,
     bossPositions,
+    getZhaopinPositions,
     setZhaopinPositions,
     setBossPositions,
     getPositionDetail,

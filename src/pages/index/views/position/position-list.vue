@@ -1,9 +1,6 @@
 <template>
   <view class="w-full h-full overflow-hidden">
-    <refresher-success
-      v-model="refresherSuccessVisible"
-      text="职位列表已更新"
-    />
+    <refresher-success v-model="refresherSuccessVisible" :text="successTip" />
     <scroll-view
       class="w-full h-full"
       scroll-y
@@ -52,12 +49,14 @@
 import { SupportedPlatform } from "@/types";
 import { usePositionStore } from "../../stores/position";
 import { storeToRefs } from "pinia";
-import { computed, nextTick, ref } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import PositionCard from "./position-card.vue";
 import RefresherSuccess from "@/components/RefresherSuccess.vue";
+import { supportedPlatforms } from "@/config/config";
 
 interface Props {
   type: SupportedPlatform;
+  currentIndex: number;
 }
 
 const props = defineProps<Props>();
@@ -67,6 +66,12 @@ const safeBottom = uni.getSystemInfoSync().safeAreaInsets?.bottom || 0;
 const refresherTriggered = ref(false);
 
 const refresherSuccessVisible = ref(false);
+
+const isInitialed = ref(false);
+
+const isRefreshing = ref(false);
+
+const successTip = ref("职位列表已更新");
 
 const positionStore = usePositionStore();
 const { zhaopinPositions, bossPositions } = storeToRefs(positionStore);
@@ -80,17 +85,52 @@ const renderPositions = computed(() => {
   return [];
 });
 
+watch(
+  () => props.currentIndex,
+  (newVal) => {
+    if (
+      supportedPlatforms[props.currentIndex].type === props.type &&
+      !isInitialed.value
+    ) {
+      nextTick(() => {
+        doAutoRefresh();
+        isInitialed.value = true;
+      });
+    }
+  },
+  {
+    immediate: true,
+  }
+);
+
+// 自动刷新
+async function doAutoRefresh() {
+  refresherrefresh();
+}
+
 // 下拉刷新
 const refresherrefresh = async () => {
+  if (isRefreshing.value) {
+    return;
+  }
+  isRefreshing.value = true;
   refresherTriggered.value = true;
+
+  const result = await positionStore.getZhaopinPositions(true);
+
+  if (result.code === 200) {
+    successTip.value = `今日已更新 ${result.data.list.length} 个职位`;
+  } else {
+    successTip.value = "已是最新职位";
+  }
 
   nextTick(() => {
     const t = setTimeout(() => {
       clearTimeout(t);
       refresherTriggered.value = false;
-
+      isRefreshing.value = false;
       refresherSuccessVisible.value = true;
-    }, 3500);
+    }, 500);
   });
 };
 </script>

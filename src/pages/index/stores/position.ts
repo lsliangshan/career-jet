@@ -32,9 +32,14 @@ export const usePositionStore = defineStore("position", () => {
   const profileStore = useProfileStore();
   const { followedPosition, followedCity } = storeToRefs(profileStore);
 
-  const date = ref(new Date().toLocaleDateString().replaceAll("/", "-"));
+  const date = ref(new Date().toLocaleDateString("zh-CN").replaceAll("/", "-"));
 
   onMounted(async () => {
+    const d = new Date();
+    const month = `${d.getMonth() + 1}`.padStart(2, "0");
+    const day = `${d.getDate()}`.padStart(2, "0");
+    date.value = `${d.getFullYear()}-${month}-${day}`;
+
     const localZhaopinPositions = uni.getStorageSync(ZHAOPIN_POSITIONS_KEY);
     if (localZhaopinPositions) {
       zhaopinPositions.value = localZhaopinPositions;
@@ -121,6 +126,10 @@ export const usePositionStore = defineStore("position", () => {
   }
 
   function setZhaopinPositions(positions: any[]) {
+    uni.showToast({
+      title: date.value,
+      icon: "none",
+    });
     zhaopinPositions.value = {
       job: followedPosition.value,
       city: followedCity.value,

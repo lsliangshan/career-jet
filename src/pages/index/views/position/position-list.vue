@@ -102,7 +102,7 @@ watch(
     immediate: true,
   }
 );
-
+console.log(">>>>>>>>>", uni.getStorageInfoSync());
 // 自动刷新
 async function doAutoRefresh() {
   refresherrefresh();

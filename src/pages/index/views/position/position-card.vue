@@ -41,6 +41,14 @@
       v-if="info.showSkillTags && info.showSkillTags.length > 0"
     >
       <view
+        class="h-[50rpx] pl-[24rpx] pr-[24rpx] box-border rounded-[12rpx] overflow-hidden flex flex-row items-center shrink-0 border border-[#426eff] border-[1rpx]"
+        key="city"
+      >
+        <text class="text-[24rpx] font-[500] text-[#426eff]">{{
+          info.workCity
+        }}</text>
+      </view>
+      <view
         class="h-[50rpx] pl-[24rpx] pr-[24rpx] box-border rounded-[12rpx] overflow-hidden flex flex-row items-center shrink-0 bg-[#f5f5f5]"
         v-for="(skillTag, index) in info.showSkillTags"
         :key="index"
@@ -49,19 +57,19 @@
           skillTag.tag
         }}</text>
       </view>
+    </view>
 
-      <view
-        class="w-full h-[48rpx] mt-[12rpx] pt-[24rpx] border-t border-[#f5f5f5] flex flex-row items-center justify-between"
-      >
-        <view class="h-full flex flex-row items-center">
-          <text class="text-[24rpx] font-[500] text-[#888]">{{
-            info.publishTime
-          }}</text>
-        </view>
+    <view
+      class="w-full h-[48rpx] mt-[12rpx] pt-[24rpx] border-t border-[#f5f5f5] flex flex-row items-center justify-between"
+    >
+      <view class="h-full flex flex-row items-center">
+        <text class="text-[24rpx] font-[500] text-[#888]">{{
+          info.publishTime
+        }}</text>
+      </view>
 
-        <view class="h-full flex flex-row items-center">
-          <text class="text-[24rpx] font-[500] text-[#c8c8c8]">查看详情</text>
-        </view>
+      <view class="h-full flex flex-row items-center">
+        <text class="text-[24rpx] font-[500] text-[#c8c8c8]">查看详情</text>
       </view>
     </view>
   </view>

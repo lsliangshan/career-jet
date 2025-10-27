@@ -1,10 +1,10 @@
 import { SupportedPlatform } from "@/types";
 
-// const baseUrl = "http://10.2.6.210:4000";
-const baseUrl = "http://192.168.1.3:4000";
+const baseUrl = "http://10.2.6.210:4000";
+// const baseUrl = "http://192.168.1.3:4000";
 
 export function requestThirdPartSmsCode(params: {
-  phonenum: string;
+  phonenum?: string;
   type: SupportedPlatform | string;
 }) {
   return new Promise((resolve) => {
@@ -110,4 +110,3 @@ export function requestValidateLoginStatus(params: {
     });
   });
 }
-

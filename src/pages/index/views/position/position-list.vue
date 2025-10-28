@@ -24,14 +24,26 @@
           </view>
         </view>
       </template>
-      <view class="w-full h-[12rpx]"></view>
-      <view
-        class="w-full px-[24rpx] py-[12rpx] box-border"
-        v-for="position in renderPositions"
-        :key="position.id"
-      >
-        <PositionCard :info="position" :type="type" />
-      </view>
+
+      <template v-if="renderPositions.length > 0">
+        <view class="w-full h-[12rpx]"></view>
+        <view
+          class="w-full px-[24rpx] py-[12rpx] box-border"
+          v-for="position in renderPositions"
+          :key="position.id"
+        >
+          <PositionCard :info="position" :type="type" />
+        </view>
+      </template>
+
+      <template v-else>
+        <view
+          class="w-full flex flex-row items-center justify-center"
+          :style="{ height: `calc(100% - 200rpx)` }"
+        >
+          <Empty />
+        </view>
+      </template>
 
       <view
         class="w-full"
@@ -53,6 +65,7 @@ import { computed, nextTick, ref, watch } from "vue";
 import PositionCard from "../../components/position-card.vue";
 import RefresherSuccess from "@/components/RefresherSuccess.vue";
 import { supportedPlatforms } from "@/config/config";
+import Empty from "@/components/empty/empty.vue";
 
 interface Props {
   type: SupportedPlatform;
@@ -100,7 +113,7 @@ watch(
 
 // 自动刷新
 async function doAutoRefresh() {
-  // refresherrefresh();
+  refresherrefresh();
 }
 
 // 下拉刷新

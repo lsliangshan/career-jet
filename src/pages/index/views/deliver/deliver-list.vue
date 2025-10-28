@@ -72,6 +72,14 @@
           </list-view>
         </view>
       </template>
+      <template v-else>
+        <view
+          class="w-full flex flex-row items-center justify-center"
+          :style="{ height: `calc(100% - 200rpx)` }"
+        >
+          <Empty />
+        </view>
+      </template>
 
       <view
         class="w-full"
@@ -93,6 +101,7 @@ import PositionCard from "../../components/position-card.vue";
 import RefresherSuccess from "@/components/RefresherSuccess.vue";
 import { supportedPlatforms, ThemeColors } from "@/config/config";
 import { useDeliverStore } from "../../stores/deliver";
+import Empty from "@/components/empty/empty.vue";
 
 interface Props {
   type: SupportedPlatform;

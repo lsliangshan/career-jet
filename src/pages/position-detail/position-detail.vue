@@ -190,13 +190,22 @@
             class="w-full h-[100rpx] px-[32rpx] box-border flex flex-row items-center justify-center"
           >
             <view
+              class="w-full h-[100rpx] rounded-[50rpx] bg-[#c8c8c8] pointer-events-none flex flex-row items-center justify-center transition-all duration-300"
+              v-if="isDelivered"
+            >
+              <text
+                class="text-[30rpx] font-[500] text-[#fff] pointer-events-none"
+                >已投递</text
+              >
+            </view>
+            <view
               class="w-full h-[100rpx] rounded-[50rpx] flex flex-row items-center justify-center transition-all duration-300"
               :class="[
                 isDeliverLoading
                   ? 'bg-[#c8c8c8] pointer-events-none'
                   : 'bg-[#426eff] active:bg-[#335eff] pointer-events-auto',
               ]"
-              v-if="isLoggedIn"
+              v-else-if="isLoggedIn"
               @click="handleApply"
             >
               <view
@@ -267,7 +276,17 @@ const isLoggedIn = computed(() => {
 });
 
 const positionDetail = computed(() => {
-  return positionStore.getPositionDetail(number.value, type.value);
+  return positionStore.getPositionDetail({
+    type: type.value,
+    number: number.value,
+  });
+});
+
+const isDelivered = computed(() => {
+  return deliverStore.isDelivered({
+    type: type.value,
+    number: number.value,
+  });
 });
 
 const renderTitle = computed(() => {

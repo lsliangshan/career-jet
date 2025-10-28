@@ -40,7 +40,7 @@ export const usePositionStore = defineStore("position", () => {
   onBeforeMount(() => {
     const localPositions = uni.getStorageSync(POSITIONS_KEY);
     if (localPositions) {
-      positions.value = localPositions;
+      positions.value = localPositions || {};
     } else {
       for (const platform of supportedPlatforms) {
         positions.value[platform.type] = {
@@ -135,7 +135,7 @@ export const usePositionStore = defineStore("position", () => {
     type: SupportedPlatform;
     number: string;
   }) {
-    return positions.value[params.type].list.find(
+    return positions.value[params.type]?.list?.find(
       (item: any) => item.number === params.number
     );
   }

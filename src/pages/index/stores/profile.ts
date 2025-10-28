@@ -8,10 +8,10 @@ export enum FollowedDataType {
 
 export const useProfileStore = defineStore("profile", () => {
   // 关注的职位
-  const followedPosition = ref("web前端");
+  const followedPosition = ref("园艺师");
 
   // 关注的城市
-  const followedCity = ref("北京");
+  const followedCity = ref("日喀则");
 
   function setFollowedPosition(position: string) {
     followedPosition.value = position;

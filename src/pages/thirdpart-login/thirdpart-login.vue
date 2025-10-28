@@ -16,11 +16,16 @@
 <script setup lang="ts">
 import { onLoad } from "@dcloudio/uni-app";
 import { ThirdPartLoginType } from "../index/stores/tlogin";
-import { computed, ref } from "vue";
+import { computed, getCurrentInstance, provide, ref } from "vue";
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import QrcodeLogin from "./qrcode-login.vue";
 import SmscodeLogin from "./smscode-login.vue";
+
+const instance = getCurrentInstance()?.proxy as any;
+const eventChannel = instance?.getOpenerEventChannel();
+
+provide("eventChannel", eventChannel);
 
 const loginType = ref(ThirdPartLoginType.ZHAOPIN);
 

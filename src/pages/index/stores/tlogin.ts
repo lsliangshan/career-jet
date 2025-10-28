@@ -90,13 +90,16 @@ export const useTLoginStore = defineStore("tlogin", () => {
 
   async function validateLoginStatus(type: ThirdPartLoginType) {
     return new Promise(async (resolve) => {
-      if (customLoginInfo.value[type].expireAt && customLoginInfo.value[type].expireAt > Date.now()) {
+      if (
+        customLoginInfo.value[type].expireAt &&
+        customLoginInfo.value[type].expireAt > Date.now()
+      ) {
         customLoginInfo.value[type] = {
           type,
           cookie: [],
-          phonenum: '',
+          phonenum: "",
           expireAt: 0,
-        }
+        };
         resolve(true);
       }
       const res = await requestValidateLoginStatus({
@@ -108,11 +111,13 @@ export const useTLoginStore = defineStore("tlogin", () => {
         customLoginInfo.value[type] = {
           type,
           cookie: [],
-          phonenum: '',
+          phonenum: "",
           expireAt: 0,
-        }
+        };
+        resolve(false);
+      } else {
+        resolve(true);
       }
-      resolve(true);
     });
   }
 

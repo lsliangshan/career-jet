@@ -190,10 +190,31 @@
             class="w-full h-[100rpx] px-[32rpx] box-border flex flex-row items-center justify-center"
           >
             <view
-              class="w-full h-[100rpx] bg-[#426eff] active:bg-[#335eff] rounded-[50rpx] flex flex-row items-center justify-center transition-all duration-300"
+              class="w-full h-[100rpx] rounded-[50rpx] flex flex-row items-center justify-center transition-all duration-300"
+              :class="[
+                isDeliverLoading
+                  ? 'bg-[#c8c8c8] pointer-events-none'
+                  : 'bg-[#426eff] active:bg-[#335eff] pointer-events-auto',
+              ]"
               v-if="isLoggedIn"
+              @click="handleApply"
             >
-              <text class="text-[30rpx] font-[500] text-[#fff]">立即投递</text>
+              <view
+                class="w-[30rpx] h-[30rpx] mr-[12rpx] animate-spin flex flex-row items-center justify-center"
+                v-if="isDeliverLoading"
+              >
+                <image
+                  src="../../static/icon_loading_white.png"
+                  class="w-[30rpx] h-[30rpx]"
+                ></image>
+              </view>
+              <text
+                class="text-[30rpx] font-[500] text-[#fff]"
+                :class="[
+                  isDeliverLoading ? 'text-[#c8c8c8] pointer-events-none' : '',
+                ]"
+                >{{ isDeliverLoading ? "投递中" : "立即投递" }}</text
+              >
             </view>
             <view
               class="w-full h-[100rpx] bg-[#426eff] active:bg-[#335eff] rounded-[50rpx] flex flex-row items-center justify-center transition-all duration-300"
@@ -218,10 +239,12 @@ import { usePositionStore } from "../index/stores/position";
 import Layout from "@/components/layout/layout.vue";
 import { useTLoginStore } from "../index/stores/tlogin";
 import { storeToRefs } from "pinia";
+import { useDeliverStore } from "../index/stores/deliver";
 
 const positionStore = usePositionStore();
 const tLoginStore = useTLoginStore();
 const { customLoginInfo } = storeToRefs(tLoginStore);
+const deliverStore = useDeliverStore();
 
 const number = ref("");
 const type = ref<SupportedPlatform>(SupportedPlatform.ZHAOPIN);
@@ -231,6 +254,9 @@ const safeBottom = uni.getSystemInfoSync().safeAreaInsets?.bottom || 0;
 const defaultCompanyLogo = "../../static/icon_company.png";
 
 const renderImage = ref<string>();
+
+// 投递中
+const isDeliverLoading = ref(false);
 
 const loginInfo = computed(() => {
   return customLoginInfo.value[type.value];
@@ -281,6 +307,18 @@ function gotoLogin() {
       },
     },
   });
+}
+
+async function handleApply() {
+  if (isDeliverLoading.value) {
+    return;
+  }
+  isDeliverLoading.value = true;
+  const res = await deliverStore.deliverPositions({
+    type: type.value,
+    numbers: [number.value],
+  });
+  isDeliverLoading.value = false;
 }
 </script>
 

@@ -73,17 +73,14 @@ import PositionList from "./position-list.vue";
 const safeTop = uni.getSystemInfoSync().safeAreaInsets?.top || 0;
 
 const positionStore = usePositionStore();
-const { zhaopinPositions, bossPositions } = storeToRefs(positionStore);
+const { positions } = storeToRefs(positionStore);
 
 const currentIndex = ref<number>(0);
 
 const renderDate = computed(() => {
-  if (currentIndex.value === 0) {
-    return zhaopinPositions.value.date;
-  } else if (currentIndex.value === 1) {
-    return bossPositions.value.date;
-  }
-  return "";
+  return (
+    positions.value[supportedPlatforms[currentIndex.value].type]?.date || ""
+  );
 });
 
 function handleChange(e: any) {

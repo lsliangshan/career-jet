@@ -1,13 +1,12 @@
 import { requestDailyPositions } from "@/request";
 import { SupportedPlatform } from "@/types";
 import { defineStore } from "pinia";
-import { onMounted, ref } from "vue";
+import { onBeforeMount, onMounted, ref } from "vue";
 import { useProfileStore } from "./profile";
 import { storeToRefs } from "pinia";
+import { supportedPlatforms } from "@/config/config";
 
-const ZHAOPIN_POSITIONS_KEY = "zhaopinPositions";
-const BOSS_POSITIONS_KEY = "bossPositions";
-
+const POSITIONS_KEY = "positions";
 export interface PositionItem {
   job: string;
   city: string;
@@ -16,23 +15,45 @@ export interface PositionItem {
 }
 
 export const usePositionStore = defineStore("position", () => {
-  const zhaopinPositions = ref<PositionItem>({
-    job: "",
-    city: "",
-    date: "",
-    list: [],
-  });
-  const bossPositions = ref<PositionItem>({
-    job: "",
-    city: "",
-    date: "",
-    list: [],
-  });
+  const positions = ref<{
+    [key: string]: PositionItem;
+  }>({});
+
+  // const zhaopinPositions = ref<PositionItem>({
+  //   job: "",
+  //   city: "",
+  //   date: "",
+  //   list: [],
+  // });
+  // const bossPositions = ref<PositionItem>({
+  //   job: "",
+  //   city: "",
+  //   date: "",
+  //   list: [],
+  // });
 
   const profileStore = useProfileStore();
   const { followedPosition, followedCity } = storeToRefs(profileStore);
 
   const date = ref(new Date().toLocaleDateString("zh-CN").replaceAll("/", "-"));
+
+  onBeforeMount(() => {
+    const localPositions = uni.getStorageSync(POSITIONS_KEY);
+    if (localPositions) {
+      positions.value = localPositions;
+    } else {
+      for (const platform of supportedPlatforms) {
+        positions.value[platform.type] = {
+          job: "",
+          city: "",
+          date: "",
+          list: [],
+        };
+      }
+
+      uni.setStorageSync(POSITIONS_KEY, positions.value);
+    }
+  });
 
   onMounted(async () => {
     const d = new Date();
@@ -40,42 +61,36 @@ export const usePositionStore = defineStore("position", () => {
     const day = `${d.getDate()}`.padStart(2, "0");
     date.value = `${d.getFullYear()}-${month}-${day}`;
 
-    const localZhaopinPositions = uni.getStorageSync(ZHAOPIN_POSITIONS_KEY);
-    if (localZhaopinPositions) {
-      zhaopinPositions.value = localZhaopinPositions;
-    }
-    const localBossPositions = uni.getStorageSync(BOSS_POSITIONS_KEY);
-    if (localBossPositions) {
-      bossPositions.value = localBossPositions;
-    }
-
     await getPositions();
   });
 
-  function getZhaopinPositions(refresh: boolean = false) {
+  function getPositionsByType(params: {
+    type: SupportedPlatform;
+    refresh?: boolean;
+  }) {
     return new Promise((resolve) => {
       if (
-        zhaopinPositions.value.date === date.value &&
-        zhaopinPositions.value.list.length > 0 &&
-        !refresh
+        positions.value[params.type]?.date === date.value &&
+        positions.value[params.type]?.list.length > 0 &&
+        !params.refresh
       ) {
         resolve({
           code: 1000,
           message: "没有更新",
           data: {
-            list: zhaopinPositions.value.list,
+            list: positions.value[params.type].list,
           },
         });
         return;
       }
 
       requestDailyPositions({
-        type: SupportedPlatform.ZHAOPIN,
+        type: params.type,
         job: followedPosition.value,
         city: followedCity.value,
       }).then((res: any) => {
         if (res.code === 200) {
-          setZhaopinPositions(res.data.list);
+          setPositionsByType({ type: params.type, positions: res.data.list });
           resolve({
             code: 200,
             message: "更新成功",
@@ -95,78 +110,48 @@ export const usePositionStore = defineStore("position", () => {
       });
     });
   }
-  function getBossPositions() {
-    return new Promise((resolve) => {
-      if (
-        bossPositions.value.date === date.value &&
-        bossPositions.value.list.length > 0
-      ) {
-        resolve(true);
-      }
-
-      requestDailyPositions({
-        type: SupportedPlatform.BOSS,
-        job: followedPosition.value,
-        city: followedCity.value,
-      }).then((res: any) => {
-        if (res.code === 200) {
-          console.log(">>>>>>>......... 2", res.data.list);
-          setBossPositions(res.data.list);
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      });
-    });
-  }
 
   function getPositions() {
-    return Promise.all([getZhaopinPositions()]);
+    return Promise.all([
+      getPositionsByType({ type: SupportedPlatform.ZHAOPIN }),
+    ]);
     // return Promise.all([getZhaopinPositions(), getBossPositions()]);
   }
 
-  function setZhaopinPositions(positions: any[]) {
-    uni.showToast({
-      title: date.value,
-      icon: "none",
-    });
-    zhaopinPositions.value = {
+  function setPositionsByType(params: {
+    type: SupportedPlatform;
+    positions: any[];
+  }) {
+    positions.value[params.type] = {
       job: followedPosition.value,
       city: followedCity.value,
       date: date.value,
-      list: positions,
+      list: params.positions,
     };
-    uni.setStorageSync(ZHAOPIN_POSITIONS_KEY, zhaopinPositions.value);
-  }
-  function setBossPositions(positions: any[]) {
-    bossPositions.value = {
-      job: followedPosition.value,
-      city: followedCity.value,
-      date: date.value,
-      list: positions,
-    };
-    uni.setStorageSync(BOSS_POSITIONS_KEY, bossPositions.value);
+    uni.setStorageSync(POSITIONS_KEY, positions.value);
   }
 
-  function getPositionDetail(number: string, type: SupportedPlatform) {
-    if (type === SupportedPlatform.ZHAOPIN) {
-      return zhaopinPositions.value.list.find(
-        (item: any) => item.number === number
-      );
-    } else if (type === SupportedPlatform.BOSS) {
-      return bossPositions.value.list.find(
-        (item: any) => item.number === number
-      );
-    }
-    return null;
+  function getPositionDetail(params: {
+    type: SupportedPlatform;
+    number: string;
+  }) {
+    return positions.value[params.type].list.find(
+      (item: any) => item.number === params.number
+    );
+  }
+
+  function updateDate() {
+    const d = new Date();
+    const month = `${d.getMonth() + 1}`.padStart(2, "0");
+    const day = `${d.getDate()}`.padStart(2, "0");
+    date.value = `${d.getFullYear()}-${month}-${day}`;
   }
 
   return {
-    zhaopinPositions,
-    bossPositions,
-    getZhaopinPositions,
-    setZhaopinPositions,
-    setBossPositions,
+    positions,
+    updateDate,
+    getPositionsByType,
+    setPositionsByType,
     getPositionDetail,
   };
 });

@@ -1,8 +1,11 @@
 import { SupportedPlatform } from "@/types";
 
-// const baseUrl = "http://10.2.6.210:4000";
-const baseUrl = "http://192.168.1.3:4000";
+const baseUrl = "http://10.2.6.210:4000";
+// const baseUrl = "http://192.168.1.3:4000";
 
+/**
+ * 第三方登录，获取验证码
+ */
 export function requestThirdPartSmsCode(params: {
   phonenum?: string;
   type: SupportedPlatform | string;
@@ -29,6 +32,9 @@ export function requestThirdPartSmsCode(params: {
   });
 }
 
+/**
+ * 第三方登录
+ */
 export function requestThirdPartLogin(params: {
   type: SupportedPlatform | string;
   sessionId: string;
@@ -57,6 +63,9 @@ export function requestThirdPartLogin(params: {
   });
 }
 
+/**
+ * 获取每日职位
+ */
 export function requestDailyPositions(params: {
   type: SupportedPlatform | string;
   job: string;
@@ -85,6 +94,9 @@ export function requestDailyPositions(params: {
   });
 }
 
+/**
+ * 验证登录状态
+ */
 export function requestValidateLoginStatus(params: {
   type: SupportedPlatform | string;
   cookies: any[];
@@ -96,6 +108,37 @@ export function requestValidateLoginStatus(params: {
       data: {
         cookies: params.cookies,
         type: params.type,
+      },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (err) => {
+        resolve({
+          code: 1000,
+          message: err.errMsg,
+          data: {},
+        });
+      },
+    });
+  });
+}
+
+/**
+ * 投递职位
+ */
+export function requestDeliverPosition(params: {
+  type: SupportedPlatform | string;
+  cookies: any[];
+  numbers: string[];
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/crawlerjet/deliver`,
+      method: "POST",
+      data: {
+        cookies: params.cookies,
+        type: params.type,
+        numbers: params.numbers,
       },
       success: (res) => {
         resolve(res.data);

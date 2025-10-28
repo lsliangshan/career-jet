@@ -106,7 +106,7 @@
 <script setup lang="ts">
 import { onLoad } from "@dcloudio/uni-app";
 import { ThirdPartLoginType } from "../index/stores/tlogin";
-import { computed, getCurrentInstance, ref } from "vue";
+import { computed, inject, ref } from "vue";
 import { useTLoginStore } from "../index/stores/tlogin";
 import { requestThirdPartLogin, requestThirdPartSmsCode } from "@/request";
 import { storeToRefs } from "pinia";
@@ -116,8 +116,7 @@ const loginType = ref(ThirdPartLoginType.ZHAOPIN);
 const tLoginStore = useTLoginStore();
 const { customLoginInfo } = storeToRefs(tLoginStore);
 
-const instance = getCurrentInstance()?.proxy as any;
-const eventChannel = instance?.getOpenerEventChannel();
+const eventChannel = inject("eventChannel") as any;
 
 const sessionId = ref("");
 

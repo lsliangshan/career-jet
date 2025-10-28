@@ -74,15 +74,10 @@ const isRefreshing = ref(false);
 const successTip = ref("职位列表已更新");
 
 const positionStore = usePositionStore();
-const { zhaopinPositions, bossPositions } = storeToRefs(positionStore);
+const { positions } = storeToRefs(positionStore);
 
 const renderPositions = computed(() => {
-  if (props.type === SupportedPlatform.ZHAOPIN) {
-    return zhaopinPositions.value.list;
-  } else if (props.type === SupportedPlatform.BOSS) {
-    return bossPositions.value.list;
-  }
-  return [];
+  return positions.value[props.type]?.list || [];
 });
 
 watch(
@@ -102,7 +97,7 @@ watch(
     immediate: true,
   }
 );
-console.log(">>>>>>>>>", uni.getStorageInfoSync());
+
 // 自动刷新
 async function doAutoRefresh() {
   refresherrefresh();
@@ -113,15 +108,22 @@ const refresherrefresh = async () => {
   if (isRefreshing.value) {
     return;
   }
+
+  // 更新日期
+  positionStore.updateDate();
+
   isRefreshing.value = true;
   refresherTriggered.value = true;
 
-  const result = await positionStore.getZhaopinPositions(true);
+  const result = await positionStore.getPositionsByType({
+    type: props.type,
+    refresh: true,
+  });
 
   if (result.code === 200) {
     successTip.value = `今日已更新 ${result.data.list.length} 个职位`;
   } else {
-    successTip.value = "已是最新职位";
+    successTip.value = "无更新职位";
   }
 
   nextTick(() => {

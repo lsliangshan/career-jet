@@ -50,7 +50,7 @@ import { SupportedPlatform } from "@/types";
 import { usePositionStore } from "../../stores/position";
 import { storeToRefs } from "pinia";
 import { computed, nextTick, ref, watch } from "vue";
-import PositionCard from "./position-card.vue";
+import PositionCard from "../../components/position-card.vue";
 import RefresherSuccess from "@/components/RefresherSuccess.vue";
 import { supportedPlatforms } from "@/config/config";
 
@@ -100,7 +100,7 @@ watch(
 
 // 自动刷新
 async function doAutoRefresh() {
-  refresherrefresh();
+  // refresherrefresh();
 }
 
 // 下拉刷新

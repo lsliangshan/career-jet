@@ -3,7 +3,9 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"renderer": "skyline",
+				"componentFramework": "glass-easel"
 			}
 		},
 		{

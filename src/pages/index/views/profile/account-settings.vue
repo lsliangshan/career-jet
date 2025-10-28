@@ -2,7 +2,10 @@
   <view>
     <view class="w-full h-[64rpx] mb-[12rpx] flex flex-row items-center">
       <text
-        class="text-[24rpx] text-[#888] text-shadow-[0_0_10rpx_rgba(255,255,255,0.1)]"
+        class="text-[24rpx] text-shadow-[0_0_10rpx_rgba(255,255,255,0.1)]"
+        :style="{
+          color: ThemeColors.text.label,
+        }"
         >账号管理</text
       >
     </view>
@@ -11,19 +14,28 @@
       :key="platform.type"
     >
       <view
-        class="w-full h-[1rpx] bg-[#fff] flex flex-row items-center justify-center"
+        class="w-full h-[1rpx] flex flex-row items-center justify-center"
+        :style="{
+          backgroundColor: ThemeColors.bgCard,
+        }"
         v-if="index != 0"
       >
         <view
-          class="h-full bg-[#f8f8f8]"
-          :style="{ width: `calc(100% - 48rpx)` }"
+          class="h-full"
+          :style="{
+            width: `calc(100% - 48rpx)`,
+            backgroundColor: ThemeColors.bg,
+          }"
         ></view>
       </view>
 
       <view class="w-full rounded-[8rpx] overflow-hidden flex flex-col">
         <view class="flex flex-row items-center">
           <view
-            class="h-[100rpx] w-full pl-[24rpx] pr-[24rpx] box-border bg-[#fff] active:bg-[#fafafa] flex flex-row items-center justify-between"
+            class="h-[100rpx] w-full pl-[24rpx] pr-[24rpx] box-border active:bg-[#fafafa] flex flex-row items-center justify-between"
+            :style="{
+              backgroundColor: ThemeColors.bgCard,
+            }"
             @click="handleZhaopinLogin"
           >
             <view class="flex flex-row items-center">
@@ -31,14 +43,26 @@
                 class="w-[30rpx] h-[30rpx] mr-[12rpx]"
                 :src="platform.icon"
               ></image>
-              <text class="text-[28rpx] text-[#000]">{{ platform.label }}</text>
+              <text
+                class="text-[28rpx]"
+                :style="{
+                  color: ThemeColors.text.title,
+                }"
+                >{{ platform.label }}</text
+              >
             </view>
             <view
               class="h-full shrink-0 flex flex-row items-center justify-center"
             >
-              <text class="text-[28rpx] text-[#888] mr-[12rpx]">{{
-                renderLoginInfo(platform.type)?.phonenum || "去登录"
-              }}</text>
+              <text
+                class="text-[28rpx] mr-[12rpx]"
+                :style="{
+                  color: ThemeColors.text.label,
+                }"
+                >{{
+                  renderLoginInfo(platform.type)?.phonenum || "去登录"
+                }}</text
+              >
               <image
                 class="w-[30rpx] h-[30rpx]"
                 src="@static/icon_arraw_right.png"
@@ -117,7 +141,7 @@
 import { computed, onMounted } from "vue";
 import { useTLoginStore } from "../../stores/tlogin";
 import { storeToRefs } from "pinia";
-import { supportedPlatforms } from "@/config/config";
+import { supportedPlatforms, ThemeColors } from "@/config/config";
 import { SupportedPlatform } from "@/types";
 
 const tLoginStore = useTLoginStore();

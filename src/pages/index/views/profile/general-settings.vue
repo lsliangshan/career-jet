@@ -2,14 +2,20 @@
   <view>
     <view class="w-full h-[64rpx] mb-[12rpx] flex flex-row items-center">
       <text
-        class="text-[24rpx] text-[#888] text-shadow-[0_0_10rpx_rgba(255,255,255,0.1)]"
+        class="text-[24rpx] text-shadow-[0_0_10rpx_rgba(255,255,255,0.1)]"
+        :style="{
+          color: ThemeColors.text.label,
+        }"
         >通用设置</text
       >
     </view>
     <view class="w-full rounded-[8rpx] overflow-hidden flex flex-col">
       <view class="flex flex-row items-center">
         <view
-          class="h-[100rpx] w-full pl-[24rpx] pr-[24rpx] box-border bg-[#fff] active:bg-[#fafafa] flex flex-row items-center justify-between"
+          class="h-[100rpx] w-full pl-[24rpx] pr-[24rpx] box-border active:bg-[#fafafa] flex flex-row items-center justify-between"
+          :style="{
+            backgroundColor: ThemeColors.bgCard,
+          }"
           @click="handleEditFollowedPosition"
         >
           <view class="flex flex-row items-center">
@@ -17,14 +23,24 @@
               class="w-[30rpx] h-[30rpx] mr-[12rpx]"
               src="@static/icon_keyword.png"
             ></image>
-            <text class="text-[28rpx] text-[#000]">关注的职位</text>
+            <text
+              class="text-[28rpx]"
+              :style="{
+                color: ThemeColors.text.title,
+              }"
+              >关注的职位</text
+            >
           </view>
           <view
             class="h-full shrink-0 flex flex-row items-center justify-center"
           >
-            <text class="text-[28rpx] text-[#888] mr-[12rpx]">{{
-              followedPosition
-            }}</text>
+            <text
+              class="text-[28rpx] mr-[12rpx]"
+              :style="{
+                color: ThemeColors.text.label,
+              }"
+              >{{ followedPosition }}</text
+            >
             <image
               class="w-[30rpx] h-[30rpx]"
               src="@static/icon_arraw_right.png"
@@ -34,17 +50,26 @@
       </view>
 
       <view
-        class="w-full h-[1rpx] bg-[#fff] flex flex-row items-center justify-center"
+        class="w-full h-[1rpx] flex flex-row items-center justify-center"
+        :style="{
+          backgroundColor: ThemeColors.bgCard,
+        }"
       >
         <view
-          class="h-full bg-[#f8f8f8]"
-          :style="{ width: `calc(100% - 48rpx)` }"
+          class="h-full"
+          :style="{
+            width: `calc(100% - 48rpx)`,
+            backgroundColor: ThemeColors.bg,
+          }"
         ></view>
       </view>
 
       <view class="flex flex-row items-center">
         <view
-          class="h-[100rpx] w-full pl-[24rpx] pr-[24rpx] box-border bg-[#fff] active:bg-[#fafafa] flex flex-row items-center justify-between"
+          class="h-[100rpx] w-full pl-[24rpx] pr-[24rpx] box-border active:bg-[#fafafa] flex flex-row items-center justify-between"
+          :style="{
+            backgroundColor: ThemeColors.bgCard,
+          }"
           @click="handleEditFollowedCity"
         >
           <view class="flex flex-row items-center">
@@ -52,14 +77,24 @@
               class="w-[36rpx] h-[36rpx] mr-[12rpx]"
               src="@static/icon_city.png"
             ></image>
-            <text class="text-[28rpx] text-[#000]">关注的城市</text>
+            <text
+              class="text-[28rpx]"
+              :style="{
+                color: ThemeColors.text.title,
+              }"
+              >关注的城市</text
+            >
           </view>
           <view
             class="h-full shrink-0 flex flex-row items-center justify-center"
           >
-            <text class="text-[28rpx] text-[#888] mr-[12rpx]">{{
-              followedCity
-            }}</text>
+            <text
+              class="text-[28rpx] mr-[12rpx]"
+              :style="{
+                color: ThemeColors.text.label,
+              }"
+              >{{ followedCity }}</text
+            >
             <image
               class="w-[30rpx] h-[30rpx]"
               src="@static/icon_arraw_right.png"
@@ -74,6 +109,7 @@
 <script setup lang="ts">
 import { useProfileStore } from "../../stores/profile";
 import { storeToRefs } from "pinia";
+import { ThemeColors } from "@/config/config";
 
 const profileStore = useProfileStore();
 const { followedPosition, followedCity } = storeToRefs(profileStore);

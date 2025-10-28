@@ -337,6 +337,17 @@ async function handleApply() {
     type: type.value,
     numbers: [number.value],
   });
+  if (res.code === 200) {
+    uni.showToast({
+      title: "投递成功",
+      icon: "success",
+    });
+  } else {
+    uni.showToast({
+      title: res.message,
+      icon: "none",
+    });
+  }
   isDeliverLoading.value = false;
 }
 </script>

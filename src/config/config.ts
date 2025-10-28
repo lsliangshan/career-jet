@@ -37,3 +37,31 @@ export const supportedPlatforms = [
   //   icon: "https://img09.zhaopin.com/2012/other/mobile/clive/resources/imgs/boss.jpg",
   // },
 ];
+
+export const ThemeColors = {
+  primary: "#2B5AED",
+  primary100: "rgba(43, 90, 237, 0.1)",
+  primary200: "rgba(43, 90, 237, 0.2)",
+  primary300: "rgba(43, 90, 237, 0.3)",
+  primary400: "rgba(43, 90, 237, 0.4)",
+  primary500: "rgba(43, 90, 237, 0.5)",
+  primary600: "rgba(43, 90, 237, 0.6)",
+  primary700: "rgba(43, 90, 237, 0.7)",
+  primary800: "rgba(43, 90, 237, 0.8)",
+  primary900: "rgba(43, 90, 237, 0.9)",
+  accent: "#00CC88",
+  success: "#00CC88",
+  warning: "#FF9500",
+  error: "#FF3B30",
+  text: {
+    title: "#1A1A1A",
+    body: "#666666",
+    label: "#999999",
+    disabled: "#C8C8C8",
+    placeholder: "#C8C8C8",
+    white: "#FFFFFF",
+  },
+  border: "#EEEEEE",
+  bgCard: "#FFFFFF",
+  bg: "#F5F5F5",
+};

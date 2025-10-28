@@ -28,10 +28,12 @@ export const supportedPlatforms = [
     type: SupportedPlatform.ZHAOPIN,
     name: "zhaopin",
     label: "智联招聘",
+    icon: "https://img09.zhaopin.com/2012/other/mobile/clive/resources/imgs/zhaopin.png",
   },
-  {
-    type: SupportedPlatform.BOSS,
-    name: "boss",
-    label: "BOSS直聘",
-  },
+  // {
+  //   type: SupportedPlatform.BOSS,
+  //   name: "boss",
+  //   label: "BOSS直聘",
+  //   icon: "https://img09.zhaopin.com/2012/other/mobile/clive/resources/imgs/boss.jpg",
+  // },
 ];

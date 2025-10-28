@@ -3,7 +3,7 @@
     <CustomHeader show-back :title="renderTitle" />
 
     <Layout hasHeader>
-      <template v-if="loginType === ThirdPartLoginType.BOSS">
+      <template v-if="loginType === SupportedPlatform.BOSS">
         <QrcodeLogin :type="loginType" />
       </template>
       <template v-else>
@@ -15,31 +15,31 @@
 
 <script setup lang="ts">
 import { onLoad } from "@dcloudio/uni-app";
-import { ThirdPartLoginType } from "../index/stores/tlogin";
 import { computed, getCurrentInstance, provide, ref } from "vue";
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import QrcodeLogin from "./qrcode-login.vue";
 import SmscodeLogin from "./smscode-login.vue";
+import { SupportedPlatform } from "@/types";
 
 const instance = getCurrentInstance()?.proxy as any;
 const eventChannel = instance?.getOpenerEventChannel();
 
 provide("eventChannel", eventChannel);
 
-const loginType = ref(ThirdPartLoginType.ZHAOPIN);
+const loginType = ref(SupportedPlatform.ZHAOPIN);
 
 const renderTitle = computed(() => {
-  if (loginType.value === ThirdPartLoginType.ZHAOPIN) {
+  if (loginType.value === SupportedPlatform.ZHAOPIN) {
     return "智联招聘登录";
-  } else if (loginType.value === ThirdPartLoginType.BOSS) {
+  } else if (loginType.value === SupportedPlatform.BOSS) {
     return "Boss直聘登录";
   }
   return "";
 });
 
 onLoad((options) => {
-  const type = options?.type as ThirdPartLoginType | undefined;
+  const type = options?.type as SupportedPlatform | undefined;
   if (!type) {
     uni.navigateBack();
     return;

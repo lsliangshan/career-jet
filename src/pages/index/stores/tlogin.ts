@@ -1,12 +1,7 @@
 import { requestThirdPartSmsCode, requestValidateLoginStatus } from "@/request";
+import { SupportedPlatform } from "@/types";
 import { defineStore } from "pinia";
 import { onMounted, ref } from "vue";
-
-export enum ThirdPartLoginType {
-  ZHAOPIN = "zhaopin",
-  BOSS = "boss",
-}
-
 export interface CookieItem {
   name: string;
   value: string;
@@ -17,7 +12,7 @@ export interface CookieItem {
 }
 
 export interface CustomLoginInfo {
-  type: ThirdPartLoginType;
+  type: SupportedPlatform;
   phonenum: string;
   cookie: CookieItem[];
   expireAt: number;
@@ -26,15 +21,15 @@ export interface CustomLoginInfo {
 const CUSTOM_LOGIN_INFO_KEY = "customLoginInfo";
 
 export const useTLoginStore = defineStore("tlogin", () => {
-  const customLoginInfo = ref<Record<ThirdPartLoginType, CustomLoginInfo>>({
-    [ThirdPartLoginType.ZHAOPIN]: {
-      type: ThirdPartLoginType.ZHAOPIN,
+  const customLoginInfo = ref<Record<SupportedPlatform, CustomLoginInfo>>({
+    [SupportedPlatform.ZHAOPIN]: {
+      type: SupportedPlatform.ZHAOPIN,
       phonenum: "",
       cookie: [],
       expireAt: 0,
     },
-    [ThirdPartLoginType.BOSS]: {
-      type: ThirdPartLoginType.BOSS,
+    [SupportedPlatform.BOSS]: {
+      type: SupportedPlatform.BOSS,
       phonenum: "",
       cookie: [],
       expireAt: 0,
@@ -48,37 +43,37 @@ export const useTLoginStore = defineStore("tlogin", () => {
     }
   });
 
-  function getCustomLoginInfo(type: ThirdPartLoginType) {
+  function getCustomLoginInfo(type: SupportedPlatform) {
     return customLoginInfo.value[type];
   }
 
   function setCustomLoginInfo(params: {
-    type: ThirdPartLoginType;
+    type: SupportedPlatform;
     phonenum: string;
     cookie: CookieItem[];
   }) {
-    if (params.type === ThirdPartLoginType.ZHAOPIN) {
+    if (params.type === SupportedPlatform.ZHAOPIN) {
       const cookieAt = params.cookie.find((item) => item.name === "at");
       let expireAt = -1;
       if (cookieAt) {
         expireAt = cookieAt.expires * 1000;
       }
-      customLoginInfo.value[ThirdPartLoginType.ZHAOPIN] = {
-        ...customLoginInfo.value[ThirdPartLoginType.ZHAOPIN],
+      customLoginInfo.value[SupportedPlatform.ZHAOPIN] = {
+        ...customLoginInfo.value[SupportedPlatform.ZHAOPIN],
         ...params,
         expireAt,
       };
 
       uni.setStorageSync(CUSTOM_LOGIN_INFO_KEY, customLoginInfo.value);
-    } else if (params.type === ThirdPartLoginType.BOSS) {
-      customLoginInfo.value[ThirdPartLoginType.BOSS] = {
-        ...customLoginInfo.value[ThirdPartLoginType.BOSS],
+    } else if (params.type === SupportedPlatform.BOSS) {
+      customLoginInfo.value[SupportedPlatform.BOSS] = {
+        ...customLoginInfo.value[SupportedPlatform.BOSS],
         ...params,
       };
     }
   }
 
-  function removeCustomLoginInfo(type: ThirdPartLoginType) {
+  function removeCustomLoginInfo(type: SupportedPlatform) {
     customLoginInfo.value[type] = {
       type: type,
       phonenum: "",
@@ -88,7 +83,7 @@ export const useTLoginStore = defineStore("tlogin", () => {
     uni.setStorageSync(CUSTOM_LOGIN_INFO_KEY, customLoginInfo.value);
   }
 
-  async function validateLoginStatus(type: ThirdPartLoginType) {
+  async function validateLoginStatus(type: SupportedPlatform) {
     return new Promise(async (resolve) => {
       if (
         customLoginInfo.value[type].expireAt &&

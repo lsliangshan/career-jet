@@ -105,13 +105,13 @@
 
 <script setup lang="ts">
 import { onLoad } from "@dcloudio/uni-app";
-import { ThirdPartLoginType } from "../index/stores/tlogin";
 import { computed, inject, ref } from "vue";
 import { useTLoginStore } from "../index/stores/tlogin";
 import { requestThirdPartLogin, requestThirdPartSmsCode } from "@/request";
 import { storeToRefs } from "pinia";
+import { SupportedPlatform } from "@/types";
 
-const loginType = ref(ThirdPartLoginType.ZHAOPIN);
+const loginType = ref(SupportedPlatform.ZHAOPIN);
 
 const tLoginStore = useTLoginStore();
 const { customLoginInfo } = storeToRefs(tLoginStore);
@@ -149,7 +149,7 @@ const canLogin = computed(() => {
 });
 
 onLoad((options) => {
-  const type = options?.type as ThirdPartLoginType | undefined;
+  const type = options?.type as SupportedPlatform | undefined;
   if (!type) {
     uni.navigateBack();
     return;

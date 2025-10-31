@@ -154,3 +154,21 @@ export function requestDeliverPosition(params: {
     });
   });
 }
+
+/**
+ * 投递职位
+ */
+export function getWxUserInfo(code: string): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `https://wf.qyflows.com/webhook/get-user-info?code=${code}`,
+      method: "GET",
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve(null);
+      },
+    });
+  });
+}

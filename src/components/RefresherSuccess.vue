@@ -54,13 +54,14 @@ watch(
   top: -100rpx;
   left: 50%;
   z-index: 999;
-  margin-left: -130rpx;
+  /* margin-left: -130rpx; */
   color: #fff;
+  transform: translate(-50%, 0);
   transition: transform 0.3s ease-out;
 }
 
 .home-refresher-success--animation {
-  transform: translateY(164rpx);
+  transform: translate(-50%, 164rpx);
 }
 
 @keyframes refresher-success {

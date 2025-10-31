@@ -52,10 +52,10 @@
 <script setup lang="ts">
 import { requestThirdPartSmsCode } from "@/request";
 import { onMounted, ref } from "vue";
-import { ThirdPartLoginType } from "../index/stores/tlogin";
+import { SupportedPlatform } from "@/types";
 
 interface Props {
-  type: ThirdPartLoginType;
+  type: SupportedPlatform;
 }
 
 const props = defineProps<Props>();

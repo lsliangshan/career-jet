@@ -179,8 +179,8 @@ const isBossLoggedIn = computed(() => {
 
 onMounted(async () => {
   // await Promise.all([
-  //   tLoginStore.validateLoginStatus(ThirdPartLoginType.ZHAOPIN),
-  //   tLoginStore.validateLoginStatus(ThirdPartLoginType.BOSS),
+  //   tLoginStore.validateLoginStatus(SupportedPlatform.ZHAOPIN),
+  //   tLoginStore.validateLoginStatus(SupportedPlatform.BOSS),
   // ]);
 });
 

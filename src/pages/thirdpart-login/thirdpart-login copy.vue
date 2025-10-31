@@ -3,7 +3,7 @@
     <CustomHeader show-back :title="renderTitle" />
 
     <Layout hasHeader>
-      <template v-if="loginType === ThirdPartLoginType.BOSS">
+      <template v-if="loginType === SupportedPlatform.BOSS">
         <image
           class="w-[300rpx] h-[300rpx]"
           :show-menu-by-longpress="true"
@@ -134,7 +134,7 @@
 
 <script setup lang="ts">
 import { onLoad } from "@dcloudio/uni-app";
-import { ThirdPartLoginType } from "../index/stores/tlogin";
+import { SupportedPlatform } from "@/types";
 import { computed, getCurrentInstance, ref } from "vue";
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
@@ -142,7 +142,7 @@ import { useTLoginStore } from "../index/stores/tlogin";
 import { requestThirdPartLogin, requestThirdPartSmsCode } from "@/request";
 import { storeToRefs } from "pinia";
 
-const loginType = ref(ThirdPartLoginType.ZHAOPIN);
+const loginType = ref(SupportedPlatform.ZHAOPIN);
 
 const tLoginStore = useTLoginStore();
 const { customLoginInfo } = storeToRefs(tLoginStore);
@@ -173,9 +173,9 @@ const maxVerifyCodeTimerCount = 5;
 const verifyCodeTimerCount = ref(maxVerifyCodeTimerCount);
 
 const renderTitle = computed(() => {
-  if (loginType.value === ThirdPartLoginType.ZHAOPIN) {
+  if (loginType.value === SupportedPlatform.ZHAOPIN) {
     return "智联招聘登录";
-  } else if (loginType.value === ThirdPartLoginType.BOSS) {
+  } else if (loginType.value === SupportedPlatform.BOSS) {
     return "Boss直聘登录";
   }
   return "";
@@ -190,7 +190,7 @@ const canLogin = computed(() => {
 });
 
 onLoad((options) => {
-  const type = options?.type as ThirdPartLoginType | undefined;
+  const type = options?.type as SupportedPlatform | undefined;
   if (!type) {
     uni.navigateBack();
     return;

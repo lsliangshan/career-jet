@@ -4,6 +4,10 @@
 
     <Layout hasHeader>
       <scroll-view class="w-full h-full" scroll-y>
+        <BaseInfo />
+
+        <view class="w-full h-[24rpx]"></view>
+
         <view class="w-full p-[24rpx] box-border">
           <GeneralSettings />
 
@@ -13,12 +17,13 @@
 
           <view
             class="w-full h-[64rpx] mt-[32rpx] flex flex-row items-center justify-center"
+            v-if="isLoggedIn"
           >
             <view
-              class="h-full px-[24rpx] box-border rounded-[16rpx] overflow-hidden bg-[#2B5AED] active:bg-[#234FCD] flex flex-row items-center justify-center"
-              @click="handleLogin"
+              class="h-full px-[24rpx] box-border rounded-[16rpx] overflow-hidden bg-[#ff3333] active:bg-[#e62e2e] flex flex-row items-center justify-center"
+              @click="handleLogout"
             >
-              <text class="text-[28rpx] text-[#fff]">登录</text>
+              <text class="text-[28rpx] text-[#fff]">退出登录</text>
             </view>
           </view>
         </view>
@@ -32,22 +37,15 @@ import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import GeneralSettings from "./general-settings.vue";
 import AccountSettings from "./account-settings.vue";
-import { getWxUserInfo } from "@/request";
+import BaseInfo from "./base-info.vue";
+import { useUserStore } from "../../stores/user";
+import { storeToRefs } from "pinia";
 
-function handleLogin() {
-  uni.login({
-    provider: "weixin",
-    onlyAuthorize: true,
-    success: async (res) => {
-      if (res.errMsg == "login:ok") {
-        const result = await getWxUserInfo(res.code);
-        console.log(">>>>>>>>> 登录成功: ", result);
-      }
-    },
-    fail: (err) => {
-      console.log(err);
-    },
-  });
+const userStore = useUserStore();
+const { isLoggedIn } = storeToRefs(userStore);
+
+function handleLogout() {
+  userStore.logout();
 }
 </script>
 

@@ -172,3 +172,45 @@ export function getWxUserInfo(code: string): Promise<any> {
     });
   });
 }
+
+/**
+ * 登录
+ */
+export function requestLogin(code: string): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `https://wf.qyflows.com/webhook/crawlerjet/login`,
+      method: "POST",
+      data: {
+        code: code,
+      },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 退出登录
+ */
+export function requestLogout(id: string): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `https://wf.qyflows.com/webhook/crawlerjet/logout`,
+      method: "POST",
+      data: {
+        id: id
+      },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}

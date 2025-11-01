@@ -172,7 +172,12 @@ export const useDeliverStore = defineStore("deliver", () => {
     );
 
     deliverRecords.value[params.type][todayDate] = ps;
-    uni.setStorageSync(DELIVER_RECORDS_KEY, deliverRecords.value);
+    
+    uni.setStorageSync(DELIVER_RECORDS_KEY, Object.fromEntries(
+      Object.entries(deliverRecords.value[params.type] || {}).sort(
+        ([keyA], [keyB]) => keyB.localeCompare(keyA)
+      )
+    ));
   }
 
   function isDelivered(params: { type: SupportedPlatform; number: string }) {

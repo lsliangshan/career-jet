@@ -96,10 +96,10 @@
 <script setup lang="ts">
 import { SupportedPlatform } from "@/types";
 import { storeToRefs } from "pinia";
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, nextTick, ref } from "vue";
 import PositionCard from "../../components/position-card.vue";
 import RefresherSuccess from "@/components/RefresherSuccess.vue";
-import { supportedPlatforms, ThemeColors } from "@/config/config";
+import { ThemeColors } from "@/config/config";
 import { useDeliverStore } from "../../stores/deliver";
 import Empty from "@/components/empty/empty.vue";
 
@@ -116,8 +116,6 @@ const refresherTriggered = ref(false);
 
 const refresherSuccessVisible = ref(false);
 
-const isInitialed = ref(false);
-
 const isRefreshing = ref(false);
 
 const successTip = ref("职位列表已更新");
@@ -125,9 +123,12 @@ const successTip = ref("职位列表已更新");
 const deliverStore = useDeliverStore();
 const { deliverRecords } = storeToRefs(deliverStore);
 
-const renderPositions = computed(() => {
-  console.log(">>>>>>> deliverRecords22: ", deliverRecords.value[props.type]);
-  return deliverRecords.value[props.type] || {};
+const renderPositions = computed<{ [key: string]: any }>(() => {
+  return Object.fromEntries(
+    Object.entries(deliverRecords.value[props.type] || {}).sort(
+      ([keyA], [keyB]) => keyB.localeCompare(keyA)
+    )
+  );
 });
 
 // 自动刷新
@@ -143,17 +144,6 @@ const refresherrefresh = async () => {
 
   isRefreshing.value = true;
   refresherTriggered.value = true;
-
-  // const result = await positionStore.getPositionsByType({
-  //   type: props.type,
-  //   refresh: true,
-  // });
-
-  // if (result.code === 200) {
-  //   successTip.value = `今日已更新 ${result.data.list.length} 个职位`;
-  // } else {
-  //   successTip.value = "无更新职位";
-  // }
 
   nextTick(() => {
     const t = setTimeout(() => {

@@ -16,11 +16,11 @@
           <AccountSettings />
 
           <view
-            class="w-full h-[64rpx] mt-[32rpx] flex flex-row items-center justify-center"
+            class="w-full h-[80rpx] mt-[64rpx] flex flex-row items-center justify-center"
             v-if="isLoggedIn"
           >
             <view
-              class="h-full px-[24rpx] box-border rounded-[16rpx] overflow-hidden bg-[#ff3333] active:bg-[#e62e2e] flex flex-row items-center justify-center"
+              class="w-full h-full px-[24rpx] box-border rounded-[8rpx] overflow-hidden bg-[#ff3333] active:bg-[#e62e2e] flex flex-row items-center justify-center"
               @click="handleLogout"
             >
               <text class="text-[28rpx] text-[#fff]">退出登录</text>

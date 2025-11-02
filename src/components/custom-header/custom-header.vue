@@ -1,9 +1,10 @@
 <template>
   <view
-    class="w-full box-border fixed left-0 top-0 z-10 flex flex-row items-center justify-center bg-[#fff]"
+    class="w-full box-border fixed left-0 top-0 z-10 border-b border-[1rpx] flex flex-row items-center justify-center bg-[#fff]"
     :style="{
       height: `calc(88rpx + ${safeTop}px)`,
       paddingTop: `${safeTop}px`,
+      borderColor: ThemeColors.border,
     }"
   >
     <view
@@ -24,6 +25,8 @@
 </template>
 
 <script setup lang="ts">
+import { ThemeColors } from "@/config/config";
+
 interface Props {
   title?: string;
   showBack?: boolean;

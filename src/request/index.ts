@@ -214,3 +214,51 @@ export function requestLogout(id: string): Promise<any> {
     });
   });
 }
+
+/**
+ * 更新用户信息
+ */
+export function requestUpdateUserInfo(params: {
+  id: string;
+  avatar?: string;
+  nickname?: string;
+  gender?: string;
+  phonenum?: string;
+  email?: string;
+  username?: string;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    const requestParams: any = {
+      id: params.id,
+    };
+    if (params.avatar) {
+      requestParams.avatar = params.avatar;
+    }
+    if (params.nickname) {
+      requestParams.nickname = params.nickname;
+    }
+    if (params.gender) {
+      requestParams.gender = params.gender;
+    }
+    if (params.phonenum) {
+      requestParams.phonenum = params.phonenum;
+    }
+    if (params.email) {
+      requestParams.email = params.email;
+    }
+    if (params.username) {
+      requestParams.username = params.username;
+    }
+    uni.request({
+      url: `https://wf.qyflows.com/webhook/crawlerjet/update-user-info`,
+      method: "POST",
+      data: requestParams,
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}

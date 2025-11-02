@@ -61,7 +61,7 @@ export const ThemeColors = {
     placeholder: "#C8C8C8",
     white: "#FFFFFF",
   },
-  border: "#EEEEEE",
+  border: "#f8f8f8",
   bgCard: "#FFFFFF",
   bg: "#F5F5F5",
 };

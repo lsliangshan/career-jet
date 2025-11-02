@@ -10,11 +10,9 @@
     >
       <image
         class="w-full h-full"
-        :src="
-          loginInfo?.avatar ||
-          'https://img.liangqy.com/crawlerjet/img/default_avatar_male.png'
-        "
+        :src="renderAvatar"
         mode="aspectFill"
+        @click.stop="previewImage"
       ></image>
     </view>
 
@@ -86,12 +84,19 @@
 import { ThemeColors } from "@/config/config";
 import { useUserStore } from "../../stores/user";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 const userStore = useUserStore();
 const { loginInfo, isLoggedIn } = storeToRefs(userStore);
 
 const isLoginLoading = ref(false);
+
+const renderAvatar = computed(() => {
+  return (
+    loginInfo.value?.avatar ||
+    "https://img.liangqy.com/crawlerjet/img/default_avatar_male.png"
+  );
+});
 
 async function handleLogin() {
   if (isLoginLoading.value) {
@@ -117,7 +122,18 @@ async function handleLogin() {
 }
 
 function handleEditProfile() {
-  console.log('>>>>>>>> @click="handleEditProfile"');
+  if (!isLoggedIn.value) {
+    return;
+  }
+  uni.navigateTo({
+    url: "/pages/profile-detail/profile-detail",
+  });
+}
+
+function previewImage() {
+  uni.previewImage({
+    urls: [renderAvatar.value],
+  });
 }
 </script>
 

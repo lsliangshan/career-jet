@@ -1,13 +1,14 @@
 import { supportedPlatforms } from "@/config/config";
-import { requestDeliverPosition } from "@/request";
+import { requestDeliverPosition, requestGetMyDelivered } from "@/request";
 import { SupportedPlatform } from "@/types";
 import { defineStore } from "pinia";
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, onMounted, ref } from "vue";
 import { useTLoginStore } from "./tlogin";
 import { storeToRefs } from "pinia";
 import { usePositionStore } from "./position";
 import { removeDuplicates } from "@/utils";
-import { getTodayDate } from "@/utils/date";
+import { getTodayDate, isBeforeDay, isSameDay } from "@/utils/date";
+import { useUserStore } from "./user";
 
 const DELIVER_RECORDS_KEY = "deliverRecords";
 
@@ -17,6 +18,14 @@ export const useDeliverStore = defineStore("deliver", () => {
 
   const positionStore = usePositionStore();
   const { positions } = storeToRefs(positionStore);
+
+  const userStore = useUserStore();
+  const { loginInfo } = storeToRefs(userStore);
+
+  const pageIndex = ref(1);
+  const pageSize = ref(20);
+  const total = ref(0);
+  const remoteDelivered = ref<Record<SupportedPlatform, any[]>>();
 
   /**
    * deliverRecords: {
@@ -30,32 +39,104 @@ export const useDeliverStore = defineStore("deliver", () => {
    *  }
    * }
    */
-  const deliverRecords = ref<{
-    [key: string]: {
-      [key: string]: any[];
-    };
-  }>({});
+  const deliverRecords = ref<Record<SupportedPlatform, any[]>>();
+  const localDeliverRecords = ref<Record<SupportedPlatform, any[]>>();
 
   onBeforeMount(() => {
-    const localDeliverRecords = uni.getStorageSync(DELIVER_RECORDS_KEY);
-    if (localDeliverRecords) {
-      deliverRecords.value = localDeliverRecords;
+    const localRecords = uni.getStorageSync(DELIVER_RECORDS_KEY);
+    if (localRecords) {
+      localDeliverRecords.value = localRecords || {};
     } else {
       for (const platform of supportedPlatforms) {
-        deliverRecords.value[platform.type] = {};
+        localDeliverRecords.value![platform.type] = [];
       }
-      uni.setStorageSync(DELIVER_RECORDS_KEY, deliverRecords.value);
+      uni.setStorageSync(DELIVER_RECORDS_KEY, localDeliverRecords.value);
     }
   });
 
-  /**
-   * 投递职位
-   * @param params {
-   *   type: SupportedPlatform;
-   *   numbers: string[];
-   * }
-   * @returns
-   */
+  onMounted(() => {
+    initRemoteDelivered();
+    getMyDelivered({
+      platform: SupportedPlatform.ZHAOPIN,
+    });
+  });
+
+  function initRemoteDelivered() {
+    if (!remoteDelivered.value) {
+      remoteDelivered.value = {
+        [SupportedPlatform.ZHAOPIN]: [],
+        [SupportedPlatform.BOSS]: [],
+      };
+    }
+  }
+
+  function mixinDeliveredList(platform: SupportedPlatform) {
+    if (
+      !localDeliverRecords.value ||
+      Object.keys(localDeliverRecords.value!).length === 0 ||
+      !localDeliverRecords.value![platform]
+    ) {
+      return;
+    }
+    for (let i = 0; i < localDeliverRecords.value![platform].length; i++) {
+      const item = localDeliverRecords.value![platform][i];
+      const sameDayIndex = remoteDelivered.value![platform].findIndex(
+        (it: any) => isSameDay(it.time, item.time)
+      );
+
+      if (sameDayIndex > -1) {
+        remoteDelivered.value![platform][sameDayIndex].list.push(item);
+      } else {
+        const index = remoteDelivered.value![platform].findIndex((it: any) =>
+          isBeforeDay(it.time, item.time)
+        );
+        if (index > -1) {
+          remoteDelivered.value![platform].splice(index, 0, item);
+        } else {
+        }
+      }
+    }
+    deliveredList.value = [...deliveredList.value, ...(res.data.list || [])];
+    total.value = res.data.total;
+  }
+
+  function getMyDelivered(params: { platform: SupportedPlatform }) {
+    return new Promise((resolve) => {
+      requestGetMyDelivered({
+        platform: params.platform,
+        userId: loginInfo.value!.id,
+        pageIndex: pageIndex.value,
+        pageSize: pageSize.value,
+      })
+        .then((res: any) => {
+          if (res.code === 200) {
+            if (pageIndex.value === 1) {
+              remoteDelivered.value![params.platform] = res.data.result || [];
+              deliverRecords.value![params.platform] = res.data.result || [];
+            } else {
+              remoteDelivered.value![params.platform].push(
+                ...(res.data.result || [])
+              );
+              deliverRecords.value![params.platform] = {
+                ...(deliverRecords.value![params.platform] || []),
+                ...(res.data.result || []),
+              };
+            }
+            mixinDeliveredList(params.platform);
+
+            console.log(
+              ".>>>>>>>.......remoteDelivered: ",
+              remoteDelivered.value
+            );
+          }
+          resolve(true);
+        })
+        .catch((err) => {
+          resolve(false);
+        });
+    });
+  }
+
   function deliverPositions(params: {
     type: SupportedPlatform;
     numbers: string[];
@@ -172,12 +253,15 @@ export const useDeliverStore = defineStore("deliver", () => {
     );
 
     deliverRecords.value[params.type][todayDate] = ps;
-    
-    uni.setStorageSync(DELIVER_RECORDS_KEY, Object.fromEntries(
-      Object.entries(deliverRecords.value[params.type] || {}).sort(
-        ([keyA], [keyB]) => keyB.localeCompare(keyA)
+
+    uni.setStorageSync(
+      DELIVER_RECORDS_KEY,
+      Object.fromEntries(
+        Object.entries(deliverRecords.value[params.type] || {}).sort(
+          ([keyA], [keyB]) => keyB.localeCompare(keyA)
+        )
       )
-    ));
+    );
   }
 
   function isDelivered(params: { type: SupportedPlatform; number: string }) {
@@ -197,6 +281,7 @@ export const useDeliverStore = defineStore("deliver", () => {
 
   return {
     deliverRecords,
+    remoteDelivered,
     deliverPositions,
     isDelivered,
   };

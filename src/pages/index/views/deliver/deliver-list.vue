@@ -26,11 +26,11 @@
         </view>
       </template>
 
-      <template v-if="Object.keys(renderPositions).length > 0">
+      <template v-if="renderPositions.length > 0">
         <view
           class="w-full"
-          v-for="deliverDate in Object.keys(renderPositions)"
-          :key="deliverDate"
+          v-for="deliver in renderPositions"
+          :key="deliver.time"
         >
           <sticky-header>
             <view class="w-full h-[24rpx]"></view>
@@ -55,7 +55,7 @@
                   :style="{
                     color: ThemeColors.primary,
                   }"
-                  >{{ deliverDate }}</text
+                  >{{ formatDate(deliver.time, "YYYY-MM-DD") }}</text
                 >
               </view>
             </view>
@@ -64,7 +64,7 @@
             <view class="w-full h-[12rpx]"></view>
             <view
               class="w-full px-[24rpx] py-[12rpx] box-border"
-              v-for="position in renderPositions[deliverDate]"
+              v-for="position in deliver.list"
               :key="position.number"
             >
               <PositionCard :info="position" :type="type" />
@@ -102,6 +102,7 @@ import RefresherSuccess from "@/components/RefresherSuccess.vue";
 import { ThemeColors } from "@/config/config";
 import { useDeliverStore } from "../../stores/deliver";
 import Empty from "@/components/empty/empty.vue";
+import { formatDate } from "@/utils/date";
 
 interface Props {
   type: SupportedPlatform;
@@ -121,14 +122,15 @@ const isRefreshing = ref(false);
 const successTip = ref("职位列表已更新");
 
 const deliverStore = useDeliverStore();
-const { deliverRecords } = storeToRefs(deliverStore);
+const { deliverRecords, remoteDelivered } = storeToRefs(deliverStore);
 
 const renderPositions = computed<{ [key: string]: any }>(() => {
-  return Object.fromEntries(
-    Object.entries(deliverRecords.value[props.type] || {}).sort(
-      ([keyA], [keyB]) => keyB.localeCompare(keyA)
-    )
-  );
+  return remoteDelivered.value ? remoteDelivered.value[props.type] : [];
+  // return Object.fromEntries(
+  //   Object.entries(deliverRecords.value[props.type] || {}).sort(
+  //     ([keyA], [keyB]) => keyB.localeCompare(keyA)
+  //   )
+  // );
 });
 
 // 自动刷新

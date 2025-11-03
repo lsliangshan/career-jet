@@ -203,7 +203,7 @@ export function requestLogout(id: string): Promise<any> {
       url: `https://wf.qyflows.com/webhook/crawlerjet/logout`,
       method: "POST",
       data: {
-        id: id
+        id: id,
       },
       success: (res) => {
         resolve(res.data);
@@ -253,6 +253,35 @@ export function requestUpdateUserInfo(params: {
       url: `https://wf.qyflows.com/webhook/crawlerjet/update-user-info`,
       method: "POST",
       data: requestParams,
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 退出登录
+ */
+export function requestGetMyDelivered(params: {
+  platform: SupportedPlatform;
+  userId: string;
+  pageIndex?: number;
+  pageSize?: number;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `https://wf.qyflows.com/webhook/crawlerjet/get-my-delivered`,
+      method: "POST",
+      data: {
+        platform: params.platform,
+        userId: params.userId,
+        pageIndex: params.pageIndex || 1,
+        pageSize: params.pageSize || 20,
+      },
       success: (res) => {
         resolve(res.data);
       },

@@ -7,7 +7,12 @@ import { useTLoginStore } from "./tlogin";
 import { storeToRefs } from "pinia";
 import { usePositionStore } from "./position";
 import { removeDuplicates } from "@/utils";
-import { getTodayDate, isBeforeDay, isSameDay } from "@/utils/date";
+import {
+  getTodayDate,
+  getTodayTimestamp,
+  isBeforeDay,
+  isSameDay,
+} from "@/utils/date";
 import { useUserStore } from "./user";
 
 const DELIVER_RECORDS_KEY = "deliverRecords";
@@ -24,7 +29,7 @@ export const useDeliverStore = defineStore("deliver", () => {
 
   const pageIndex = ref(1);
   const pageSize = ref(20);
-  const total = ref(0);
+  const totalPage = ref(1);
   const remoteDelivered = ref<Record<SupportedPlatform, any[]>>();
 
   /**
@@ -43,27 +48,48 @@ export const useDeliverStore = defineStore("deliver", () => {
   const localDeliverRecords = ref<Record<SupportedPlatform, any[]>>();
 
   onBeforeMount(() => {
-    const localRecords = uni.getStorageSync(DELIVER_RECORDS_KEY);
-    if (localRecords) {
-      localDeliverRecords.value = localRecords || {};
-    } else {
-      for (const platform of supportedPlatforms) {
-        localDeliverRecords.value![platform.type] = [];
-      }
-      uni.setStorageSync(DELIVER_RECORDS_KEY, localDeliverRecords.value);
-    }
+    initLocalDelivered();
   });
 
   onMounted(() => {
     initRemoteDelivered();
-    getMyDelivered({
+    getMyRemoteDelivered({
       platform: SupportedPlatform.ZHAOPIN,
+    }).then(() => {
+      setTimeout(() => {
+        updateLocalDeliverRecords({
+          type: SupportedPlatform.ZHAOPIN,
+          numbers: ["CCL1300491210J40794888411"],
+        });
+      }, 1000);
     });
   });
+
+  function getLocalDelivered() {
+    let localRecords = uni.getStorageSync(DELIVER_RECORDS_KEY);
+    if (!localRecords) {
+      for (const platform of supportedPlatforms) {
+        localRecords[platform.type] = [];
+      }
+    }
+
+    return localRecords;
+  }
+
+  function initLocalDelivered() {
+    localDeliverRecords.value = getLocalDelivered();
+    uni.setStorageSync(DELIVER_RECORDS_KEY, localDeliverRecords.value);
+  }
 
   function initRemoteDelivered() {
     if (!remoteDelivered.value) {
       remoteDelivered.value = {
+        [SupportedPlatform.ZHAOPIN]: [],
+        [SupportedPlatform.BOSS]: [],
+      };
+    }
+    if (!deliverRecords.value) {
+      deliverRecords.value = {
         [SupportedPlatform.ZHAOPIN]: [],
         [SupportedPlatform.BOSS]: [],
       };
@@ -73,34 +99,49 @@ export const useDeliverStore = defineStore("deliver", () => {
   function mixinDeliveredList(platform: SupportedPlatform) {
     if (
       !localDeliverRecords.value ||
-      Object.keys(localDeliverRecords.value!).length === 0 ||
-      !localDeliverRecords.value![platform]
+      !localDeliverRecords.value![platform] ||
+      localDeliverRecords.value![platform].length === 0
     ) {
       return;
     }
+
     for (let i = 0; i < localDeliverRecords.value![platform].length; i++) {
       const item = localDeliverRecords.value![platform][i];
-      const sameDayIndex = remoteDelivered.value![platform].findIndex(
-        (it: any) => isSameDay(it.time, item.time)
+      const sameDayIndex = deliverRecords.value![platform].findIndex(
+        (it: any) => isSameDay(Number(it.time), Number(item.time))
       );
 
       if (sameDayIndex > -1) {
-        remoteDelivered.value![platform][sameDayIndex].list.push(item);
+        deliverRecords.value![platform][sameDayIndex].list.push(
+          ...(item.list || [])
+        );
+        localDeliverRecords.value![platform].splice(i, 1);
+        i--;
       } else {
-        const index = remoteDelivered.value![platform].findIndex((it: any) =>
-          isBeforeDay(it.time, item.time)
+        const index = deliverRecords.value![platform].findIndex((it: any) =>
+          isBeforeDay(Number(it.time), Number(item.time))
         );
         if (index > -1) {
-          remoteDelivered.value![platform].splice(index, 0, item);
+          deliverRecords.value![platform].splice(index, 0, item);
+          localDeliverRecords.value![platform].splice(i, 1);
+          i--;
         } else {
         }
       }
     }
-    deliveredList.value = [...deliveredList.value, ...(res.data.list || [])];
-    total.value = res.data.total;
+
+    if (pageIndex.value === totalPage.value) {
+      console.log(">>>>>>>>> 123", localDeliverRecords.value![platform]);
+      console.log(">>>>>>>>> 333", deliverRecords.value![platform]);
+      deliverRecords.value![platform] = [
+        ...deliverRecords.value![platform],
+        ...localDeliverRecords.value![platform],
+      ];
+      localDeliverRecords.value![platform] = [];
+    }
   }
 
-  function getMyDelivered(params: { platform: SupportedPlatform }) {
+  function getMyRemoteDelivered(params: { platform: SupportedPlatform }) {
     return new Promise((resolve) => {
       requestGetMyDelivered({
         platform: params.platform,
@@ -122,18 +163,30 @@ export const useDeliverStore = defineStore("deliver", () => {
                 ...(res.data.result || []),
               };
             }
-            mixinDeliveredList(params.platform);
+            totalPage.value = res.data.totalPage;
 
-            console.log(
-              ".>>>>>>>.......remoteDelivered: ",
-              remoteDelivered.value
-            );
+            mixinDeliveredList(params.platform);
           }
           resolve(true);
         })
         .catch((err) => {
           resolve(false);
         });
+    });
+  }
+
+  function initDeliveredPositions(params: { type: SupportedPlatform }) {
+    pageIndex.value = 1;
+    totalPage.value = 1;
+
+    initLocalDelivered();
+
+    return new Promise((resolve) => {
+      getMyRemoteDelivered({
+        platform: params.type,
+      }).then((res: any) => {
+        resolve(res);
+      });
     });
   }
 
@@ -159,16 +212,19 @@ export const useDeliverStore = defineStore("deliver", () => {
     };
   }> {
     return new Promise((resolve) => {
-      const todayDate = getTodayDate();
+      const allDeliveredNumbers = [
+        ...(deliverRecords.value![params.type] || []),
+        ...(localDeliverRecords.value![params.type] || []),
+      ].reduce((prev, curr) => {
+        return [...prev, ...curr.list.map((item: any) => item.number)];
+      }, []);
       // 过滤已经投递的职位
       const readyToDeliverNumbers = params.numbers.filter(
-        (number) =>
-          !deliverRecords.value[params.type][todayDate]?.includes(number)
+        (number) => !allDeliveredNumbers.includes(number)
       );
       const repeatedNumbers = params.numbers.filter((number) =>
-        deliverRecords.value[params.type][todayDate]?.includes(number)
+        allDeliveredNumbers.includes(number)
       );
-
       if (readyToDeliverNumbers.length === 0) {
         // 无需要投递的职位
         resolve({
@@ -182,9 +238,7 @@ export const useDeliverStore = defineStore("deliver", () => {
         });
         return;
       }
-
       const cookies = customLoginInfo.value[params.type].cookie;
-
       requestDeliverPosition({
         type: params.type,
         numbers: readyToDeliverNumbers,
@@ -194,12 +248,10 @@ export const useDeliverStore = defineStore("deliver", () => {
         let ps = [];
         if (res.code === 200) {
           ps = [...(res.data.repeated || []), ...res.data.success];
-
           updateLocalDeliverRecords({
             type: params.type,
             numbers: ps,
           });
-
           resolve({
             code: 200,
             message: "投递成功",
@@ -212,13 +264,11 @@ export const useDeliverStore = defineStore("deliver", () => {
         } else {
           if (res.data.repeated && res.data.repeated.length > 0) {
             ps = [...(res.data.repeated || [])];
-
             updateLocalDeliverRecords({
               type: params.type,
               numbers: ps,
             });
           }
-
           resolve({
             code: 1001,
             message: res.message || "",
@@ -237,7 +287,13 @@ export const useDeliverStore = defineStore("deliver", () => {
     type: SupportedPlatform;
     numbers: string[];
   }) {
-    const todayDate = getTodayDate();
+    // ["CCL1300491210J40794888411"]
+    const allDelivered = [
+      ...(deliverRecords.value![params.type] || []),
+      ...(localDeliverRecords.value![params.type] || []),
+    ].reduce((prev, curr) => {
+      return [...prev, ...curr.list];
+    }, []);
 
     let ps = params.numbers
       .map((p: any) =>
@@ -245,38 +301,87 @@ export const useDeliverStore = defineStore("deliver", () => {
           (item: any) => item.number === p
         )
       )
-      .filter((p: any) => !!p);
+      .filter((p: any) => !!p)
+      .filter(
+        (itm: any) =>
+          allDelivered.findIndex((it: any) => it.number === itm.number) === -1
+      );
+    const deliveredIndex = deliverRecords.value![params.type].findIndex(
+      (item: any) => isSameDay(Number(item.time), Number(getTodayDate()))
+    );
+    if (deliveredIndex > -1) {
+      deliverRecords.value![params.type][deliveredIndex].list.push(...ps);
+    } else {
+      const localDeliveredIndex = localDeliverRecords.value![
+        params.type
+      ].findIndex((item: any) =>
+        isSameDay(Number(item.time), Number(getTodayDate()))
+      );
+      if (localDeliveredIndex > -1) {
+        localDeliverRecords.value![params.type][localDeliveredIndex].list.push(
+          ...ps
+        );
+      } else {
+        localDeliverRecords.value![params.type].push({
+          time: getTodayTimestamp(),
+          list: [...ps],
+        });
+      }
+    }
 
-    ps = removeDuplicates(
-      [...ps, ...(deliverRecords.value[params.type]?.[todayDate] || [])],
-      "number"
+    // 更新列表渲染
+    const todayDeliveredIndexInDeliverRecords = deliverRecords.value![
+      params.type
+    ].findIndex((item: any) =>
+      isSameDay(Number(item.time), Number(getTodayTimestamp()))
+    );
+    if (todayDeliveredIndexInDeliverRecords > -1) {
+      deliverRecords.value![params.type][
+        todayDeliveredIndexInDeliverRecords
+      ].list.unshift(...ps);
+    } else {
+      const backIndexInDeliverRecords = deliverRecords.value![
+        params.type
+      ].findIndex((item: any) =>
+        isBeforeDay(Number(item.time), Number(getTodayTimestamp()))
+      );
+      deliverRecords.value![params.type].splice(backIndexInDeliverRecords, 0, {
+        time: getTodayTimestamp(),
+        list: [...ps],
+      });
+    }
+
+    const localDelivered = getLocalDelivered();
+    const todayDeliveredIndex = localDelivered[params.type].findIndex(
+      (item: any) => isSameDay(Number(item.time), Number(getTodayTimestamp()))
     );
 
-    deliverRecords.value[params.type][todayDate] = ps;
-
-    uni.setStorageSync(
-      DELIVER_RECORDS_KEY,
-      Object.fromEntries(
-        Object.entries(deliverRecords.value[params.type] || {}).sort(
-          ([keyA], [keyB]) => keyB.localeCompare(keyA)
-        )
-      )
-    );
+    if (todayDeliveredIndex > -1) {
+      localDelivered[params.type][todayDeliveredIndex].list.unshift(...ps);
+    } else {
+      const backIndex = localDelivered[params.type].findIndex((item: any) =>
+        isBeforeDay(Number(item.time), Number(getTodayTimestamp()))
+      );
+      localDelivered[params.type].splice(backIndex, 0, {
+        time: getTodayTimestamp(),
+        list: [...ps],
+      });
+    }
+    uni.setStorageSync(DELIVER_RECORDS_KEY, localDelivered);
   }
 
   function isDelivered(params: { type: SupportedPlatform; number: string }) {
-    let delivered = false;
-    for (const d in deliverRecords.value[params.type]) {
-      if (
-        deliverRecords.value[params.type][d]?.findIndex(
-          (item) => item.number === params.number
-        ) > -1
-      ) {
-        delivered = true;
-        break;
-      }
-    }
-    return delivered;
+    const allDelivered = [
+      ...(deliverRecords.value![params.type] || []),
+      ...(localDeliverRecords.value![params.type] || []),
+    ].reduce((prev, curr) => {
+      return [...prev, ...curr.list];
+    }, []);
+
+    const index = allDelivered.findIndex(
+      (item: any) => item.number === params.number
+    );
+    return index > -1;
   }
 
   return {
@@ -284,5 +389,6 @@ export const useDeliverStore = defineStore("deliver", () => {
     remoteDelivered,
     deliverPositions,
     isDelivered,
+    initDeliveredPositions,
   };
 });

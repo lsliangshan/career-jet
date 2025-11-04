@@ -122,10 +122,10 @@ const isRefreshing = ref(false);
 const successTip = ref("职位列表已更新");
 
 const deliverStore = useDeliverStore();
-const { deliverRecords, remoteDelivered } = storeToRefs(deliverStore);
+const { deliverRecords } = storeToRefs(deliverStore);
 
 const renderPositions = computed<{ [key: string]: any }>(() => {
-  return remoteDelivered.value ? remoteDelivered.value[props.type] : [];
+  return deliverRecords.value ? deliverRecords.value[props.type] : [];
   // return Object.fromEntries(
   //   Object.entries(deliverRecords.value[props.type] || {}).sort(
   //     ([keyA], [keyB]) => keyB.localeCompare(keyA)
@@ -146,6 +146,10 @@ const refresherrefresh = async () => {
 
   isRefreshing.value = true;
   refresherTriggered.value = true;
+
+  await deliverStore.initDeliveredPositions({
+    platform: props.type,
+  });
 
   nextTick(() => {
     const t = setTimeout(() => {

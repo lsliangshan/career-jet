@@ -6,7 +6,7 @@ import { onBeforeMount, onMounted, ref } from "vue";
 import { useTLoginStore } from "./tlogin";
 import { storeToRefs } from "pinia";
 import { usePositionStore } from "./position";
-import { removeDuplicates } from "@/utils";
+
 import {
   getTodayDate,
   getTodayTimestamp,

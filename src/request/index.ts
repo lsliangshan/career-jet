@@ -1,8 +1,8 @@
 import { SupportedPlatform } from "@/types";
 
-// const baseUrl = "http://10.2.6.210:4000";
+const baseUrl = "http://10.2.6.210:4000";
 // const baseUrl = "http://192.168.1.4:4000";
-const baseUrl = "https://api.liangqy.com";
+// const baseUrl = "https://api.liangqy.com";
 
 /**
  * 第三方登录，获取验证码
@@ -71,6 +71,7 @@ export function requestDailyPositions(params: {
   type: SupportedPlatform | string;
   job: string;
   city: string;
+  cookies?: any[];
 }) {
   return new Promise((resolve) => {
     uni.request({
@@ -80,6 +81,7 @@ export function requestDailyPositions(params: {
         job: params.job,
         city: params.city,
         type: params.type,
+        cookies: params.cookies,
       },
       success: (res) => {
         resolve(res.data);

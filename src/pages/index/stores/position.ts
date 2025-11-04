@@ -5,6 +5,7 @@ import { onBeforeMount, onMounted, ref } from "vue";
 import { useProfileStore } from "./profile";
 import { storeToRefs } from "pinia";
 import { supportedPlatforms } from "@/config/config";
+import { useTLoginStore } from "./tlogin";
 
 const POSITIONS_KEY = "positions";
 export interface PositionItem {
@@ -15,6 +16,9 @@ export interface PositionItem {
 }
 
 export const usePositionStore = defineStore("position", () => {
+  const tLoginStore = useTLoginStore();
+  const { customLoginInfo } = storeToRefs(tLoginStore);
+
   const positions = ref<{
     [key: string]: PositionItem;
   }>({});
@@ -88,6 +92,7 @@ export const usePositionStore = defineStore("position", () => {
         type: params.type,
         job: followedPosition.value,
         city: followedCity.value,
+        cookies: customLoginInfo.value[params.type].cookie,
       }).then((res: any) => {
         if (res.code === 200) {
           setPositionsByType({ type: params.type, positions: res.data.list });

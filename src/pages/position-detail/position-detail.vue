@@ -168,11 +168,11 @@
           </view>
         </view>
 
-        <view class="w-full">
+        <!-- <view class="w-full">
           <text class="text-[24rpx] text-[#333]">{{
             JSON.stringify(loginInfo, null, 2)
           }}</text>
-        </view>
+        </view> -->
 
         <view
           class="w-full"
@@ -243,7 +243,7 @@
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import { SupportedPlatform } from "@/types";
 import { onLoad } from "@dcloudio/uni-app";
-import { computed, ref, watch } from "vue";
+import { computed, getCurrentInstance, onMounted, ref, watch } from "vue";
 import { usePositionStore } from "../index/stores/position";
 import Layout from "@/components/layout/layout.vue";
 import { useTLoginStore } from "../index/stores/tlogin";
@@ -264,8 +264,13 @@ const defaultCompanyLogo = "../../static/icon_company.png";
 
 const renderImage = ref<string>();
 
+const positionDetailFromOpener = ref<any>();
+
 // 投递中
 const isDeliverLoading = ref(false);
+
+const instance = getCurrentInstance()?.proxy as any;
+const eventChannel = instance?.getOpenerEventChannel();
 
 const loginInfo = computed(() => {
   return customLoginInfo.value[type.value];
@@ -276,6 +281,9 @@ const isLoggedIn = computed(() => {
 });
 
 const positionDetail = computed(() => {
+  if (positionDetailFromOpener.value) {
+    return positionDetailFromOpener.value;
+  }
   return positionStore.getPositionDetail({
     type: type.value,
     number: number.value,
@@ -315,6 +323,14 @@ function handleImageError(e: any) {
 onLoad((options: any) => {
   number.value = options.number;
   type.value = options.type as SupportedPlatform;
+});
+
+onMounted(() => {
+  if (eventChannel) {
+    eventChannel.on("init-position-detail", function (data: any) {
+      positionDetailFromOpener.value = data;
+    });
+  }
 });
 
 function gotoLogin() {

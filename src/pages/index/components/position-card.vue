@@ -149,6 +149,10 @@ function handleImageError(e: any) {
 function handleClick() {
   uni.navigateTo({
     url: `/pages/position-detail/position-detail?number=${props.info.number}&type=${props.type}`,
+    success: function (res) {
+      // 通过eventChannel向被打开页面传送数据
+      res.eventChannel.emit("init-position-detail", { ...props.info });
+    },
   });
 }
 </script>

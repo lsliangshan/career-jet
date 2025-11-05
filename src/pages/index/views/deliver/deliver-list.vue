@@ -119,7 +119,7 @@ const refresherSuccessVisible = ref(false);
 
 const isRefreshing = ref(false);
 
-const successTip = ref("职位列表已更新");
+const successTip = ref("投递列表已更新");
 
 const deliverStore = useDeliverStore();
 const { deliverRecords } = storeToRefs(deliverStore);

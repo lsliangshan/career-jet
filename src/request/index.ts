@@ -293,3 +293,63 @@ export function requestGetMyDelivered(params: {
     });
   });
 }
+
+/**
+ * 获取我的订阅信息
+ */
+export function requestGetMySubscriber(params: { userId: string }) {
+  return new Promise((resolve) => {
+    uni.request({
+      url: `https://wf.qyflows.com/webhook/crawlerjet/get-my-subscriber`,
+      method: "POST",
+      data: {
+        userId: params.userId,
+      },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (err) => {
+        resolve({
+          code: 1000,
+          message: err.errMsg,
+          data: {},
+        });
+      },
+    });
+  });
+}
+
+/**
+ * 更新我的订阅信息
+ */
+export function requestUpdateMySubscriber(params: {
+  id: string;
+  userId: string;
+  job?: string;
+  city?: string;
+  cookies?: any;
+}) {
+  return new Promise((resolve) => {
+    uni.request({
+      url: `https://wf.qyflows.com/webhook/crawlerjet/update-my-subscriber`,
+      method: "POST",
+      data: {
+        id: params.id,
+        userId: params.userId,
+        job: params.job,
+        city: params.city,
+        cookies: params.cookies,
+      },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (err) => {
+        resolve({
+          code: 1000,
+          message: err.errMsg,
+          data: {},
+        });
+      },
+    });
+  });
+}

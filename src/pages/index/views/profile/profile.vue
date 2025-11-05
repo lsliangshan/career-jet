@@ -15,6 +15,12 @@
 
           <AccountSettings />
 
+          <template v-if="isLoggedIn && subscriber && subscriber.id">
+            <view class="w-full h-[24rpx]"></view>
+
+            <SubscribeSettings />
+          </template>
+
           <view
             class="w-full h-[80rpx] mt-[64rpx] flex flex-row items-center justify-center"
             v-if="isLoggedIn"
@@ -37,12 +43,17 @@ import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import GeneralSettings from "./general-settings.vue";
 import AccountSettings from "./account-settings.vue";
+import SubscribeSettings from "./subscribe-settings.vue";
 import BaseInfo from "./base-info.vue";
 import { useUserStore } from "../../stores/user";
 import { storeToRefs } from "pinia";
+import { useSubscriberStore } from "../../stores/subscriber";
 
 const userStore = useUserStore();
 const { isLoggedIn } = storeToRefs(userStore);
+
+const subscriberStore = useSubscriberStore();
+const { subscriber } = storeToRefs(subscriberStore);
 
 function handleLogout() {
   userStore.logout();

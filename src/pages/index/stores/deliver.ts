@@ -56,12 +56,12 @@ export const useDeliverStore = defineStore("deliver", () => {
     getMyRemoteDelivered({
       platform: SupportedPlatform.ZHAOPIN,
     }).then(() => {
-      setTimeout(() => {
-        updateLocalDeliverRecords({
-          type: SupportedPlatform.ZHAOPIN,
-          numbers: ["CCL1300491210J40794888411"],
-        });
-      }, 1000);
+      // setTimeout(() => {
+      //   updateLocalDeliverRecords({
+      //     type: SupportedPlatform.ZHAOPIN,
+      //     numbers: ["CCL1300491210J40794888411"],
+      //   });
+      // }, 1000);
     });
   });
 
@@ -131,8 +131,6 @@ export const useDeliverStore = defineStore("deliver", () => {
     }
 
     if (pageIndex.value === totalPage.value) {
-      console.log(">>>>>>>>> 123", localDeliverRecords.value![platform]);
-      console.log(">>>>>>>>> 333", deliverRecords.value![platform]);
       deliverRecords.value![platform] = [
         ...deliverRecords.value![platform],
         ...localDeliverRecords.value![platform],

@@ -1,6 +1,9 @@
 <template>
   <view class="relative w-full h-full">
-    <view class="w-full h-full">
+    <view
+      class="w-full h-full"
+      v-if="followedPosition !== '' && followedCity !== ''"
+    >
       <swiper
         :current="currentIndex"
         class="w-full h-full"
@@ -17,7 +20,12 @@
         </swiper-item>
       </swiper>
     </view>
-
+    <view class="w-full h-full" v-else>
+      <CustomHeader title="请先关注职位和城市" />
+      <Layout hasHeader>
+        <GeneralSettings :show-header="false"></GeneralSettings>
+      </Layout>
+    </view>
     <BottomNav />
   </view>
 </template>
@@ -29,9 +37,27 @@ import deliver from "./views/deliver/deliver.vue";
 import profile from "./views/profile/profile.vue";
 import { useNavStore } from "./stores/nav";
 import { storeToRefs } from "pinia";
+import { useProfileStore } from "./stores/profile";
+import GeneralSettings from "./views/profile/general-settings.vue";
+import CustomHeader from "@/components/custom-header/custom-header.vue";
+import Layout from "@/components/layout/layout.vue";
+import { onMounted } from "vue";
+
+const profileStore = useProfileStore();
+const { followedPosition, followedCity } = storeToRefs(profileStore);
 
 const navStore = useNavStore();
 const { currentIndex } = storeToRefs(navStore);
+
+onMounted(() => {
+  if (!followedPosition.value || !followedCity.value) {
+    uni.showToast({
+      title: "请先关注职位和城市",
+      icon: "none",
+      duration: 5000,
+    });
+  }
+});
 
 function handleChange(e: any) {
   if (e.detail.source !== "touch") {

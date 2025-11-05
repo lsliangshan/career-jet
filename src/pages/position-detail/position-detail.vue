@@ -15,6 +15,7 @@
               mode="aspectFit"
               :src="renderImage"
               @error="handleImageError"
+              @click="previewImage(renderImage || '')"
             ></image>
           </view>
 
@@ -120,6 +121,7 @@
                 <image
                   class="w-[64rpx] h-[64rpx] border border-[#f5f5f5] border-[1rpx] rounded-[50%] overflow-hidden"
                   :src="positionDetail?.staffCard.avatar"
+                  @click="previewImage(positionDetail?.staffCard.avatar || '')"
                 ></image>
               </view>
               <view class="w-full flex flex-col justify-center gap-[4rpx]">
@@ -318,6 +320,12 @@ watch(
 
 function handleImageError(e: any) {
   renderImage.value = defaultCompanyLogo;
+}
+
+function previewImage(image: string) {
+  uni.previewImage({
+    urls: [image || ""],
+  });
 }
 
 onLoad((options: any) => {

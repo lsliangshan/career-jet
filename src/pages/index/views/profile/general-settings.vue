@@ -1,6 +1,9 @@
 <template>
   <view>
-    <view class="w-full h-[64rpx] mb-[12rpx] flex flex-row items-center">
+    <view
+      class="w-full h-[64rpx] mb-[12rpx] flex flex-row items-center"
+      v-if="showHeader"
+    >
       <text
         class="text-[24rpx] text-shadow-[0_0_10rpx_rgba(255,255,255,0.1)]"
         :style="{
@@ -110,6 +113,13 @@
 import { useProfileStore } from "../../stores/profile";
 import { storeToRefs } from "pinia";
 import { ThemeColors } from "@/config/config";
+
+interface Props {
+  showHeader?: boolean;
+}
+withDefaults(defineProps<Props>(), {
+  showHeader: true,
+});
 
 const profileStore = useProfileStore();
 const { followedPosition, followedCity } = storeToRefs(profileStore);

@@ -36,9 +36,16 @@
             <text
               class="text-[24rpx]"
               :style="{
-                color: ThemeColors.accent,
+                color:
+                  Number(subscriber?.endTime) < new Date().getTime()
+                    ? ThemeColors.error
+                    : ThemeColors.accent,
               }"
-              >有效期至:
+              >{{
+                Number(subscriber?.endTime) < new Date().getTime()
+                  ? "已过期"
+                  : "有效期至"
+              }}:
               {{
                 subscriber?.endTime
                   ? formatDate(Number(subscriber?.endTime), "YYYY-MM-DD")

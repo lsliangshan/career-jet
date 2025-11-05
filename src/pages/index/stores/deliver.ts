@@ -1,5 +1,9 @@
 import { supportedPlatforms } from "@/config/config";
-import { requestDeliverPosition, requestGetMyDelivered } from "@/request";
+import {
+  requestDeliverPosition,
+  requestGetMyAutoDeliveredInfo,
+  requestGetMyDelivered,
+} from "@/request";
 import { SupportedPlatform } from "@/types";
 import { defineStore } from "pinia";
 import { onBeforeMount, onMounted, ref } from "vue";
@@ -17,6 +21,13 @@ import { useUserStore } from "./user";
 
 const DELIVER_RECORDS_KEY = "deliverRecords";
 
+export interface AutoDeliveredInfo {
+  // 总投递职位数量
+  totalCount: number;
+  // 总投递次数
+  totalTimes: number;
+}
+
 export const useDeliverStore = defineStore("deliver", () => {
   const tLoginStore = useTLoginStore();
   const { customLoginInfo } = storeToRefs(tLoginStore);
@@ -31,6 +42,8 @@ export const useDeliverStore = defineStore("deliver", () => {
   const pageSize = ref(20);
   const totalPage = ref(1);
   const remoteDelivered = ref<Record<SupportedPlatform, any[]>>();
+
+  const autoDeliveredInfo = ref<AutoDeliveredInfo>();
 
   /**
    * deliverRecords: {
@@ -63,6 +76,8 @@ export const useDeliverStore = defineStore("deliver", () => {
       //   });
       // }, 1000);
     });
+
+    getMyAutoDeliveredInfo();
   });
 
   function getLocalDelivered() {
@@ -382,11 +397,26 @@ export const useDeliverStore = defineStore("deliver", () => {
     return index > -1;
   }
 
+  function getMyAutoDeliveredInfo() {
+    return new Promise((resolve) => {
+      requestGetMyAutoDeliveredInfo({
+        userId: loginInfo.value!.id,
+      }).then((res: any) => {
+        if (res.code === 200) {
+          autoDeliveredInfo.value = res.data;
+        }
+        resolve(true);
+      });
+    });
+  }
+
   return {
     deliverRecords,
     remoteDelivered,
+    autoDeliveredInfo,
     deliverPositions,
     isDelivered,
     initDeliveredPositions,
+    getMyAutoDeliveredInfo,
   };
 });

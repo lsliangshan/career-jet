@@ -266,7 +266,7 @@ export function requestUpdateUserInfo(params: {
 }
 
 /**
- * 退出登录
+ * 获取我的自动投递职位
  */
 export function requestGetMyDelivered(params: {
   platform: SupportedPlatform;
@@ -283,6 +283,30 @@ export function requestGetMyDelivered(params: {
         userId: params.userId,
         pageIndex: params.pageIndex || 1,
         pageSize: params.pageSize || 20,
+      },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 获取我的自动投递职位信息
+ *
+ */
+export function requestGetMyAutoDeliveredInfo(params: {
+  userId: string;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `https://wf.qyflows.com/webhook/crawlerjet/get-my-auto-delivered-info`,
+      method: "POST",
+      data: {
+        userId: params.userId,
       },
       success: (res) => {
         resolve(res.data);

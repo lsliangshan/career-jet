@@ -1,6 +1,6 @@
 import { requestGetMySubscriber, requestUpdateMySubscriber } from "@/request";
 import { defineStore } from "pinia";
-import { onMounted, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "./user";
 
@@ -62,6 +62,14 @@ export const useSubscriberStore = defineStore("subscriber", () => {
     cookies?: any;
   }) {
     return new Promise((resolve) => {
+      if (!isLoggedIn.value) {
+        resolve({
+          code: 1000,
+          message: "请先登录",
+          data: {},
+        });
+        return;
+      }
       requestUpdateMySubscriber({
         id: params.id,
         userId: loginInfo.value!.id,

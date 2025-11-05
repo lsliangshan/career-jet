@@ -93,12 +93,37 @@
       </view>
 
       <view
-        class="w-full h-[80rpx] flex flex-row items-center justify-center"
+        class="relative w-full h-[140rpx] flex flex-row items-center justify-around gap-[32rpx]"
         :style="{
           backgroundColor: ThemeColors.bgCard,
         }"
       >
-        <text class="text-[28rpx]">续费</text>
+        <view class="h-full flex flex-col items-center justify-center">
+          <text class="text-[40rpx]" :style="{ color: ThemeColors.primary }">{{
+            autoDeliveredInfo?.totalTimes
+          }}</text>
+          <text class="text-[20rpx]" :style="{ color: ThemeColors.text.label }"
+            >自动投递次数</text
+          >
+        </view>
+        <view
+          class="absolute left-50% transform -translate-x-1/2 w-[1rpx] h-full flex flex-row items-center justify-center"
+        >
+          <view
+            class="h-[64rpx] w-[1rpx]"
+            :style="{
+              backgroundColor: ThemeColors.bg,
+            }"
+          ></view>
+        </view>
+        <view class="h-full flex flex-col items-center justify-center">
+          <text class="text-[40rpx]" :style="{ color: ThemeColors.primary }">{{
+            autoDeliveredInfo?.totalCount
+          }}</text>
+          <text class="text-[20rpx]" :style="{ color: ThemeColors.text.label }"
+            >自动投递职位数量</text
+          >
+        </view>
       </view>
     </view>
   </view>
@@ -109,9 +134,13 @@ import { useSubscriberStore } from "../../stores/subscriber";
 import { storeToRefs } from "pinia";
 import { ThemeColors } from "@/config/config";
 import { formatDate } from "@/utils/date";
+import { useDeliverStore } from "../../stores/deliver";
 
 const subscriberStore = useSubscriberStore();
 const { subscriber } = storeToRefs(subscriberStore);
+
+const deliverStore = useDeliverStore();
+const { autoDeliveredInfo } = storeToRefs(deliverStore);
 </script>
 
 <style scoped></style>

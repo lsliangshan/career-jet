@@ -2,6 +2,8 @@ import { requestThirdPartSmsCode, requestValidateLoginStatus } from "@/request";
 import { SupportedPlatform } from "@/types";
 import { defineStore } from "pinia";
 import { onMounted, ref } from "vue";
+import { useSubscriberStore } from "./subscriber";
+import { storeToRefs } from "pinia";
 export interface CookieItem {
   name: string;
   value: string;
@@ -21,6 +23,9 @@ export interface CustomLoginInfo {
 const CUSTOM_LOGIN_INFO_KEY = "customLoginInfo";
 
 export const useTLoginStore = defineStore("tlogin", () => {
+  const subscriberStore = useSubscriberStore();
+  const { subscriber } = storeToRefs(subscriberStore);
+
   const customLoginInfo = ref<Record<SupportedPlatform, CustomLoginInfo>>({
     [SupportedPlatform.ZHAOPIN]: {
       type: SupportedPlatform.ZHAOPIN,
@@ -70,6 +75,14 @@ export const useTLoginStore = defineStore("tlogin", () => {
         ...customLoginInfo.value[SupportedPlatform.BOSS],
         ...params,
       };
+    }
+
+    // 更新订阅计划中的cookies
+    if (subscriber.value && subscriber.value!.id) {
+      subscriberStore.updateMySubscriber({
+        id: subscriber.value!.id,
+        cookies: customLoginInfo.value,
+      });
     }
   }
 

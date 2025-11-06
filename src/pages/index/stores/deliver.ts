@@ -83,6 +83,7 @@ export const useDeliverStore = defineStore("deliver", () => {
   function getLocalDelivered() {
     let localRecords = uni.getStorageSync(DELIVER_RECORDS_KEY);
     if (!localRecords) {
+      localRecords = {};
       for (const platform of supportedPlatforms) {
         localRecords[platform.type] = [];
       }
@@ -193,7 +194,7 @@ export const useDeliverStore = defineStore("deliver", () => {
     totalPage.value = 1;
 
     initLocalDelivered();
-
+    console.log(">>>>>> 1");
     return new Promise((resolve) => {
       getMyRemoteDelivered({
         platform: params.type,

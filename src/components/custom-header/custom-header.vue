@@ -19,7 +19,16 @@
         <image class="w-[40rpx] h-[40rpx]" src="@static/icon_back.png"></image>
       </view>
       <view
-        class="w-full h-full pl-[88rpx] box-border flex flex-row items-center justify-center"
+        class="w-full h-full box-border flex flex-row items-center justify-center"
+        :class="[
+          showBack ? 'pl-[88rpx]' : 'pl-0',
+          titleAlign === 'start'
+            ? 'justify-start'
+            : titleAlign === 'center'
+            ? 'justify-center'
+            : 'justify-end',
+          !showBack && titleAlign == 'start' ? 'pl-[32rpx]' : 'pl-0',
+        ]"
       >
         <text
           class="text-[32rpx] font-bold text-[#000] clamp-1 overflow-hidden text-ellipsis whitespace-nowrap break-all"
@@ -36,11 +45,13 @@ import { ThemeColors } from "@/config/config";
 interface Props {
   title?: string;
   showBack?: boolean;
+  titleAlign?: "start" | "center" | "end";
 }
 
 withDefaults(defineProps<Props>(), {
   title: "",
   showBack: false,
+  titleAlign: "center",
 });
 
 const safeTop = uni.getSystemInfoSync().safeAreaInsets?.top || 0;

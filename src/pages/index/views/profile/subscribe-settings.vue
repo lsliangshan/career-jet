@@ -107,7 +107,7 @@
       >
         <view class="h-full flex flex-col items-center justify-center">
           <text class="text-[40rpx]" :style="{ color: ThemeColors.primary }">{{
-            autoDeliveredInfo?.totalTimes
+            autoDeliveredInfo?.totalTimes || 0
           }}</text>
           <text class="text-[20rpx]" :style="{ color: ThemeColors.text.label }"
             >自动投递次数</text
@@ -125,7 +125,7 @@
         </view>
         <view class="h-full flex flex-col items-center justify-center">
           <text class="text-[40rpx]" :style="{ color: ThemeColors.primary }">{{
-            autoDeliveredInfo?.totalCount
+            autoDeliveredInfo?.totalCount || 0
           }}</text>
           <text class="text-[20rpx]" :style="{ color: ThemeColors.text.label }"
             >自动投递职位数量</text

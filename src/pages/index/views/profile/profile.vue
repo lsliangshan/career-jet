@@ -1,6 +1,6 @@
 <template>
   <view class="relative w-full h-full">
-    <CustomHeader title="我的" />
+    <CustomHeader title="我的" title-align="start" />
 
     <Layout hasHeader>
       <view class="relative w-full h-full overflow-hidden">
@@ -55,7 +55,7 @@
               v-if="isLoggedIn"
             >
               <view
-                class="w-full h-full px-[24rpx] box-border rounded-[8rpx] overflow-hidden bg-[#ff3333] active:bg-[#e62e2e] flex flex-row items-center justify-center"
+                class="w-full h-full px-[24rpx] box-border rounded-[32rpx] overflow-hidden bg-[#ff3333] active:bg-[#e62e2e] flex flex-row items-center justify-center"
                 @click="handleLogout"
               >
                 <text class="text-[28rpx] text-[#fff]">退出登录</text>

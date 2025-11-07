@@ -36,7 +36,7 @@ export const useDeliverStore = defineStore("deliver", () => {
   const { positions } = storeToRefs(positionStore);
 
   const userStore = useUserStore();
-  const { loginInfo } = storeToRefs(userStore);
+  const { loginInfo, isLoggedIn } = storeToRefs(userStore);
 
   const pageIndex = ref(1);
   const pageSize = ref(20);
@@ -157,6 +157,10 @@ export const useDeliverStore = defineStore("deliver", () => {
 
   function getMyRemoteDelivered(params: { platform: SupportedPlatform }) {
     return new Promise((resolve) => {
+      if (!isLoggedIn.value) {
+        resolve(false);
+        return;
+      }
       requestGetMyDelivered({
         platform: params.platform,
         userId: loginInfo.value!.id,
@@ -400,6 +404,10 @@ export const useDeliverStore = defineStore("deliver", () => {
 
   function getMyAutoDeliveredInfo() {
     return new Promise((resolve) => {
+      if (!isLoggedIn.value) {
+        resolve(false);
+        return;
+      }
       requestGetMyAutoDeliveredInfo({
         userId: loginInfo.value!.id,
       }).then((res: any) => {

@@ -41,6 +41,7 @@
 
 <script setup lang="ts">
 import { ThemeColors } from "@/config/config";
+import { onMounted, ref } from "vue";
 
 interface Props {
   title?: string;
@@ -54,9 +55,13 @@ withDefaults(defineProps<Props>(), {
   titleAlign: "center",
 });
 
-const safeTop = uni.getSystemInfoSync().safeAreaInsets?.top || 0;
+const safeTop = ref(uni.getSystemInfoSync().safeAreaInsets?.top || 0);
 
 const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
+
+onMounted(() => {
+  safeTop.value = uni.getSystemInfoSync().safeAreaInsets?.top || 0;
+});
 
 function handleBack() {
   uni.navigateBack({

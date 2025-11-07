@@ -137,7 +137,7 @@ const verifyCode = ref("");
 
 const verifyCodeTimer = ref<NodeJS.Timeout | null>(null);
 
-const maxVerifyCodeTimerCount = 5;
+const maxVerifyCodeTimerCount = 120;
 const verifyCodeTimerCount = ref(maxVerifyCodeTimerCount);
 
 const canGetVerifyCode = computed(() => {

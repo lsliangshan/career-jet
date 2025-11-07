@@ -10,8 +10,10 @@
             :value="renderValue"
             ref="inputRef"
             focus
+            confirm-type="send"
             :placeholder="renderPlaceholder"
             @input="handleInput"
+            @confirm="handleSave"
           />
           <view
             class="absolute right-0 top-0 w-[80rpx] h-[80rpx] rounded-[50%] overflow-hidden z-[9] flex flex-row items-center justify-center bg-[#fff] active:bg-[#f8f8f8]"

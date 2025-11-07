@@ -113,7 +113,7 @@ watch(
 
 // 自动刷新
 async function doAutoRefresh() {
-  // refresherrefresh();
+  refresherrefresh();
 }
 
 // 下拉刷新

@@ -42,6 +42,7 @@ import GeneralSettings from "./views/profile/general-settings.vue";
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import { onMounted } from "vue";
+import { onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
 
 const profileStore = useProfileStore();
 const { followedPosition, followedCity } = storeToRefs(profileStore);
@@ -65,6 +66,23 @@ function handleChange(e: any) {
   }
   navStore.changeTab(e.detail.current);
 }
+
+onShareAppMessage(() => {
+  return {
+    title: "嘘…我的求职效率，全靠这个「小只」助手 🚀",
+    path: `/pages/index/index`,
+    imageUrl:
+      "https://img.liangqy.com/crawlerjet/img/crawlerjet_share_without_qrcode.png",
+  };
+});
+
+onShareTimeline(() => {
+  return {
+    title: "嘘…我的求职效率，全靠这个「小只」助手 🚀",
+    imageUrl:
+      "https://img.liangqy.com/crawlerjet/img/crawlerjet_share_without_qrcode.png",
+  };
+});
 </script>
 
 <style>

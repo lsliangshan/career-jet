@@ -30,12 +30,12 @@ export const supportedPlatforms = [
     label: "智联招聘",
     icon: "https://img09.zhaopin.com/2012/other/mobile/clive/resources/imgs/zhaopin.png",
   },
-  // {
-  //   type: SupportedPlatform.BOSS,
-  //   name: "boss",
-  //   label: "BOSS直聘",
-  //   icon: "https://img09.zhaopin.com/2012/other/mobile/clive/resources/imgs/boss.jpg",
-  // },
+  {
+    type: SupportedPlatform.BOSS,
+    name: "boss",
+    label: "BOSS直聘",
+    icon: "https://img09.zhaopin.com/2012/other/mobile/clive/resources/imgs/boss.jpg",
+  },
 ];
 
 export const ThemeColors = {

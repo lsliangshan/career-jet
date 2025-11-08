@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useSubscriberStore } from "./subscriber";
 import { storeToRefs } from "pinia";
+import { SupportedPlatform } from "@/types";
 
 export enum FollowedDataType {
   FOLLOWED_POSITION = "followedPosition",
@@ -10,6 +11,7 @@ export enum FollowedDataType {
 
 const FOLLOWED_POSITION_KEY = "followedPosition";
 const FOLLOWED_CITY_KEY = "followedCity";
+const FOLLOWED_PLATFORMS_KEY = "followedPlatforms";
 
 export const useProfileStore = defineStore("profile", () => {
   const subscriberStore = useSubscriberStore();
@@ -20,6 +22,16 @@ export const useProfileStore = defineStore("profile", () => {
 
   // 关注的城市
   const followedCity = ref(uni.getStorageSync(FOLLOWED_CITY_KEY) || "");
+
+  // 关注的平台
+  const followedPlatforms = ref<SupportedPlatform[]>(uni.getStorageSync(FOLLOWED_PLATFORMS_KEY) || []);
+
+  onMounted(() => {
+    const localFollowedPlatforms = uni.getStorageSync(FOLLOWED_PLATFORMS_KEY);
+    if (localFollowedPlatforms) {
+      followedPlatforms.value = localFollowedPlatforms;
+    }
+  })
 
   function setFollowedPosition(position: string) {
     followedPosition.value = position;
@@ -44,10 +56,53 @@ export const useProfileStore = defineStore("profile", () => {
     }
   }
 
+  function setFollowedPlatforms(platforms: SupportedPlatform[]) {
+    followedPlatforms.value = platforms;
+    uni.setStorageSync(FOLLOWED_PLATFORMS_KEY, platforms);
+
+    if (subscriber.value && subscriber.value!.id) {
+      subscriberStore.updateMySubscriber({
+        id: subscriber.value!.id,
+        platform: platforms.join(";"),
+      });
+    }
+  }
+
+  function addFollowedPlatform(platform: SupportedPlatform) {
+    const index = followedPlatforms.value.indexOf(platform);
+    if (index === -1) {
+      followedPlatforms.value.push(platform);
+    }
+    uni.setStorageSync(FOLLOWED_PLATFORMS_KEY, followedPlatforms.value);
+
+    if (subscriber.value && subscriber.value!.id) {
+      subscriberStore.updateMySubscriber({
+        id: subscriber.value!.id,
+        platform: followedPlatforms.value.join(";"),
+      });
+    }
+  }
+
+  function removeFollowedPlatform(platform: SupportedPlatform) {
+    followedPlatforms.value = followedPlatforms.value.filter((p: SupportedPlatform) => p !== platform);
+    uni.setStorageSync(FOLLOWED_PLATFORMS_KEY, followedPlatforms.value);
+
+    if (subscriber.value && subscriber.value!.id) {
+      subscriberStore.updateMySubscriber({
+        id: subscriber.value!.id,
+        platform: followedPlatforms.value.join(";"),
+      });
+    }
+  }
+
   return {
     followedCity,
     followedPosition,
+    followedPlatforms,
     setFollowedPosition,
     setFollowedCity,
+    setFollowedPlatforms,
+    addFollowedPlatform,
+    removeFollowedPlatform,
   };
 });

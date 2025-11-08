@@ -105,6 +105,84 @@
           </view>
         </view>
       </view>
+
+      <view
+        class="w-full h-[1rpx] flex flex-row items-center justify-center"
+        :style="{
+          backgroundColor: ThemeColors.bgCard,
+        }"
+      >
+        <view
+          class="h-full"
+          :style="{
+            width: `calc(100% - 48rpx)`,
+            backgroundColor: ThemeColors.bg,
+          }"
+        ></view>
+      </view>
+
+      <view class="flex flex-row items-center">
+        <view
+          class="h-[100rpx] w-full pl-[24rpx] pr-[24rpx] box-border active:bg-[#fafafa] flex flex-row items-center justify-between"
+          :style="{
+            backgroundColor: ThemeColors.bgCard,
+          }"
+          @click="handleEditFollowedPlatforms"
+        >
+          <view class="flex flex-row items-center">
+            <image
+              class="w-[24rpx] h-[24rpx] mr-[12rpx] ml-[6rpx]"
+              src="@static/icon_platform.png"
+            ></image>
+            <text
+              class="text-[28rpx]"
+              :style="{
+                color: ThemeColors.text.title,
+              }"
+              >关注的平台</text
+            >
+          </view>
+          <view
+            class="h-full shrink-0 flex flex-row items-center justify-center gap-[8rpx]"
+          >
+            <view
+              class="h-[40rpx] px-[8rpx] box-border rounded-[8rpx] overflow-hidden flex flex-row items-center justify-center"
+              :style="{ backgroundColor: ThemeColors.primary100 }"
+              v-for="platform in followedPlatforms.slice(0, 2)"
+            >
+              <text
+                class="text-[20rpx]"
+                :style="{
+                  color: ThemeColors.primary,
+                }"
+                >{{ getPlatformLabel(platform) }}</text
+              >
+            </view>
+            <view
+              class="h-[40rpx] mr-[12rpx] px-[8rpx] box-border rounded-[20rpx] overflow-hidden flex flex-row items-center justify-center"
+              :style="{ backgroundColor: ThemeColors.primary100 }"
+              v-if="followedPlatforms.length > 2"
+            >
+              <text
+                class="text-[20rpx] font-bold"
+                :style="{
+                  color: ThemeColors.primary,
+                }"
+                >{{
+                  followedPlatforms.length > 2
+                    ? `+${followedPlatforms.length - 2}`
+                    : ""
+                }}</text
+              >
+            </view>
+
+            <image
+              class="w-[30rpx] h-[30rpx]"
+              src="@static/icon_arraw_right.png"
+            ></image>
+          </view>
+        </view>
+      </view>
     </view>
   </view>
 </template>
@@ -112,7 +190,9 @@
 <script setup lang="ts">
 import { useProfileStore } from "../../stores/profile";
 import { storeToRefs } from "pinia";
-import { ThemeColors } from "@/config/config";
+import { supportedPlatforms, ThemeColors } from "@/config/config";
+import { EModalComponent } from "../../modals/types";
+import { SupportedPlatform } from "@/types";
 
 interface Props {
   showHeader?: boolean;
@@ -122,7 +202,8 @@ withDefaults(defineProps<Props>(), {
 });
 
 const profileStore = useProfileStore();
-const { followedPosition, followedCity } = storeToRefs(profileStore);
+const { followedPosition, followedCity, followedPlatforms } =
+  storeToRefs(profileStore);
 
 function handleEditFollowedPosition() {
   uni.navigateTo({
@@ -134,6 +215,20 @@ function handleEditFollowedCity() {
   uni.navigateTo({
     url: "/pages/edit-followed-data/edit-followed-data?type=followedCity",
   });
+}
+
+function handleEditFollowedPlatforms() {
+  uni.$emit("show-modal", {
+    component: EModalComponent.FOLLOWED_PLATFORMS_MODAL,
+  });
+}
+
+function getPlatformLabel(platform: SupportedPlatform) {
+  return (
+    supportedPlatforms.find(
+      (p: { type: SupportedPlatform }) => p.type === platform
+    )?.label || ""
+  );
 }
 </script>
 

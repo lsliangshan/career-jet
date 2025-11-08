@@ -10,7 +10,9 @@
       >
     </view>
     <template
-      v-for="(platform, index) in supportedPlatforms"
+      v-for="(platform, index) in supportedPlatforms.filter((p) =>
+        followedPlatforms.includes(p.type)
+      )"
       :key="platform.type"
     >
       <view
@@ -40,7 +42,7 @@
           >
             <view class="flex flex-row items-center">
               <image
-                class="w-[30rpx] h-[30rpx] mr-[12rpx]"
+                class="w-[30rpx] h-[30rpx] mr-[12rpx] rounded-[4rpx] overflow-hidden"
                 :src="platform.icon"
               ></image>
               <text
@@ -143,38 +145,18 @@ import { useTLoginStore } from "../../stores/tlogin";
 import { storeToRefs } from "pinia";
 import { supportedPlatforms, ThemeColors } from "@/config/config";
 import { SupportedPlatform } from "@/types";
+import { useProfileStore } from "../../stores/profile";
+
+const profileStore = useProfileStore();
+const { followedPlatforms } = storeToRefs(profileStore);
 
 const tLoginStore = useTLoginStore();
 const { customLoginInfo } = storeToRefs(tLoginStore);
-
-// const zhaopinLoginInfo = ref<CustomLoginInfo>();
-// const bossLoginInfo = ref<CustomLoginInfo>();
 
 const renderLoginInfo = computed(() => {
   return function (type: SupportedPlatform) {
     return customLoginInfo.value[type];
   };
-});
-
-const zhaopinLoginInfo = computed(() => {
-  return customLoginInfo.value[SupportedPlatform.ZHAOPIN];
-});
-
-const bossLoginInfo = computed(() => {
-  return customLoginInfo.value[SupportedPlatform.BOSS];
-});
-
-const isZhaopinLoggedIn = computed(() => {
-  return (
-    zhaopinLoginInfo.value?.expireAt &&
-    zhaopinLoginInfo.value.expireAt > Date.now()
-  );
-});
-
-const isBossLoggedIn = computed(() => {
-  return (
-    bossLoginInfo.value?.expireAt && bossLoginInfo.value.expireAt > Date.now()
-  );
 });
 
 onMounted(async () => {

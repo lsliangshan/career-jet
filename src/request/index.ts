@@ -351,6 +351,7 @@ export function requestUpdateMySubscriber(params: {
   userId: string;
   job?: string;
   city?: string;
+  platform?: string;
   cookies?: any;
 }) {
   return new Promise((resolve) => {
@@ -362,6 +363,7 @@ export function requestUpdateMySubscriber(params: {
         userId: params.userId,
         job: params.job,
         city: params.city,
+        platform: params.platform,
         cookies: params.cookies,
       },
       success: (res) => {

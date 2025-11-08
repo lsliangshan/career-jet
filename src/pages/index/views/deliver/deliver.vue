@@ -26,7 +26,9 @@
       >
         <view
           class="h-[56rpx] pl-[24rpx] pr-[24rpx] box-border rounded-tl-[12rpx] rounded-tr-[12rpx] overflow-hidden flex flex-row items-center transition-all duration-300"
-          v-for="(platform, index) in supportedPlatforms"
+          v-for="(platform, index) in supportedPlatforms.filter((p) =>
+            followedPlatforms.includes(p.type)
+          )"
           :key="platform.name"
           :style="{
             backgroundColor:
@@ -70,6 +72,11 @@ import { supportedPlatforms, ThemeColors } from "@/config/config";
 import Layout from "@/components/layout/layout.vue";
 import DeliverList from "./deliver-list.vue";
 import { ref } from "vue";
+import { useProfileStore } from "../../stores/profile";
+import { storeToRefs } from "pinia";
+
+const profileStore = useProfileStore();
+const { followedPlatforms } = storeToRefs(profileStore);
 
 const safeTop = uni.getSystemInfoSync().safeAreaInsets?.top || 0;
 

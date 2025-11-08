@@ -44,7 +44,9 @@
       >
         <view
           class="h-[56rpx] pl-[24rpx] pr-[24rpx] box-border rounded-tl-[12rpx] rounded-tr-[12rpx] overflow-hidden flex flex-row items-center transition-all duration-300"
-          v-for="(platform, index) in supportedPlatforms"
+          v-for="(platform, index) in supportedPlatforms.filter((p) =>
+            followedPlatforms.includes(p.type)
+          )"
           :key="platform.name"
           :style="{
             backgroundColor:
@@ -90,11 +92,15 @@ import { computed, ref } from "vue";
 import { supportedPlatforms, ThemeColors } from "@/config/config";
 import Layout from "@/components/layout/layout.vue";
 import PositionList from "./position-list.vue";
+import { useProfileStore } from "../../stores/profile";
 
 const safeTop = uni.getSystemInfoSync().safeAreaInsets?.top || 0;
 
 const positionStore = usePositionStore();
 const { positions } = storeToRefs(positionStore);
+
+const profileStore = useProfileStore();
+const { followedPlatforms } = storeToRefs(profileStore);
 
 const currentIndex = ref<number>(0);
 

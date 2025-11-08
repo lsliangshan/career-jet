@@ -59,6 +59,7 @@ export const useSubscriberStore = defineStore("subscriber", () => {
     id: string;
     job?: string;
     city?: string;
+    platform?: string;
     cookies?: any;
   }) {
     return new Promise((resolve) => {
@@ -75,6 +76,7 @@ export const useSubscriberStore = defineStore("subscriber", () => {
         userId: loginInfo.value!.id,
         job: params.job,
         city: params.city,
+        platform: params.platform,
         cookies: params.cookies,
       }).then((res: any) => {
         if (res.code === 200) {

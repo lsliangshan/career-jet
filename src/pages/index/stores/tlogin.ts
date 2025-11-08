@@ -18,6 +18,9 @@ export interface CustomLoginInfo {
   phonenum: string;
   cookie: CookieItem[];
   expireAt: number;
+  username?: string;
+  userId?: string;
+  avatar?: string;
 }
 
 const CUSTOM_LOGIN_INFO_KEY = "customLoginInfo";
@@ -32,12 +35,18 @@ export const useTLoginStore = defineStore("tlogin", () => {
       phonenum: "",
       cookie: [],
       expireAt: 0,
+      username: "",
+      userId: "",
+      avatar: "",
     },
     [SupportedPlatform.BOSS]: {
       type: SupportedPlatform.BOSS,
       phonenum: "",
       cookie: [],
       expireAt: 0,
+      username: "",
+      userId: "",
+      avatar: "",
     },
   });
 
@@ -55,6 +64,9 @@ export const useTLoginStore = defineStore("tlogin", () => {
   function setCustomLoginInfo(params: {
     type: SupportedPlatform;
     phonenum: string;
+    username?: string;
+    userId?: string;
+    avatar?: string;
     cookie: CookieItem[];
   }) {
     if (params.type === SupportedPlatform.ZHAOPIN) {
@@ -68,14 +80,20 @@ export const useTLoginStore = defineStore("tlogin", () => {
         ...params,
         expireAt,
       };
-
-      uni.setStorageSync(CUSTOM_LOGIN_INFO_KEY, customLoginInfo.value);
+      
     } else if (params.type === SupportedPlatform.BOSS) {
+      const cookieWt2 = params.cookie.find((item) => item.name === "wt2");
+      let expireAt = -1;
+      if (cookieWt2) {
+        expireAt = parseInt(String(cookieWt2.expires * 1000));
+      }
       customLoginInfo.value[SupportedPlatform.BOSS] = {
         ...customLoginInfo.value[SupportedPlatform.BOSS],
         ...params,
+        expireAt,
       };
     }
+    uni.setStorageSync(CUSTOM_LOGIN_INFO_KEY, customLoginInfo.value);
 
     // 更新订阅计划中的cookies
     if (subscriber.value && subscriber.value!.id) {
@@ -92,6 +110,9 @@ export const useTLoginStore = defineStore("tlogin", () => {
       phonenum: "",
       cookie: [],
       expireAt: 0,
+      username: "",
+      userId: "",
+      avatar: "",
     };
     uni.setStorageSync(CUSTOM_LOGIN_INFO_KEY, customLoginInfo.value);
   }
@@ -107,6 +128,9 @@ export const useTLoginStore = defineStore("tlogin", () => {
           cookie: [],
           phonenum: "",
           expireAt: 0,
+          username: "",
+          userId: "",
+          avatar: "",
         };
         resolve(true);
       }
@@ -121,6 +145,9 @@ export const useTLoginStore = defineStore("tlogin", () => {
           cookie: [],
           phonenum: "",
           expireAt: 0,
+          username: "",
+          userId: "",
+          avatar: "",
         };
         resolve(false);
       } else {

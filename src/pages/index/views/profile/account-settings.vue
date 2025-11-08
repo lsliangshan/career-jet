@@ -38,7 +38,7 @@
             :style="{
               backgroundColor: ThemeColors.bgCard,
             }"
-            @click="handleZhaopinLogin"
+            @click="handlePlatformLogin(platform.type)"
           >
             <view class="flex flex-row items-center">
               <image
@@ -62,7 +62,9 @@
                   color: ThemeColors.text.label,
                 }"
                 >{{
-                  renderLoginInfo(platform.type)?.phonenum || "去登录"
+                  renderLoginInfo(platform.type)?.username ||
+                  renderLoginInfo(platform.type)?.phonenum ||
+                  "去登录"
                 }}</text
               >
               <image
@@ -166,15 +168,9 @@ onMounted(async () => {
   // ]);
 });
 
-function handleZhaopinLogin() {
+function handlePlatformLogin(type: SupportedPlatform) {
   uni.navigateTo({
-    url: "/pages/thirdpart-login/thirdpart-login?type=zhaopin",
-  });
-}
-
-function handleBossLogin() {
-  uni.navigateTo({
-    url: "/pages/thirdpart-login/thirdpart-login?type=boss",
+    url: `/pages/thirdpart-login/thirdpart-login?type=${type}`,
   });
 }
 </script>

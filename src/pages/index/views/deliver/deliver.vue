@@ -78,7 +78,7 @@ import { storeToRefs } from "pinia";
 const profileStore = useProfileStore();
 const { followedPlatforms } = storeToRefs(profileStore);
 
-const safeTop = uni.getSystemInfoSync().safeAreaInsets?.top || 0;
+const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
 
 const currentIndex = ref<number>(0);
 

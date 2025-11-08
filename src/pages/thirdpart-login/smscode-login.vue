@@ -2,6 +2,7 @@
   <view class="w-full">
     <view
       class="w-full h-[100rpx] pl-[24rpx] pr-[24rpx] box-border flex flex-row items-center bg-[#fff]"
+      v-if="!isLoggedIn"
     >
       <view class="w-[100rpx] h-full shrink-0 flex flex-row items-center">
         <text class="text-[28rpx] text-[#333]">手机号</text>
@@ -89,7 +90,7 @@
         </text>
       </view>
     </view>
-    <view
+    <!-- <view
       class="w-full h-[120rpx] pl-[24rpx] pr-[24rpx] box-border flex flex-row items-center justify-center"
       v-else
     >
@@ -98,6 +99,37 @@
         @click="handleLogout"
       >
         <text class="text-[28rpx] text-[#fff]">退出登录</text>
+      </view>
+    </view> -->
+    <view
+      class="absolute left-0 top-0 w-full h-full flex flex-col gap-[24rpx]"
+      v-else
+    >
+      <view
+        class="w-full h-[200rpx] mt-[40rpx] flex flex-row items-center justify-center"
+      >
+        <image
+          class="w-[200rpx] h-[200rpx] rounded-[32rpx] overflow-hidden"
+          :src="loginInfo?.avatar"
+        ></image>
+      </view>
+      <view class="w-full flex flex-row items-center justify-center">
+        <text
+          class="text-[28rpx] font-[500]"
+          :style="{ color: ThemeColors.text.title }"
+          >{{ loginInfo?.username }}</text
+        >
+      </view>
+
+      <view
+        class="w-full h-[120rpx] pl-[24rpx] pr-[24rpx] box-border flex flex-row items-center justify-center"
+      >
+        <view
+          class="h-[64rpx] pl-[24rpx] pr-[24rpx] bg-[#ff3333] active:bg-[#e62e2e] box-border flex flex-row items-center justify-center rounded-[8rpx] overflow-hidden"
+          @click="handleLogout"
+        >
+          <text class="text-[28rpx] text-[#fff]">退出登录</text>
+        </view>
       </view>
     </view>
   </view>
@@ -110,6 +142,7 @@ import { useTLoginStore } from "../index/stores/tlogin";
 import { requestThirdPartLogin, requestThirdPartSmsCode } from "@/request";
 import { storeToRefs } from "pinia";
 import { SupportedPlatform } from "@/types";
+import { ThemeColors } from "@/config/config";
 
 const loginType = ref(SupportedPlatform.ZHAOPIN);
 
@@ -252,12 +285,19 @@ function handleLogin() {
         type: loginType.value,
         phonenum: phonenum.value,
         cookie: res.data.cookies,
+        username: decodeURIComponent(res.data.data.username),
+        userId: res.data.data.userId,
+        avatar: decodeURIComponent(res.data.data.avatar),
       });
 
       eventChannel.emit("loginSuccess", {
         type: loginType.value,
         phonenum: phonenum.value,
-        cookie: loginInfo.value?.cookie,
+        // cookie: loginInfo.value?.cookie,
+        cookie: res.data.cookies,
+        username: decodeURIComponent(res.data.data.username),
+        userId: res.data.data.userId,
+        avatar: decodeURIComponent(res.data.data.avatar),
       });
 
       uni.navigateBack({

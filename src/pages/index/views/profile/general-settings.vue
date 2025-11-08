@@ -149,6 +149,7 @@
               class="h-[40rpx] px-[8rpx] box-border rounded-[8rpx] overflow-hidden flex flex-row items-center justify-center"
               :style="{ backgroundColor: ThemeColors.primary100 }"
               v-for="platform in followedPlatforms.slice(0, 2)"
+              :key="platform"
             >
               <text
                 class="text-[20rpx]"

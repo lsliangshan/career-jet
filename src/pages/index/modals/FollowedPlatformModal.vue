@@ -49,7 +49,7 @@ import { SupportedPlatform } from "@/types";
 const profileStore = useProfileStore();
 const { followedPlatforms } = storeToRefs(profileStore);
 
-const safeBottom = uni.getSystemInfoSync().safeAreaInsets?.bottom || 0;
+const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
 function handleChangeFollowedPlatform(e: any, type: SupportedPlatform) {
   if (e.detail.value) {

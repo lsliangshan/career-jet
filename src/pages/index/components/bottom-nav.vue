@@ -35,7 +35,7 @@ import { storeToRefs } from "pinia";
 const navStore = useNavStore();
 const { currentIndex } = storeToRefs(navStore);
 
-const safeBottom = uni.getSystemInfoSync().safeAreaInsets?.bottom || 0;
+const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
 function changeTab(index: number) {
   navStore.changeTab(index);

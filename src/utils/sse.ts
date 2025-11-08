@@ -7,37 +7,42 @@ export function useStreamingRequest() {
   let buffer: string = ""; // 用于拼接可能被拆分的数据包
 
   function sendStreamRequest(
-    url: string,
-    data: any,
-    onMessage: (data: any) => void,
-    onError: (error: any) => void,
-    onComplete: () => void
+    params: {
+      url: string,
+      method: "GET" | "POST",
+      data?: any,
+      header?: {
+        [key: string]: string;
+      };
+      onMessage?: (data: any) => void;
+      onError?: (error: any) => void;
+      onComplete?: () => void;
+    }
   ) {
     isLoading.value = true;
     buffer = ""; // 重置缓冲区
 
     requestTask = uni.request({
-      url: url,
-      method: "POST", // 根据后端接口调整
-      data: data,
+      url: params.url,
+      method: params.method, // 根据后端接口调整
+      data: params.data,
       header: {
         "Content-Type": "application/json",
         Accept: "text/event-stream", // 告知服务器需要SSE流
-        Authorization: uni.getStorageSync("token"), // 按需添加token
+        ...params.header,
       },
       enableChunked: true, // **核心：启用分块传输**
-      responseType: "arraybuffer", // **核心：响应类型设为arraybuffer**
+      // responseType: "arraybuffer", // **核心：响应类型设为arraybuffer**
       success: (res) => {
         // 注意：开启 enableChunked 后，完整响应最终会走到这里，但主要数据在 onChunkReceived
-        console.log("请求成功（最终响应）:", res);
+        // console.log("请求成功（最终响应）:", res);
       },
       fail: (err) => {
-        console.error("请求失败:", err);
-        onError?.(err);
+        params.onError?.(err);
       },
       complete: () => {
         isLoading.value = false;
-        onComplete?.();
+        params.onComplete?.();
       },
     });
 
@@ -66,10 +71,12 @@ export function useStreamingRequest() {
             // 如果数据是JSON，可以解析
             try {
               const jsonData = JSON.parse(eventData);
-              onMessage?.(jsonData);
+              console.log('>>>>> jsonData: ', jsonData)
+              params.onMessage?.(jsonData);
             } catch (e) {
+              console.log('>>>>>>> errroror', e)
               // 非JSON数据，直接返回
-              onMessage?.(eventData);
+              params.onMessage?.(eventData);
             }
           }
           // 可以处理其他SSE字段，如 'event:', 'id:'

@@ -94,7 +94,7 @@ import Layout from "@/components/layout/layout.vue";
 import PositionList from "./position-list.vue";
 import { useProfileStore } from "../../stores/profile";
 
-const safeTop = uni.getSystemInfoSync().safeAreaInsets?.top || 0;
+const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
 
 const positionStore = usePositionStore();
 const { positions } = storeToRefs(positionStore);

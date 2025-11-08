@@ -99,7 +99,7 @@ const { subscriber } = storeToRefs(subscriberStore);
 
 const deliverStore = useDeliverStore();
 
-const safeBottom = uni.getSystemInfoSync().safeAreaInsets?.bottom || 0;
+const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
 const refresherTriggered = ref(false);
 

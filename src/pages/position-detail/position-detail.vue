@@ -260,7 +260,7 @@ const deliverStore = useDeliverStore();
 const number = ref("");
 const type = ref<SupportedPlatform>(SupportedPlatform.ZHAOPIN);
 
-const safeBottom = uni.getSystemInfoSync().safeAreaInsets?.bottom || 0;
+const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
 const defaultCompanyLogo = "../../static/icon_company.png";
 

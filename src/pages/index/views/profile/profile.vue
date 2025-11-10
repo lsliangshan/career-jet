@@ -51,6 +51,17 @@
             </template>
 
             <view
+              class="w-full h-[64rpx] flex flex-row items-center justify-center"
+            >
+              <view
+                class="w-[200rpx] h-full bg-red-500 flex flex-row items-center justify-center rounded-[8rpx] overflow-hidden active:bg-[#e62e2e]"
+                @click="handleWs"
+              >
+                <text class="text-[28rpx] text-[#fff]">点击</text>
+              </view>
+            </view>
+
+            <view
               class="w-full h-[80rpx] mt-[64rpx] flex flex-row items-center justify-center"
               v-if="isLoggedIn"
             >
@@ -132,6 +143,15 @@ const refresherrefresh = async () => {
 
 function handleLogout() {
   userStore.logout();
+}
+
+function handleWs() {
+  uni.connectSocket({
+    url: "wss://127.0.0.1:4000/ws",
+    success: (res) => {
+      console.log(">>>>>> res", res);
+    },
+  });
 }
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <view>
+  <view v-if="followedPlatforms.length > 0">
     <view class="w-full h-[64rpx] mb-[12rpx] flex flex-row items-center">
       <text
         class="text-[24rpx] text-shadow-[0_0_10rpx_rgba(255,255,255,0.1)]"

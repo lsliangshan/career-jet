@@ -89,11 +89,7 @@ import { useStreamingRequest } from "@/utils/sse";
 import { useTLoginStore } from "@/pages/index/stores/tlogin";
 import { storeToRefs } from "pinia";
 import { ThemeColors } from "@/config/config";
-
-const tLoginStore = useTLoginStore();
-const { customLoginInfo } = storeToRefs(tLoginStore);
-
-const eventChannel = inject("eventChannel") as any;
+import { SocketType, useSocketStore } from "@/pages/index/stores/socket";
 
 interface Props {
   type: SupportedPlatform;
@@ -101,7 +97,16 @@ interface Props {
 
 const props = defineProps<Props>();
 
+const tLoginStore = useTLoginStore();
+const { customLoginInfo } = storeToRefs(tLoginStore);
+
+const socketStore = useSocketStore();
+
+const eventChannel = inject("eventChannel") as any;
+
 const loginType = ref(SupportedPlatform.BOSS);
+
+const socketTask = ref<UniApp.SocketTask | null>(null);
 
 const qrcodeImage = ref("");
 
@@ -120,12 +125,69 @@ const isLoggedIn = computed(() => {
 onMounted(() => {
   loginType.value = props.type;
   if (!isLoggedIn.value) {
-    connectSSE();
+    connectSocket();
   } else {
     isLoading.value = false;
     isReady.value = true;
   }
 });
+
+function connectSocket() {
+  socketTask.value = socketStore.createSocket({
+    type: SocketType.CRAWLERJET_THIRD_QRCODE_LOGIN,
+    params: {
+      type: props.type,
+    },
+    onMessage: (result: any) => {
+      try {
+        const data = JSON.parse(result.data);
+        if (data.eventName === "init-qrcode") {
+          qrcodeImage.value = data.data.miniQrcode;
+          hasError.value = false;
+          isLoading.value = false;
+          isReady.value = true;
+        } else if (data.eventName === "login-result") {
+          if (data.code == 200) {
+            // 登录成功
+            tLoginStore.setCustomLoginInfo({
+              type: props.type,
+              phonenum: "",
+              cookie: data.cookies,
+              username: decodeURIComponent(data.data.username),
+              userId: data.data.userId,
+              avatar: decodeURIComponent(data.data.avatar),
+            });
+
+            eventChannel.emit("loginSuccess", {
+              type: props.type,
+              phonenum: "",
+              cookie: data.cookies,
+              username: decodeURIComponent(data.data.username),
+              userId: data.data.userId,
+              avatar: decodeURIComponent(data.data.avatar),
+            });
+
+            uni.navigateBack({
+              complete: () => {
+                uni.showToast({
+                  title: "登录成功",
+                  icon: "none",
+                });
+              },
+            });
+          } else {
+            uni.showToast({
+              title: data.message || "登录失败",
+              icon: "none",
+            });
+          }
+        }
+      } catch (error) {
+        console.error("error: ", error);
+      }
+    },
+  });
+}
 
 function connectSSE() {
   const { sendStreamRequest } = useStreamingRequest();

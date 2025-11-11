@@ -146,11 +146,27 @@ function handleLogout() {
 }
 
 function handleWs() {
-  uni.connectSocket({
-    url: "wss://127.0.0.1:4000/ws",
+  const socketTask: UniApp.SocketTask = uni.connectSocket({
+    url: "wss://127.0.0.1:4000/crawlerjet-third-qrcode-login2?type=boss",
     success: (res) => {
       console.log(">>>>>> res", res);
     },
+  });
+
+  socketTask.onOpen(() => {
+    console.log(">>>>>> onOpen");
+  });
+
+  socketTask.onMessage((res) => {
+    console.log(">>>>>> onMessage", res);
+  });
+
+  socketTask.onClose(() => {
+    console.log(">>>>>> onClose");
+  });
+
+  socketTask.onError((err) => {
+    console.log(">>>>>> onError", err);
   });
 }
 </script>

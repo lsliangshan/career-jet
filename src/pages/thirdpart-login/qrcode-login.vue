@@ -148,8 +148,8 @@ function connectSocket() {
           isReady.value = true;
         } else if (data.eventName === "qrcode-scaned") {
           // 扫码成功
-          uni.showToast({
-            title: "扫码成功",
+          uni.showLoading({
+            title: "正在登录",
             icon: "none",
           });
         } else if (data.eventName === "login-result") {
@@ -173,14 +173,18 @@ function connectSocket() {
               avatar: decodeURIComponent(data.data.avatar),
             });
 
-            uni.navigateBack({
-              complete: () => {
-                uni.showToast({
-                  title: "登录成功",
-                  icon: "none",
-                });
-              },
-            });
+            uni.hideLoading();
+
+            const t = setTimeout(() => {
+              uni.navigateBack({
+                complete: () => {
+                  uni.showToast({
+                    title: "登录成功",
+                    icon: "none",
+                  });
+                },
+              });
+            }, 200);
           } else {
             uni.showToast({
               title: data.message || "登录失败",

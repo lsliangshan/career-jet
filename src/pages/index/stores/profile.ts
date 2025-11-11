@@ -24,14 +24,16 @@ export const useProfileStore = defineStore("profile", () => {
   const followedCity = ref(uni.getStorageSync(FOLLOWED_CITY_KEY) || "");
 
   // 关注的平台
-  const followedPlatforms = ref<SupportedPlatform[]>(uni.getStorageSync(FOLLOWED_PLATFORMS_KEY) || []);
+  const followedPlatforms = ref<SupportedPlatform[]>(
+    uni.getStorageSync(FOLLOWED_PLATFORMS_KEY) || [SupportedPlatform.ZHAOPIN]
+  );
 
   onMounted(() => {
     const localFollowedPlatforms = uni.getStorageSync(FOLLOWED_PLATFORMS_KEY);
     if (localFollowedPlatforms) {
       followedPlatforms.value = localFollowedPlatforms;
     }
-  })
+  });
 
   function setFollowedPosition(position: string) {
     followedPosition.value = position;
@@ -84,7 +86,9 @@ export const useProfileStore = defineStore("profile", () => {
   }
 
   function removeFollowedPlatform(platform: SupportedPlatform) {
-    followedPlatforms.value = followedPlatforms.value.filter((p: SupportedPlatform) => p !== platform);
+    followedPlatforms.value = followedPlatforms.value.filter(
+      (p: SupportedPlatform) => p !== platform
+    );
     uni.setStorageSync(FOLLOWED_PLATFORMS_KEY, followedPlatforms.value);
 
     if (subscriber.value && subscriber.value!.id) {

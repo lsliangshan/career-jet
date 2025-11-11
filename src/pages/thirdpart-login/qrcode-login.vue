@@ -6,13 +6,13 @@
       v-if="!isLoggedIn"
     >
       <image
-        class="w-[300rpx] h-[300rpx] z-[99]"
+        class="w-[400rpx] h-[400rpx] z-[99]"
         :show-menu-by-longpress="true"
         :src="qrcodeImage"
       ></image>
 
       <view class="w-full flex flex-row items-center justify-center">
-        <tex class="text-[24rpx] text-[#888]">长按图片登录</tex>
+        <text class="text-[24rpx] text-[#888]">长按图片登录</text>
       </view>
     </view>
 
@@ -146,6 +146,12 @@ function connectSocket() {
           hasError.value = false;
           isLoading.value = false;
           isReady.value = true;
+        } else if (data.eventName === "qrcode-scaned") {
+          // 扫码成功
+          uni.showToast({
+            title: "扫码成功",
+            icon: "none",
+          });
         } else if (data.eventName === "login-result") {
           if (data.code == 200) {
             // 登录成功

@@ -8,8 +8,8 @@ export enum SocketType {
 }
 
 export const useSocketStore = defineStore("socket", () => {
-  const baseUrl = "wss://127.0.0.1:4000";
-  // const baseUrl = "wss://napi.liangqy.com";
+  // const baseUrl = "wss://127.0.0.1:4000";
+  const baseUrl = "wss://napi.liangqy.com";
 
   const sockets = ref<Map<string, UniApp.SocketTask>>(new Map());
 
@@ -29,7 +29,7 @@ export const useSocketStore = defineStore("socket", () => {
     onMessage?: (result: UniApp.OnSocketMessageCallbackResult) => void;
   }): Promise<UniApp.SocketTask> {
     const socketId = `${sockets.value.size + 1}`;
-    console.log(">>>>>>>>>>", params.type);
+
     const socketTask: UniApp.SocketTask = uni.connectSocket({
       url:
         params.url || `${baseUrl}${params.type}?${qs.stringify(params.params)}`,

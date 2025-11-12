@@ -103,7 +103,6 @@ import { supportedPlatforms, ThemeColors } from "@/config/config";
 import { useDeliverStore } from "../../stores/deliver";
 import Empty from "@/components/empty/empty.vue";
 import { formatDate } from "@/utils/date";
-import { useProfileStore } from "../../stores/profile";
 import { useNavStore } from "../../stores/nav";
 
 interface Props {
@@ -127,9 +126,6 @@ const successTip = ref("投递列表已更新");
 
 const deliverStore = useDeliverStore();
 const { deliverRecords } = storeToRefs(deliverStore);
-
-const profileStore = useProfileStore();
-const { followedPlatforms } = storeToRefs(profileStore);
 
 const navStore = useNavStore();
 const { currentIndex: currentNavIndex } = storeToRefs(navStore);

@@ -66,6 +66,7 @@ import PositionCard from "../../components/position-card.vue";
 import RefresherSuccess from "@/components/RefresherSuccess.vue";
 import { supportedPlatforms } from "@/config/config";
 import Empty from "@/components/empty/empty.vue";
+import { useNavStore } from "../../stores/nav";
 
 interface Props {
   type: SupportedPlatform;
@@ -89,14 +90,18 @@ const successTip = ref("职位列表已更新");
 const positionStore = usePositionStore();
 const { positions } = storeToRefs(positionStore);
 
+const navStore = useNavStore();
+const { currentIndex: currentNavIndex } = storeToRefs(navStore);
+
 const renderPositions = computed(() => {
   return positions.value[props.type]?.list || [];
 });
 
 watch(
-  () => props.currentIndex,
+  [() => props.currentIndex, () => currentNavIndex.value],
   (newVal) => {
     if (
+      currentNavIndex.value === 0 &&
       supportedPlatforms[props.currentIndex].type === props.type &&
       !isInitialed.value
     ) {
@@ -113,7 +118,7 @@ watch(
 
 // 自动刷新
 async function doAutoRefresh() {
-  // refresherrefresh();
+  refresherrefresh();
 }
 
 // 下拉刷新

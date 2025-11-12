@@ -126,6 +126,11 @@ export const useDeliverStore = defineStore("deliver", () => {
       return;
     }
 
+    if (deliverRecords.value![platform].length === 0) {
+      deliverRecords.value![platform] = localDeliverRecords.value![platform];
+      localDeliverRecords.value![platform] = [];
+      return;
+    }
     for (let i = 0; i < localDeliverRecords.value![platform].length; i++) {
       const item = localDeliverRecords.value![platform][i];
       const sameDayIndex = deliverRecords.value![platform].findIndex(
@@ -163,7 +168,6 @@ export const useDeliverStore = defineStore("deliver", () => {
   function getMyRemoteDelivered(params: { platform: SupportedPlatform }) {
     return new Promise((resolve) => {
       if (!isLoggedIn.value) {
-        console.log(">>>> not login", params.platform);
         deliverRecords.value![params.platform] = [
           ...localDeliverRecords.value![params.platform],
         ];
@@ -180,6 +184,7 @@ export const useDeliverStore = defineStore("deliver", () => {
         .then((res: any) => {
           if (res.code === 200) {
             if (pageIndex.value === 1) {
+              console.log(">>>>>>>local", localDeliverRecords.value);
               remoteDelivered.value![params.platform] = res.data.result || [];
               deliverRecords.value![params.platform] = res.data.result || [];
             } else {

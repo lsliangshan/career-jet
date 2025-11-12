@@ -1,8 +1,8 @@
 import { SupportedPlatform } from "@/types";
 
-const baseUrl = "https://10.2.6.210:4000";
+// const baseUrl = "https://10.2.6.210:4000";
 // const baseUrl = "http://192.168.1.4:4000";
-// const baseUrl = "https://napi.liangqy.com";
+const baseUrl = "https://napi.liangqy.com";
 
 /**
  * 第三方登录，获取验证码

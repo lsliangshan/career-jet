@@ -11,6 +11,7 @@ const POSITIONS_KEY = "positions";
 export interface PositionItem {
   job: string;
   city: string;
+  cityPinyin: string;
   date: string;
   list: any[];
 }
@@ -37,7 +38,8 @@ export const usePositionStore = defineStore("position", () => {
   // });
 
   const profileStore = useProfileStore();
-  const { followedPosition, followedCity } = storeToRefs(profileStore);
+  const { followedPosition, followedCity, followedCityPinyin } =
+    storeToRefs(profileStore);
 
   const date = ref(new Date().toLocaleDateString("zh-CN").replaceAll("/", "-"));
 
@@ -50,6 +52,7 @@ export const usePositionStore = defineStore("position", () => {
         positions.value[platform.type] = {
           job: "",
           city: "",
+          cityPinyin: "",
           date: "",
           list: [],
         };
@@ -92,6 +95,7 @@ export const usePositionStore = defineStore("position", () => {
         type: params.type,
         job: followedPosition.value,
         city: followedCity.value,
+        cityPinyin: followedCityPinyin.value,
         cookies: customLoginInfo.value[params.type].cookie,
       }).then((res: any) => {
         if (res.code === 200) {
@@ -130,6 +134,7 @@ export const usePositionStore = defineStore("position", () => {
     positions.value[params.type] = {
       job: followedPosition.value,
       city: followedCity.value,
+      cityPinyin: followedCityPinyin.value,
       date: date.value,
       list: params.positions,
     };

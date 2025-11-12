@@ -59,6 +59,7 @@ export const useSubscriberStore = defineStore("subscriber", () => {
     id: string;
     job?: string;
     city?: string;
+    cityPinyin?: string;
     platform?: string;
     cookies?: any;
   }) {
@@ -76,6 +77,7 @@ export const useSubscriberStore = defineStore("subscriber", () => {
         userId: loginInfo.value!.id,
         job: params.job,
         city: params.city,
+        cityPinyin: params.cityPinyin,
         platform: params.platform,
         cookies: params.cookies,
       }).then((res: any) => {

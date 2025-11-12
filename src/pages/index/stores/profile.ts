@@ -3,6 +3,7 @@ import { onMounted, ref } from "vue";
 import { useSubscriberStore } from "./subscriber";
 import { storeToRefs } from "pinia";
 import { SupportedPlatform } from "@/types";
+import { convertToPinyin } from "tiny-pinyin";
 
 export enum FollowedDataType {
   FOLLOWED_POSITION = "followedPosition",
@@ -11,6 +12,7 @@ export enum FollowedDataType {
 
 const FOLLOWED_POSITION_KEY = "followedPosition";
 const FOLLOWED_CITY_KEY = "followedCity";
+const FOLLOWED_CITY_PINYIN_KEY = "followedCityPinyin";
 const FOLLOWED_PLATFORMS_KEY = "followedPlatforms";
 
 export const useProfileStore = defineStore("profile", () => {
@@ -22,6 +24,11 @@ export const useProfileStore = defineStore("profile", () => {
 
   // 关注的城市
   const followedCity = ref(uni.getStorageSync(FOLLOWED_CITY_KEY) || "");
+
+  // 关注的城市拼音
+  const followedCityPinyin = ref(
+    uni.getStorageSync(FOLLOWED_CITY_PINYIN_KEY) || ""
+  );
 
   // 关注的平台
   const followedPlatforms = ref<SupportedPlatform[]>(
@@ -49,11 +56,14 @@ export const useProfileStore = defineStore("profile", () => {
   function setFollowedCity(city: string) {
     followedCity.value = city;
     uni.setStorageSync(FOLLOWED_CITY_KEY, city);
+    followedCityPinyin.value = convertToPinyin(city, " ");
+    uni.setStorageSync(FOLLOWED_CITY_PINYIN_KEY, followedCityPinyin.value);
 
     if (subscriber.value && subscriber.value!.id) {
       subscriberStore.updateMySubscriber({
         id: subscriber.value!.id,
         city: city,
+        cityPinyin: followedCityPinyin.value,
       });
     }
   }
@@ -101,6 +111,7 @@ export const useProfileStore = defineStore("profile", () => {
 
   return {
     followedCity,
+    followedCityPinyin,
     followedPosition,
     followedPlatforms,
     setFollowedPosition,

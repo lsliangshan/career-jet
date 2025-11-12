@@ -1,8 +1,8 @@
 import { SupportedPlatform } from "@/types";
 
-// const baseUrl = "http://10.2.6.210:4000";
+const baseUrl = "https://10.2.6.210:4000";
 // const baseUrl = "http://192.168.1.4:4000";
-const baseUrl = "https://napi.liangqy.com";
+// const baseUrl = "https://napi.liangqy.com";
 
 /**
  * 第三方登录，获取验证码
@@ -71,6 +71,7 @@ export function requestDailyPositions(params: {
   type: SupportedPlatform | string;
   job: string;
   city: string;
+  cityPinyin: string;
   cookies?: any[];
 }) {
   return new Promise((resolve) => {
@@ -81,6 +82,7 @@ export function requestDailyPositions(params: {
         job: params.job,
         city: params.city,
         type: params.type,
+        cityPinyin: params.cityPinyin,
         cookies: params.cookies,
       },
       success: (res) => {
@@ -351,6 +353,7 @@ export function requestUpdateMySubscriber(params: {
   userId: string;
   job?: string;
   city?: string;
+  cityPinyin?: string;
   platform?: string;
   cookies?: any;
 }) {
@@ -363,6 +366,7 @@ export function requestUpdateMySubscriber(params: {
         userId: params.userId,
         job: params.job,
         city: params.city,
+        cityPinyin: params.cityPinyin,
         platform: params.platform,
         cookies: params.cookies,
       },

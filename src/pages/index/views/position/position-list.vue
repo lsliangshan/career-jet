@@ -30,7 +30,7 @@
         <view
           class="w-full px-[24rpx] py-[12rpx] box-border"
           v-for="position in renderPositions"
-          :key="position.id"
+          :key="position.number"
         >
           <PositionCard :info="position" :type="type" />
         </view>

@@ -51,22 +51,11 @@
             </template>
 
             <view
-              class="w-full h-[64rpx] flex flex-row items-center justify-center"
-            >
-              <view
-                class="w-[200rpx] h-full bg-red-500 flex flex-row items-center justify-center rounded-[8rpx] overflow-hidden active:bg-[#e62e2e]"
-                @click="handleWs"
-              >
-                <text class="text-[28rpx] text-[#fff]">点击</text>
-              </view>
-            </view>
-
-            <view
-              class="w-full h-[80rpx] mt-[64rpx] flex flex-row items-center justify-center"
+              class="w-full px-[12rpx] box-border h-[80rpx] mt-[64rpx] flex flex-row items-center justify-center"
               v-if="isLoggedIn"
             >
               <view
-                class="w-full h-full px-[24rpx] box-border rounded-[32rpx] overflow-hidden bg-[#ff3333] active:bg-[#e62e2e] flex flex-row items-center justify-center"
+                class="w-full h-full rounded-[40rpx] overflow-hidden bg-[#ff3333] active:bg-[#e62e2e] flex flex-row items-center justify-center"
                 @click="handleLogout"
               >
                 <text class="text-[28rpx] text-[#fff]">退出登录</text>
@@ -143,31 +132,6 @@ const refresherrefresh = async () => {
 
 function handleLogout() {
   userStore.logout();
-}
-
-function handleWs() {
-  const socketTask: UniApp.SocketTask = uni.connectSocket({
-    url: "wss://127.0.0.1:4000/crawlerjet-third-qrcode-login2?type=boss",
-    success: (res) => {
-      console.log(">>>>>> res", res);
-    },
-  });
-
-  socketTask.onOpen(() => {
-    console.log(">>>>>> onOpen");
-  });
-
-  socketTask.onMessage((res) => {
-    console.log(">>>>>> onMessage", res);
-  });
-
-  socketTask.onClose(() => {
-    console.log(">>>>>> onClose");
-  });
-
-  socketTask.onError((err) => {
-    console.log(">>>>>> onError", err);
-  });
 }
 </script>
 

@@ -61,21 +61,18 @@ export const useDeliverStore = defineStore("deliver", () => {
   const localDeliverRecords = ref<Record<SupportedPlatform, any[]>>();
 
   onBeforeMount(() => {
+    initRemoteDelivered();
     initLocalDelivered();
   });
 
   onMounted(() => {
-    initRemoteDelivered();
-    getMyRemoteDelivered({
-      platform: SupportedPlatform.ZHAOPIN,
-    }).then(() => {
-      // setTimeout(() => {
-      //   updateLocalDeliverRecords({
-      //     type: SupportedPlatform.ZHAOPIN,
-      //     numbers: ["CCL1300491210J40794888411"],
-      //   });
-      // }, 1000);
-    });
+    // const ps = [];
+    // for (const platform of followedPlatforms.value) {
+    //   ps.push(getMyRemoteDelivered({
+    //     platform: platform.type,
+    //   }));
+    // }
+    // Promise.all([ps])
 
     getMyAutoDeliveredInfo();
   });
@@ -86,6 +83,14 @@ export const useDeliverStore = defineStore("deliver", () => {
       localRecords = {};
       for (const platform of supportedPlatforms) {
         localRecords[platform.type] = [];
+      }
+    }
+
+    if (supportedPlatforms.length > Object.keys(localRecords).length) {
+      for (const platform of supportedPlatforms) {
+        if (!localRecords[platform.type]) {
+          localRecords[platform.type] = [];
+        }
       }
     }
 
@@ -158,9 +163,14 @@ export const useDeliverStore = defineStore("deliver", () => {
   function getMyRemoteDelivered(params: { platform: SupportedPlatform }) {
     return new Promise((resolve) => {
       if (!isLoggedIn.value) {
+        console.log(">>>> not login", params.platform);
+        deliverRecords.value![params.platform] = [
+          ...localDeliverRecords.value![params.platform],
+        ];
         resolve(false);
         return;
       }
+
       requestGetMyDelivered({
         platform: params.platform,
         userId: loginInfo.value!.id,
@@ -198,7 +208,7 @@ export const useDeliverStore = defineStore("deliver", () => {
     totalPage.value = 1;
 
     initLocalDelivered();
-    console.log(">>>>>> 1");
+    initRemoteDelivered();
     return new Promise((resolve) => {
       getMyRemoteDelivered({
         platform: params.type,
@@ -257,6 +267,7 @@ export const useDeliverStore = defineStore("deliver", () => {
         return;
       }
       const cookies = customLoginInfo.value[params.type].cookie;
+
       requestDeliverPosition({
         type: params.type,
         numbers: readyToDeliverNumbers,
@@ -389,9 +400,12 @@ export const useDeliverStore = defineStore("deliver", () => {
   }
 
   function isDelivered(params: { type: SupportedPlatform; number: string }) {
+    if (!params.type) {
+      return false;
+    }
     const allDelivered = [
-      ...(deliverRecords.value![params.type] || []),
-      ...(localDeliverRecords.value![params.type] || []),
+      ...(deliverRecords.value?.[params.type] || []),
+      ...(localDeliverRecords.value?.[params.type] || []),
     ].reduce((prev, curr) => {
       return [...prev, ...curr.list];
     }, []);

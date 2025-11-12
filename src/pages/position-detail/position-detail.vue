@@ -197,7 +197,7 @@
             >
               <text
                 class="text-[30rpx] font-[500] text-[#fff] pointer-events-none"
-                >已投递</text
+                >{{ renderDeliveredButtonText }}</text
               >
             </view>
             <view
@@ -224,7 +224,7 @@
                 :class="[
                   isDeliverLoading ? 'text-[#c8c8c8] pointer-events-none' : '',
                 ]"
-                >{{ isDeliverLoading ? "投递中" : "立即投递" }}</text
+                >{{ renderButtonText }}</text
               >
             </view>
             <view
@@ -258,7 +258,7 @@ const { customLoginInfo } = storeToRefs(tLoginStore);
 const deliverStore = useDeliverStore();
 
 const number = ref("");
-const type = ref<SupportedPlatform>(SupportedPlatform.ZHAOPIN);
+const type = ref<SupportedPlatform>();
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
@@ -275,6 +275,9 @@ const instance = getCurrentInstance()?.proxy as any;
 const eventChannel = instance?.getOpenerEventChannel();
 
 const loginInfo = computed(() => {
+  if (!type.value) {
+    return undefined;
+  }
   return customLoginInfo.value[type.value];
 });
 
@@ -297,6 +300,24 @@ const isDelivered = computed(() => {
     type: type.value,
     number: number.value,
   });
+});
+
+const renderDeliveredButtonText = computed(() => {
+  if (type.value == SupportedPlatform.ZHAOPIN) {
+    return "已投递";
+  } else if (type.value == SupportedPlatform.BOSS) {
+    return "已沟通";
+  }
+  return "已沟通";
+});
+
+const renderButtonText = computed(() => {
+  if (type.value == SupportedPlatform.ZHAOPIN) {
+    return isDeliverLoading.value ? "投递中" : "立即投递";
+  } else if (type.value == SupportedPlatform.BOSS) {
+    return isDeliverLoading.value ? "沟通中" : "立即沟通";
+  }
+  return isDeliverLoading.value ? "沟通中" : "立即沟通";
 });
 
 const renderTitle = computed(() => {
@@ -334,7 +355,7 @@ onLoad((options: any) => {
 });
 
 onMounted(() => {
-  if (eventChannel) {
+  if (eventChannel && eventChannel.on) {
     eventChannel.on("init-position-detail", function (data: any) {
       positionDetailFromOpener.value = data;
     });
@@ -357,6 +378,7 @@ async function handleApply() {
     return;
   }
   isDeliverLoading.value = true;
+
   const res = await deliverStore.deliverPositions({
     type: type.value,
     numbers: [number.value],

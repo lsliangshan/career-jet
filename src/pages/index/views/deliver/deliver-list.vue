@@ -96,13 +96,15 @@
 <script setup lang="ts">
 import { SupportedPlatform } from "@/types";
 import { storeToRefs } from "pinia";
-import { computed, nextTick, ref } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import PositionCard from "../../components/position-card.vue";
 import RefresherSuccess from "@/components/RefresherSuccess.vue";
-import { ThemeColors } from "@/config/config";
+import { supportedPlatforms, ThemeColors } from "@/config/config";
 import { useDeliverStore } from "../../stores/deliver";
 import Empty from "@/components/empty/empty.vue";
 import { formatDate } from "@/utils/date";
+import { useProfileStore } from "../../stores/profile";
+import { useNavStore } from "../../stores/nav";
 
 interface Props {
   type: SupportedPlatform;
@@ -117,6 +119,8 @@ const refresherTriggered = ref(false);
 
 const refresherSuccessVisible = ref(false);
 
+const isInitialed = ref(false);
+
 const isRefreshing = ref(false);
 
 const successTip = ref("投递列表已更新");
@@ -124,14 +128,34 @@ const successTip = ref("投递列表已更新");
 const deliverStore = useDeliverStore();
 const { deliverRecords } = storeToRefs(deliverStore);
 
+const profileStore = useProfileStore();
+const { followedPlatforms } = storeToRefs(profileStore);
+
+const navStore = useNavStore();
+const { currentIndex: currentNavIndex } = storeToRefs(navStore);
+
 const renderPositions = computed<{ [key: string]: any }>(() => {
   return deliverRecords.value ? deliverRecords.value[props.type] : [];
-  // return Object.fromEntries(
-  //   Object.entries(deliverRecords.value[props.type] || {}).sort(
-  //     ([keyA], [keyB]) => keyB.localeCompare(keyA)
-  //   )
-  // );
 });
+
+watch(
+  [() => props.currentIndex, () => currentNavIndex.value],
+  (newVal) => {
+    if (
+      currentNavIndex.value === 1 &&
+      supportedPlatforms[props.currentIndex].type === props.type &&
+      !isInitialed.value
+    ) {
+      nextTick(() => {
+        doAutoRefresh();
+        isInitialed.value = true;
+      });
+    }
+  },
+  {
+    immediate: true,
+  }
+);
 
 // 自动刷新
 async function doAutoRefresh() {
@@ -148,7 +172,7 @@ const refresherrefresh = async () => {
   refresherTriggered.value = true;
 
   await deliverStore.initDeliveredPositions({
-    platform: props.type,
+    type: props.type,
   });
 
   nextTick(() => {

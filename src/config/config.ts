@@ -1,7 +1,5 @@
 // 图标  https://www.figma.com/design/awcDBnJQrEtyp1pyqbNudX/Iconicool-%7C-Free-Iconset--Community-?node-id=201-2755&t=a295C2jBOqBU2wA2-0
 
-import { SupportedPlatform } from "@/types";
-
 export const tabbars = [
   {
     name: "home",
@@ -20,21 +18,6 @@ export const tabbars = [
     label: "我的",
     icon: "../../../static/tabs/tab_profile_unselect.png",
     activeIcon: "../../../static/tabs/tab_profile_select.png",
-  },
-];
-
-export const supportedPlatforms = [
-  {
-    type: SupportedPlatform.ZHAOPIN,
-    name: "zhaopin",
-    label: "智联招聘",
-    icon: "https://img09.zhaopin.com/2012/other/mobile/clive/resources/imgs/zhaopin.png",
-  },
-  {
-    type: SupportedPlatform.BOSS,
-    name: "boss",
-    label: "BOSS直聘",
-    icon: "https://img09.zhaopin.com/2012/other/mobile/clive/resources/imgs/boss.jpg",
   },
 ];
 

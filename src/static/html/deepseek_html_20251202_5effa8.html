@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>描述大师 - 游戏中心</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        :root {
+            --primary-orange: #FF9A3C;
+            --primary-blue: #4A90E2;
+            --success-green: #6DD400;
+            --accent-yellow: #FFD93D;
+            --danger-red: #FF5A5A;
+            --text-dark: #333333;
+            --text-medium: #666666;
+            --text-light: #999999;
+            --bg-gray: #F5F5F5;
+            --bg-white: #FFFFFF;
+            --border-color: #E0E0E0;
+            --shadow-light: 0 2px 12px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.12);
+            --shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.15);
+            --font-title: 'Poppins', sans-serif;
+            --font-body: 'Quicksand', sans-serif;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            background-color: #FAFAFA;
+            color: var(--text-dark);
+            max-width: 100vw;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .app-container {
+            width: 100%;
+            max-width: 375px;
+            min-height: 100vh;
+            margin: 0 auto;
+            background-color: var(--bg-white);
+            position: relative;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 状态栏样式 */
+        .status-bar {
+            height: 44px;
+            background-color: var(--bg-white);
+            padding: 0 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: var(--text-dark);
+            border-bottom: 1px solid #F0F0F0;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .status-bar .time {
+            font-weight: 600;
+        }
+        
+        .status-bar .status-icons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .status-bar .status-icons i {
+            font-size: 12px;
+        }
+        
+        /* 内容区域 */
+        .content-area {
+            padding: 16px;
+            padding-bottom: 80px; /* 为底部导航栏留出空间 */
+            overflow-y: auto;
+            height: calc(100vh - 44px);
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* 游戏中心标题 */
+        .game-center-header {
+            padding: 16px 0 24px;
+            text-align: center;
+        }
+        
+        .game-center-title {
+            font-family: var(--font-title);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #FF9A3C 0%, #4A90E2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .game-center-subtitle {
+            font-size: 16px;
+            color: var(--text-medium);
+            max-width: 280px;
+            margin: 0 auto;
+            line-height: 1.4;
+        }
+        
+        /* 游戏模式网格 */
+        .game-modes-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .game-mode-card {
+            background-color: var(--bg-white);
+            border-radius: 20px;
+            padding: 24px 20px;
+            box-shadow: var(--shadow-light);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-mode-card:hover, .game-mode-card:active {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-strong);
+        }
+        
+        .game-mode-card.featured {
+            border-color: var(--primary-orange);
+            background: linear-gradient(135deg, #FFF8F0 0%, #FFFFFF 100%);
+        }
+        
+        .mode-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 36px;
+            color: var(--bg-white);
+            position: relative;
+        }
+        
+        .mode-icon-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            transform: rotate(45deg);
+        }
+        
+        .mode-icon-1 {
+            background: linear-gradient(135deg, #FF9A3C 0%, #FF7A1C 100%);
+        }
+        
+        .mode-icon-2 {
+            background: linear-gradient(135deg, #4A90E2 0%, #2C6DB5 100%);
+        }
+        
+        .mode-icon-3 {
+            background: linear-gradient(135deg, #6DD400 0%, #4CA600 100%);
+        }
+        
+        .mode-icon-4 {
+            background: linear-gradient(135deg, #FF5A5A 0%, #E03A3A 100%);
+        }
+        
+        .mode-title {
+            font-family: var(--font-title);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        
+        .mode-description {
+            font-size: 14px;
+            color: var(--text-medium);
+            line-height: 1.4;
+            margin-bottom: 16px;
+            min-height: 40px;
+        }
+        
+        .mode-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background-color: var(--accent-yellow);
+            color: var(--text-dark);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(255, 217, 61, 0.3);
+        }
+        
+        /* 游戏进度卡片 */
+        .game-progress-card {
+            background: linear-gradient(135deg, #4A90E2 0%, #2C6DB5 100%);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            color: var(--bg-white);
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-progress-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .progress-card-title {
+            font-family: var(--font-title);
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .progress-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .progress-goal {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .goal-text {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .goal-label {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .goal-progress {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        
+        .goal-bar {
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .goal-fill {
+            height: 100%;
+            background-color: var(--accent-yellow);
+            border-radius: 4px;
+            width: 70%; /* 进度百分比 */
+            transition: width 1s ease;
+        }
+        
+        .claim-reward-btn {
+            background-color: var(--accent-yellow);
+            color: var(--text-dark);
+            border: none;
+            border-radius: 16px;
+            padding: 12px 24px;
+            font-family: var(--font-title);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 12px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .claim-reward-btn:hover, .claim-reward-btn:active {
+            background-color: #FFC947;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 217, 61, 0.3);
+        }
+        
+        .claim-reward-btn:disabled {
+            background-color: rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* 排行榜卡片 */
+        .leaderboard-card {
+            background-color: var(--bg-white);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-color);
+        }
+        
+        .leaderboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .leaderboard-title {
+            font-family: var(--font-title);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .leaderboard-title i {
+            color: var(--accent-yellow);
+        }
+        
+        .time-filter {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .time-filter-btn {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-gray);
+            color: var(--text-medium);
+            transition: all 0.3s ease;
+        }
+        
+        .time-filter-btn.active {
+            background-color: var(--primary-blue);
+            color: var(--bg-white);
+            border-color: var(--primary-blue);
+        }
+        
+        .leaderboard-list {
+            margin-bottom: 20px;
+        }
+        
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .leaderboard-item:last-child {
+            border-bottom: none;
+        }
+        
+        .rank {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 16px;
+            font-size: 14px;
+        }
+        
+        .rank-1 {
+            background: linear-gradient(135deg, #FFD93D 0%, #FFB347 100%);
+            color: var(--text-dark);
+        }
+        
+        .rank-2 {
+            background: linear-gradient(135deg, #C0C0C0 0%, #A0A0A0 100%);
+            color: var(--text-dark);
+        }
+        
+        .rank-3 {
+            background: linear-gradient(135deg, #CD7F32 0%, #B5691B 100%);
+            color: var(--bg-white);
+        }
+        
+        .rank-other {
+            background-color: var(--bg-gray);
+            color: var(--text-medium);
+        }
+        
+        .player-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--bg-white);
+        }
+        
+        .avatar-1 { background-color: #FF9A3C; }
+        .avatar-2 { background-color: #4A90E2; }
+        .avatar-3 { background-color: #6DD400; }
+        .avatar-4 { background-color: #FF5A5A; }
+        .avatar-5 { background-color: #9B51E0; }
+        
+        .player-details {
+            flex: 1;
+        }
+        
+        .player-name {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+        
+        .player-level {
+            font-size: 12px;
+            color: var(--text-medium);
+        }
+        
+        .player-score {
+            font-weight: 700;
+            color: var(--primary-orange);
+            font-size: 18px;
+        }
+        
+        .view-all-link {
+            display: block;
+            text-align: center;
+            color: var(--primary-blue);
+            font-weight: 600;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background-color: var(--bg-gray);
+        }
+        
+        .view-all-link:hover, .view-all-link:active {
+            background-color: #E8F4FF;
+        }
+        
+        /* 近期游戏卡片 */
+        .recent-games-card {
+            background-color: var(--bg-white);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-color);
+        }
+        
+        .recent-games-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .recent-games-title {
+            font-family: var(--font-title);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .recent-games-title i {
+            color: var(--primary-blue);
+        }
+        
+        .recent-games-list {
+            margin-bottom: 20px;
+        }
+        
+        .recent-game-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .recent-game-item:last-child {
+            border-bottom: none;
+        }
+        
+        .game-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            margin-right: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--bg-white);
+        }
+        
+        .image-1 { background: linear-gradient(135deg, #FF9A3C 0%, #FF7A1C 100%); }
+        .image-2 { background: linear-gradient(135deg, #4A90E2 0%, #2C6DB5 100%); }
+        .image-3 { background: linear-gradient(135deg, #6DD400 0%, #4CA600 100%); }
+        
+        .game-details {
+            flex: 1;
+        }
+        
+        .game-title {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+        
+        .game-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .game-score {
+            font-weight: 700;
+            color: var(--primary-orange);
+        }
+        
+        .game-time {
+            font-size: 14px;
+            color: var(--text-medium);
+        }
+        
+        .game-status {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        
+        .status-success {
+            background-color: rgba(109, 212, 0, 0.1);
+            color: var(--success-green);
+        }
+        
+        .status-warning {
+            background-color: rgba(255, 154, 60, 0.1);
+            color: var(--primary-orange);
+        }
+        
+        .quick-play-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .quick-play-btn {
+            background: linear-gradient(135deg, #FF9A3C 0%, #FF7A1C 100%);
+            color: var(--bg-white);
+            border: none;
+            border-radius: 20px;
+            padding: 16px 40px;
+            font-family: var(--font-title);
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(255, 154, 60, 0.3);
+        }
+        
+        .quick-play-btn:hover, .quick-play-btn:active {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(255, 154, 60, 0.4);
+        }
+        
+        /* 底部导航栏 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background-color: var(--bg-white);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 375px;
+            margin: 0 auto;
+            z-index: 100;
+            box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.08);
+            border-radius: 24px 24px 0 0;
+            padding: 0 16px;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 12px;
+            flex: 1;
+            height: 100%;
+            transition: all 0.3s ease;
+            padding: 8px 0;
+            border-radius: 12px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary-orange);
+            background-color: rgba(255, 154, 60, 0.1);
+        }
+        
+        .nav-item i {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+        
+        .nav-item .nav-label {
+            font-weight: 600;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .game-center-header {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        .game-modes-grid {
+            animation: fadeIn 0.6s ease-out 0.1s both;
+        }
+        
+        .game-progress-card {
+            animation: fadeIn 0.6s ease-out 0.2s both;
+        }
+        
+        .leaderboard-card {
+            animation: fadeIn 0.6s ease-out 0.3s both;
+        }
+        
+        .recent-games-card {
+            animation: fadeIn 0.6s ease-out 0.4s both;
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite ease-in-out;
+        }
+        
+        .float-animation {
+            animation: float 3s infinite ease-in-out;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 374px) {
+            .app-container {
+                max-width: 100%;
+            }
+            
+            .content-area {
+                padding: 12px;
+            }
+            
+            .game-modes-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .progress-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* 滚动条样式 */
+        .content-area::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .content-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .content-area::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+        
+        /* 移动端触摸优化 */
+        .game-mode-card, .time-filter-btn, .view-all-link, .quick-play-btn, .nav-item, .claim-reward-btn {
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        /* 工具类 */
+        .flex-row {
+            display: flex;
+            align-items: center;
+        }
+        
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .mb-12 {
+            margin-bottom: 12px;
+        }
+        
+        .mb-16 {
+            margin-bottom: 16px;
+        }
+        
+        .mt-20 {
+            margin-top: 20px;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div class="time">14:45</div>
+            <div class="status-icons">
+                <i class="fas fa-signal"></i>
+                <i class="fas fa-wifi"></i>
+                <i class="fas fa-battery-three-quarters"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="content-area">
+            <!-- 游戏中心标题 -->
+            <div class="game-center-header">
+                <div class="game-center-title">游戏中心</div>
+                <div class="game-center-subtitle">选择游戏模式，开始你的图片描述挑战！</div>
+            </div>
+            
+            <!-- 游戏模式网格 -->
+            <div class="game-modes-grid">
+                <!-- 今日挑战 -->
+                <div class="game-mode-card featured" id="dailyChallengeCard">
+                    <div class="mode-icon-wrapper mode-icon-1 float-animation">
+                        <i class="fas fa-calendar-star"></i>
+                    </div>
+                    <div class="mode-badge">每日</div>
+                    <div class="mode-title">今日挑战</div>
+                    <div class="mode-description">完成每日挑战，赢取双倍奖励和专属徽章</div>
+                    <div class="mode-image-preview" style="width: 100%; height: 80px; background: linear-gradient(135deg, rgba(255, 154, 60, 0.2) 0%, rgba(255, 122, 28, 0.2) 100%); border-radius: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #FF9A3C;">
+                        <i class="fas fa-mountain"></i>
+                    </div>
+                    <div style="font-size: 14px; color: var(--text-dark); font-weight: 600; margin-bottom: 12px;">雪山风景</div>
+                    <div style="font-size: 12px; color: var(--text-medium);">今日挑战图片</div>
+                </div>
+                
+                <!-- 自由练习 -->
+                <div class="game-mode-card" id="freePracticeCard">
+                    <div class="mode-icon-wrapper mode-icon-2">
+                        <i class="fas fa-images"></i>
+                    </div>
+                    <div class="mode-title">自由练习</div>
+                    <div class="mode-description">选择难度等级，练习描述各种图片，提升观察力</div>
+                    <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+                        <span style="font-size: 12px; background-color: #E8F4FF; color: #4A90E2; padding: 4px 10px; border-radius: 12px;">5个等级</span>
+                        <span style="font-size: 12px; background-color: #E8F4FF; color: #4A90E2; padding: 4px 10px; border-radius: 12px;">无限练习</span>
+                    </div>
+                </div>
+                
+                <!-- 快速游戏 -->
+                <div class="game-mode-card" id="quickGameCard">
+                    <div class="mode-icon-wrapper mode-icon-3">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="mode-title">快速游戏</div>
+                    <div class="mode-description">随机挑战一张图片，测试你的观察和描述能力</div>
+                    <div style="margin-top: 12px; width: 100%;">
+                        <div style="font-size: 14px; color: var(--text-medium); margin-bottom: 4px;">随机等级图片</div>
+                        <div style="height: 6px; background-color: var(--bg-gray); border-radius: 3px; overflow: hidden;">
+                            <div style="width: 100%; height: 100%; background: linear-gradient(90deg, #6DD400, #4CA600); border-radius: 3px;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 主题挑战 -->
+                <div class="game-mode-card" id="themeChallengeCard">
+                    <div class="mode-icon-wrapper mode-icon-4">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <div class="mode-title">主题挑战</div>
+                    <div class="mode-description">特定主题图片挑战，如动物、风景、建筑等</div>
+                    <div style="margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;">
+                        <span style="font-size: 10px; background-color: rgba(255, 90, 90, 0.1); color: #FF5A5A; padding: 3px 8px; border-radius: 10px;">动物</span>
+                        <span style="font-size: 10px; background-color: rgba(255, 90, 90, 0.1); color: #FF5A5A; padding: 3px 8px; border-radius: 10px;">风景</span>
+                        <span style="font-size: 10px; background-color: rgba(255, 90, 90, 0.1); color: #FF5A5A; padding: 3px 8px; border-radius: 10px;">建筑</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 游戏进度卡片 -->
+            <div class="game-progress-card">
+                <div class="progress-card-title">本周游戏进度</div>
+                
+                <div class="progress-stats">
+                    <div class="progress-stat">
+                        <div class="stat-value">7</div>
+                        <div class="stat-label">游戏次数</div>
+                    </div>
+                    <div class="progress-stat">
+                        <div class="stat-value">86</div>
+                        <div class="stat-label">平均分</div>
+                    </div>
+                    <div class="progress-stat">
+                        <div class="stat-value">327</div>
+                        <div class="stat-label">词汇量</div>
+                    </div>
+                </div>
+                
+                <div class="progress-goal">
+                    <div class="goal-text">
+                        <div class="goal-label">本周目标</div>
+                        <div class="goal-progress">7/10</div>
+                    </div>
+                    <div class="goal-bar">
+                        <div class="goal-fill" id="weeklyGoalFill"></div>
+                    </div>
+                </div>
+                
+                <button class="claim-reward-btn" id="claimRewardBtn" disabled>
+                    <i class="fas fa-gift"></i>
+                    <span>完成3次游戏后领取奖励</span>
+                </button>
+            </div>
+            
+            <!-- 排行榜卡片 -->
+            <div class="leaderboard-card">
+                <div class="leaderboard-header">
+                    <div class="leaderboard-title">
+                        <i class="fas fa-trophy"></i>
+                        <span>好友排行榜</span>
+                    </div>
+                    <div class="time-filter">
+                        <button class="time-filter-btn active" data-period="week">本周</button>
+                        <button class="time-filter-btn" data-period="month">本月</button>
+                        <button class="time-filter-btn" data-period="all">全部</button>
+                    </div>
+                </div>
+                
+                <div class="leaderboard-list">
+                    <div class="leaderboard-item">
+                        <div class="rank rank-1">1</div>
+                        <div class="player-info">
+                            <div class="player-avatar avatar-1">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="player-details">
+                                <div class="player-name">小明</div>
+                                <div class="player-level">等级 8</div>
+                            </div>
+                        </div>
+                        <div class="player-score">98</div>
+                    </div>
+                    
+                    <div class="leaderboard-item">
+                        <div class="rank rank-2">2</div>
+                        <div class="player-info">
+                            <div class="player-avatar avatar-2">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="player-details">
+                                <div class="player-name">小红</div>
+                                <div class="player-level">等级 7</div>
+                            </div>
+                        </div>
+                        <div class="player-score">95</div>
+                    </div>
+                    
+                    <div class="leaderboard-item">
+                        <div class="rank rank-3">3</div>
+                        <div class="player-info">
+                            <div class="player-avatar avatar-3">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="player-details">
+                                <div class="player-name">小华</div>
+                                <div class="player-level">等级 6</div>
+                            </div>
+                        </div>
+                        <div class="player-score">92</div>
+                    </div>
+                    
+                    <div class="leaderboard-item">
+                        <div class="rank rank-other">4</div>
+                        <div class="player-info">
+                            <div class="player-avatar avatar-4">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="player-details">
+                                <div class="player-name">小刚</div>
+                                <div class="player-level">等级 5</div>
+                            </div>
+                        </div>
+                        <div class="player-score">89</div>
+                    </div>
+                    
+                    <div class="leaderboard-item">
+                        <div class="rank rank-other">5</div>
+                        <div class="player-info">
+                            <div class="player-avatar avatar-5">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="player-details">
+                                <div class="player-name">我</div>
+                                <div class="player-level">等级 4</div>
+                            </div>
+                        </div>
+                        <div class="player-score">86</div>
+                    </div>
+                </div>
+                
+                <a href="#" class="view-all-link" id="viewLeaderboardBtn">
+                    查看完整排行榜
+                </a>
+            </div>
+            
+            <!-- 近期游戏卡片 -->
+            <div class="recent-games-card">
+                <div class="recent-games-header">
+                    <div class="recent-games-title">
+                        <i class="fas fa-history"></i>
+                        <span>近期游戏</span>
+                    </div>
+                    <a href="#" style="font-size: 14px; color: var(--primary-blue); text-decoration: none; font-weight: 600;">更多</a>
+                </div>
+                
+                <div class="recent-games-list">
+                    <div class="recent-game-item">
+                        <div class="game-image image-1">
+                            <i class="fas fa-mountain"></i>
+                        </div>
+                        <div class="game-details">
+                            <div class="game-title">雪山风景</div>
+                            <div class="game-info">
+                                <span class="game-score">92分</span>
+                                <span class="game-time">10分钟前</span>
+                            </div>
+                        </div>
+                        <div class="game-status status-success">
+                            <i class="fas fa-check-circle"></i>
+                            <span>优秀</span>
+                        </div>
+                    </div>
+                    
+                    <div class="recent-game-item">
+                        <div class="game-image image-2">
+                            <i class="fas fa-bicycle"></i>
+                        </div>
+                        <div class="game-details">
+                            <div class="game-title">自行车</div>
+                            <div class="game-info">
+                                <span class="game-score">78分</span>
+                                <span class="game-time">1小时前</span>
+                            </div>
+                        </div>
+                        <div class="game-status status-warning">
+                            <i class="fas fa-redo-alt"></i>
+                            <span>需改进</span>
+                        </div>
+                    </div>
+                    
+                    <div class="recent-game-item">
+                        <div class="game-image image-3">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="game-details">
+                            <div class="game-title">房屋</div>
+                            <div class="game-info">
+                                <span class="game-score">95分</span>
+                                <span class="game-time">昨天</span>
+                            </div>
+                        </div>
+                        <div class="game-status status-success">
+                            <i class="fas fa-check-circle"></i>
+                            <span>优秀</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quick-play-section">
+                    <button class="quick-play-btn pulse-animation" id="quickPlayBtn">
+                        <i class="fas fa-bolt"></i>
+                        <span>快速游戏</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部导航栏 -->
+        <div class="bottom-nav">
+            <a href="home.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span class="nav-label">大厅</span>
+            </a>
+            <a href="game.html" class="nav-item active">
+                <i class="fas fa-gamepad"></i>
+                <span class="nav-label">游戏</span>
+            </a>
+            <a href="history.html" class="nav-item">
+                <i class="fas fa-history"></i>
+                <span class="nav-label">历史</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span class="nav-label">我的</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- 难度选择模态框 -->
+    <div id="levelSelectModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 16px;">
+        <div style="background-color: white; border-radius: 20px; width: 100%; max-width: 320px; padding: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+            <div style="font-family: var(--font-title); font-size: 24px; font-weight: 700; margin-bottom: 20px; text-align: center; color: var(--text-dark);">选择难度等级</div>
+            
+            <div style="margin-bottom: 24px;">
+                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px;">
+                    <div class="level-select-option" data-level="1" style="background-color: #E8F5E9; border-radius: 12px; padding: 16px 0; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
+                        <div style="font-weight: 700; font-size: 20px; color: #4CAF50;">L1</div>
+                        <div style="font-size: 12px; color: #666; margin-top: 4px;">简单</div>
+                    </div>
+                    <div class="level-select-option" data-level="2" style="background-color: #E3F2FD; border-radius: 12px; padding: 16px 0; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
+                        <div style="font-weight: 700; font-size: 20px; color: #2196F3;">L2</div>
+                        <div style="font-size: 12px; color: #666; margin-top: 4px;">基础</div>
+                    </div>
+                    <div class="level-select-option" data-level="3" style="background-color: #FFF3E0; border-radius: 12px; padding: 16px 0; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
+                        <div style="font-weight: 700; font-size: 20px; color: #FF9800;">L3</div>
+                        <div style="font-size: 12px; color: #666; margin-top: 4px;">中等</div>
+                    </div>
+                    <div class="level-select-option" data-level="4" style="background-color: #FCE4EC; border-radius: 12px; padding: 16px 0; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
+                        <div style="font-weight: 700; font-size: 20px; color: #E91E63;">L4</div>
+                        <div style="font-size: 12px; color: #666; margin-top: 4px;">困难</div>
+                    </div>
+                    <div class="level-select-option" data-level="5" style="background-color: #F3E5F5; border-radius: 12px; padding: 16px 0; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
+                        <div style="font-weight: 700; font-size: 20px; color: #9C27B0;">L5</div>
+                        <div style="font-size: 12px; color: #666; margin-top: 4px;">专家</div>
+                    </div>
+                </div>
+                
+                <div style="background-color: var(--bg-gray); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                    <div style="font-weight: 600; color: var(--text-dark); margin-bottom: 8px;" id="levelInfoTitle">L1 - 简单</div>
+                    <div style="font-size: 14px; color: var(--text-medium);" id="levelInfoDesc">单个简单物品，易于识别和描述</div>
+                </div>
+                
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+                    <span style="font-size: 12px; background-color: #E8F5E9; color: #4CAF50; padding: 4px 10px; border-radius: 12px;" id="levelExample1">苹果</span>
+                    <span style="font-size: 12px; background-color: #E8F5E9; color: #4CAF50; padding: 4px 10px; border-radius: 12px;" id="levelExample2">书包</span>
+                    <span style="font-size: 12px; background-color: #E8F5E9; color: #4CAF50; padding: 4px 10px; border-radius: 12px;" id="levelExample3">椅子</span>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 12px;">
+                <button id="cancelLevelBtn" style="flex: 1; background-color: #F5F5F5; border: none; border-radius: 12px; padding: 14px; font-family: var(--font-title); font-weight: 600; color: #666; cursor: pointer;">取消</button>
+                <button id="confirmLevelBtn" style="flex: 1; background-color: var(--primary-orange); border: none; border-radius: 12px; padding: 14px; font-family: var(--font-title); font-weight: 600; color: white; cursor: pointer;">开始游戏</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 更新当前时间
+            function updateTime() {
+                const now = new Date();
+                const timeString = now.getHours().toString().padStart(2, '0') + ':' + 
+                                  now.getMinutes().toString().padStart(2, '0');
+                document.querySelector('.time').textContent = timeString;
+            }
+            
+            // 初始化时间
+            updateTime();
+            // 每分钟更新时间
+            setInterval(updateTime, 60000);
+            
+            // 游戏状态变量
+            let selectedLevel = 1;
+            let weeklyGames = 7; // 本周已玩游戏次数
+            let weeklyGoal = 10; // 本周目标游戏次数
+            let selectedTimeFilter = 'week';
+            
+            // 更新进度条动画
+            function updateProgressBars() {
+                // 更新本周目标进度条
+                const weeklyGoalFill = document.getElementById('weeklyGoalFill');
+                const progressPercentage = Math.min(100, (weeklyGames / weeklyGoal) * 100);
+                weeklyGoalFill.style.width = '0%';
+                setTimeout(() => {
+                    weeklyGoalFill.style.width = `${progressPercentage}%`;
+                }, 300);
+                
+                // 更新领取奖励按钮状态
+                const claimRewardBtn = document.getElementById('claimRewardBtn');
+                if (weeklyGames >= 3) {
+                    claimRewardBtn.disabled = false;
+                    claimRewardBtn.innerHTML = '<i class="fas fa-gift"></i><span>领取本周奖励</span>';
+                }
+            }
+            
+            updateProgressBars();
+            
+            // 等级信息数据
+            const levelInfoData = {
+                1: {
+                    title: "L1 - 简单",
+                    desc: "单个简单物品，易于识别和描述",
+                    examples: ["苹果", "书包", "椅子"]
+                },
+                2: {
+                    title: "L2 - 基础", 
+                    desc: "常见物品，中等复杂度",
+                    examples: ["自行车", "微波炉", "冰箱"]
+                },
+                3: {
+                    title: "L3 - 中等",
+                    desc: "场景图片，包含多个元素",
+                    examples: ["公园", "厨房", "教室"]
+                },
+                4: {
+                    title: "L4 - 困难",
+                    desc: "复杂场景，需要详细描述",
+                    examples: ["城市街景", "自然风景", "人群场景"]
+                },
+                5: {
+                    title: "L5 - 专家",
+                    desc: "抽象或专业图片，挑战性高",
+                    examples: ["艺术作品", "科学概念", "历史场景"]
+                }
+            };
+            
+            // 更新等级选择信息
+            function updateLevelInfo(level) {
+                const info = levelInfoData[level];
+                document.getElementById('levelInfoTitle').textContent = info.title;
+                document.getElementById('levelInfoDesc').textContent = info.desc;
+                
+                // 更新示例
+                const exampleElements = [
+                    document.getElementById('levelExample1'),
+                    document.getElementById('levelExample2'),
+                    document.getElementById('levelExample3')
+                ];
+                
+                // 根据等级设置不同的颜色
+                let bgColor, textColor;
+                switch(level) {
+                    case 1: bgColor = '#E8F5E9'; textColor = '#4CAF50'; break;
+                    case 2: bgColor = '#E3F2FD'; textColor = '#2196F3'; break;
+                    case 3: bgColor = '#FFF3E0'; textColor = '#FF9800'; break;
+                    case 4: bgColor = '#FCE4EC'; textColor = '#E91E63'; break;
+                    case 5: bgColor = '#F3E5F5'; textColor = '#9C27B0'; break;
+                }
+                
+                info.examples.forEach((example, index) => {
+                    if (exampleElements[index]) {
+                        exampleElements[index].textContent = example;
+                        exampleElements[index].style.backgroundColor = bgColor;
+                        exampleElements[index].style.color = textColor;
+                    }
+                });
+            }
+            
+            // 游戏模式卡片点击事件
+            document.getElementById('dailyChallengeCard').addEventListener('click', function() {
+                // 添加点击效果
+                this.style.transform = 'translateY(-5px) scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+                
+                // 模拟加载
+                const originalContent = this.innerHTML;
+                this.innerHTML = '<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;"><i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 12px; color: var(--primary-orange);"></i><div>加载中...</div></div>';
+                
+                setTimeout(() => {
+                    this.innerHTML = originalContent;
+                    alert('🎯 开始今日挑战：雪山风景\n\n挑战规则：\n1. 仔细观察雪山风景图片\n2. 用语言描述你看到的内容\n3. AI会根据你的描述评分\n4. 获得90分以上即可获胜！\n\n奖励：双倍经验值和专属徽章！');
+                }, 1000);
+            });
+            
+            document.getElementById('freePracticeCard').addEventListener('click', function() {
+                this.style.transform = 'translateY(-5px) scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+                
+                // 显示难度选择模态框
+                document.getElementById('levelSelectModal').style.display = 'flex';
+                updateLevelInfo(selectedLevel);
+                
+                // 重置等级选择
+                document.querySelectorAll('.level-select-option').forEach(option => {
+                    option.style.borderColor = 'transparent';
+                    if (parseInt(option.getAttribute('data-level')) === selectedLevel) {
+                        option.style.borderColor = 'var(--primary-orange)';
+                        option.style.transform = 'scale(1.05)';
+                    }
+                });
+            });
+            
+            document.getElementById('quickGameCard').addEventListener('click', function() {
+                this.style.transform = 'translateY(-5px) scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+                
+                // 随机选择一个等级
+                const randomLevel = Math.floor(Math.random() * 5) + 1;
+                const levelNames = {
+                    1: "简单", 2: "基础", 3: "中等", 4: "困难", 5: "专家"
+                };
+                
+                alert(`⚡ 快速游戏开始！\n随机难度：L${randomLevel} (${levelNames[randomLevel]})\n\n系统将为你随机选择一张图片进行描述挑战！`);
+            });
+            
+            document.getElementById('themeChallengeCard').addEventListener('click', function() {
+                this.style.transform = 'translateY(-5px) scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+                
+                alert('🎨 主题挑战\n\n选择你感兴趣的主题进行挑战：\n1. 动物世界\n2. 自然风景\n3. 城市建筑\n4. 美食美味\n5. 交通工具\n\n功能开发中，敬请期待！');
+            });
+            
+            // 快速游戏按钮点击事件
+            document.getElementById('quickPlayBtn').addEventListener('click', function() {
+                this.classList.add('loading');
+                const originalHTML = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>加载中...</span>';
+                
+                setTimeout(() => {
+                    this.classList.remove('loading');
+                    this.innerHTML = originalHTML;
+                    
+                    // 随机选择一个等级
+                    const randomLevel = Math.floor(Math.random() * 5) + 1;
+                    const levelNames = {
+                        1: "简单", 2: "基础", 3: "中等", 4: "困难", 5: "专家"
+                    };
+                    
+                    alert(`🎮 快速游戏开始！\n随机难度：L${randomLevel} (${levelNames[randomLevel]})\n\n准备好接受挑战了吗？点击确定开始游戏！`);
+                }, 1000);
+            });
+            
+            // 领取奖励按钮点击事件
+            document.getElementById('claimRewardBtn').addEventListener('click', function() {
+                if (!this.disabled) {
+                    this.classList.add('loading');
+                    const originalHTML = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>领取中...</span>';
+                    
+                    setTimeout(() => {
+                        this.classList.remove('loading');
+                        this.disabled = true;
+                        this.innerHTML = '<i class="fas fa-check"></i><span>已领取</span>';
+                        
+                        alert('🎁 奖励领取成功！\n\n获得奖励：\n• 经验值 +100\n• 金币 +50\n• 专属装饰品\n\n继续游戏可以获得更多奖励！');
+                    }, 1500);
+                }
+            });
+            
+            // 查看排行榜按钮点击事件
+            document.getElementById('viewLeaderboardBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('查看完整排行榜功能开发中...\n\n这里将显示所有好友的排名、等级和分数。');
+            });
+            
+            // 时间筛选按钮点击事件
+            document.querySelectorAll('.time-filter-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除所有按钮的active类
+                    document.querySelectorAll('.time-filter-btn').forEach(btn => btn.classList.remove('active'));
+                    // 为点击的按钮添加active类
+                    this.classList.add('active');
+                    
+                    // 更新选中的时间筛选
+                    selectedTimeFilter = this.getAttribute('data-period');
+                    
+                    // 模拟更新排行榜数据
+                    console.log(`切换排行榜时间筛选: ${selectedTimeFilter}`);
+                    
+                    // 根据筛选条件更新排行榜显示
+                    updateLeaderboard(selectedTimeFilter);
+                });
+            });
+            
+            // 等级选择选项点击事件
+            document.querySelectorAll('.level-select-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    // 移除所有选项的选中状态
+                    document.querySelectorAll('.level-select-option').forEach(opt => {
+                        opt.style.borderColor = 'transparent';
+                        opt.style.transform = 'scale(1)';
+                    });
+                    
+                    // 设置当前选项为选中状态
+                    this.style.borderColor = 'var(--primary-orange)';
+                    this.style.transform = 'scale(1.05)';
+                    
+                    selectedLevel = parseInt(this.getAttribute('data-level'));
+                    updateLevelInfo(selectedLevel);
+                });
+            });
+            
+            // 取消等级选择
+            document.getElementById('cancelLevelBtn').addEventListener('click', function() {
+                document.getElementById('levelSelectModal').style.display = 'none';
+            });
+            
+            // 确认等级选择并开始游戏
+            document.getElementById('confirmLevelBtn').addEventListener('click', function() {
+                const levelNames = {
+                    1: "简单", 2: "基础", 3: "中等", 4: "困难", 5: "专家"
+                };
+                
+                document.getElementById('levelSelectModal').style.display = 'none';
+                alert(`开始自由练习！\n难度等级：L${selectedLevel} (${levelNames[selectedLevel]})\n\n系统将为你随机选择一张图片进行描述挑战！`);
+            });
+            
+            // 等级选择模态框点击外部关闭
+            document.getElementById('levelSelectModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            // 底部导航栏点击事件
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // 移除所有active类
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    // 为点击的项添加active类
+                    this.classList.add('active');
+                    
+                    // 获取导航目标
+                    const target = this.querySelector('.nav-label').textContent;
+                    
+                    // 模拟导航切换
+                    if (target === '大厅') {
+                        alert('切换到大厅页面（功能开发中）');
+                    } else if (target === '历史') {
+                        alert('切换到历史记录页面（功能开发中）');
+                    } else if (target === '我的') {
+                        alert('切换到个人中心页面（功能开发中）');
+                    }
+                    // 游戏页面已经是当前页面，不需要处理
+                });
+            });
+            
+            // 更新排行榜数据
+            function updateLeaderboard(period) {
+                // 模拟根据时间段更新排行榜数据
+                console.log(`更新${period}排行榜数据`);
+                
+                // 这里可以添加根据时间段更新排行榜的逻辑
+                // 例如：重新获取数据并更新DOM
+            }
+            
+            // 添加触摸优化
+            const touchableElements = document.querySelectorAll('.game-mode-card, .time-filter-btn, .view-all-link, .quick-play-btn, .nav-item, .claim-reward-btn, .level-select-option');
+            touchableElements.forEach(element => {
+                element.addEventListener('touchstart', function() {
+                    this.style.transform = 'translateY(-2px) scale(0.98)';
+                });
+                
+                element.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                });
+            });
+            
+            // 模拟数据更新（每30秒更新一次）
+            setInterval(() => {
+                // 随机更新排行榜分数（模拟好友分数变化）
+                const scores = document.querySelectorAll('.player-score');
+                scores.forEach(score => {
+                    const currentScore = parseInt(score.textContent);
+                    // 随机小幅度变化
+                    const change = Math.random() > 0.5 ? 1 : -1;
+                    const newScore = Math.min(100, Math.max(70, currentScore + change));
+                    score.textContent = newScore;
+                });
+                
+                // 更新我的排名分数
+                const myScore = document.querySelector('.leaderboard-item:last-child .player-score');
+                const currentMyScore = parseInt(myScore.textContent);
+                const myChange = Math.random() > 0.6 ? 1 : (Math.random() > 0.3 ? 0 : -1);
+                const newMyScore = Math.min(100, Math.max(70, currentMyScore + myChange));
+                myScore.textContent = newMyScore;
+                
+                // 随机更新游戏次数
+                if (Math.random() > 0.8 && weeklyGames < weeklyGoal) {
+                    weeklyGames++;
+                    
+                    // 更新游戏次数显示
+                    document.querySelector('.stat-value:first-child').textContent = weeklyGames;
+                    document.querySelector('.goal-progress').textContent = `${weeklyGames}/${weeklyGoal}`;
+                    
+                    // 更新进度条
+                    updateProgressBars();
+                    
+                    // 添加新的近期游戏记录
+                    console.log('添加新的游戏记录');
+                }
+                
+                // 随机更新今日挑战图片
+                const challengeImages = [
+                    {icon: "fa-mountain", title: "雪山风景"},
+                    {icon: "fa-tree", title: "森林"},
+                    {icon: "fa-water", title: "湖泊"},
+                    {icon: "fa-city", title: "城市"},
+                    {icon: "fa-paw", title: "动物"}
+                ];
+                
+                if (Math.random() > 0.7) {
+                    const randomImage = challengeImages[Math.floor(Math.random() * challengeImages.length)];
+                    const challengeIcon = document.querySelector('#dailyChallengeCard .mode-image-preview i');
+                    const challengeTitle = document.querySelector('#dailyChallengeCard .mode-image-preview + div');
+                    
+                    challengeIcon.className = `fas ${randomImage.icon}`;
+                    challengeTitle.textContent = randomImage.title;
+                }
+                
+            }, 30000); // 30秒更新一次
+            
+            // 键盘快捷键支持
+            document.addEventListener('keydown', function(e) {
+                // 数字1-4选择游戏模式
+                if (e.key >= '1' && e.key <= '4') {
+                    const modeIndex = parseInt(e.key);
+                    const modeCards = document.querySelectorAll('.game-mode-card');
+                    if (modeCards[modeIndex - 1]) {
+                        modeCards[modeIndex - 1].click();
+                    }
+                }
+                
+                // 空格键快速游戏
+                if (e.key === ' ' || e.key === 'Spacebar') {
+                    e.preventDefault();
+                    document.getElementById('quickPlayBtn').click();
+                }
+                
+                // Enter键今日挑战
+                if (e.key === 'Enter') {
+                    document.getElementById('dailyChallengeCard').click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

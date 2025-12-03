@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>描述大师 - 游戏主界面</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        :root {
+            --primary-orange: #FF9A3C;
+            --primary-blue: #4A90E2;
+            --success-green: #6DD400;
+            --accent-yellow: #FFD93D;
+            --danger-red: #FF5A5A;
+            --text-dark: #333333;
+            --text-medium: #666666;
+            --text-light: #999999;
+            --bg-gray: #F5F5F5;
+            --bg-white: #FFFFFF;
+            --border-color: #E0E0E0;
+            --shadow-light: 0 2px 12px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.12);
+            --font-title: 'Poppins', sans-serif;
+            --font-body: 'Quicksand', sans-serif;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            background-color: #FAFAFA;
+            color: var(--text-dark);
+            max-width: 100vw;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .app-container {
+            width: 100%;
+            max-width: 375px;
+            min-height: 100vh;
+            margin: 0 auto;
+            background-color: var(--bg-white);
+            position: relative;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 游戏主界面容器 */
+        .game-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 顶部导航栏 */
+        .game-navbar {
+            height: 56px;
+            background-color: var(--bg-white);
+            padding: 0 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #F0F0F0;
+            z-index: 10;
+        }
+        
+        .nav-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--bg-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .nav-button:hover, .nav-button:active {
+            background-color: var(--primary-orange);
+            color: var(--bg-white);
+        }
+        
+        .game-title {
+            font-family: var(--font-title);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            text-align: center;
+        }
+        
+        /* 物品展示区域 */
+        .item-display-section {
+            background: linear-gradient(135deg, #FFEED9 0%, #FFE0B5 100%);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+        
+        .item-emoji {
+            font-size: 72px;
+            margin-bottom: 16px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .item-title {
+            font-family: var(--font-title);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-orange);
+            margin-bottom: 8px;
+        }
+        
+        .item-name {
+            font-size: 18px;
+            color: var(--text-medium);
+            opacity: 0.6;
+        }
+        
+        /* 特征提示区域 */
+        .hints-section {
+            padding: 20px 16px;
+        }
+        
+        .hints-title {
+            font-family: var(--font-title);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+        
+        .hints-list {
+            background-color: var(--bg-gray);
+            border-radius: 12px;
+            padding: 16px;
+        }
+        
+        .hint-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .hint-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .hint-bullet {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: var(--primary-orange);
+            font-size: 16px;
+        }
+        
+        .hint-text {
+            font-size: 18px;
+            color: var(--text-medium);
+            line-height: 1.4;
+            flex: 1;
+        }
+        
+        /* 思考时间进度条 */
+        .timer-section {
+            padding: 0 16px 20px;
+        }
+        
+        .timer-text {
+            font-size: 18px;
+            color: var(--text-medium);
+            margin-bottom: 8px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-blue);
+            border-radius: 4px;
+            width: 60%;
+            transition: width 0.5s linear;
+        }
+        
+        /* 录音区域 */
+        .recording-section {
+            padding: 0 16px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+        
+        .record-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--primary-orange);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 20px rgba(255, 154, 60, 0.3);
+            margin-bottom: 24px;
+            position: relative;
+        }
+        
+        .record-button:hover, .record-button:active {
+            background-color: #FF7A1C;
+            transform: scale(1.05);
+        }
+        
+        .record-button.recording {
+            background-color: var(--danger-red);
+            animation: pulse 1.5s infinite;
+            box-shadow: 0 4px 20px rgba(255, 90, 90, 0.3);
+        }
+        
+        .record-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+        
+        .record-text {
+            font-family: var(--font-title);
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .or-text {
+            font-size: 16px;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+        
+        .text-input-button {
+            background-color: var(--primary-blue);
+            color: var(--bg-white);
+            border: none;
+            border-radius: 20px;
+            padding: 12px 32px;
+            font-family: var(--font-title);
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .text-input-button:hover, .text-input-button:active {
+            background-color: #2C6DB5;
+            transform: scale(1.05);
+        }
+        
+        /* 声波动画 */
+        .sound-wave {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 40px;
+        }
+        
+        .wave-bar {
+            display: inline-block;
+            width: 10px;
+            margin: 0 4px;
+            background-color: var(--primary-orange);
+            border-radius: 2px;
+            animation: wave 1.2s ease-in-out infinite;
+        }
+        
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+        .wave-bar:nth-child(6) { animation-delay: 0.5s; }
+        .wave-bar:nth-child(7) { animation-delay: 0.6s; }
+        .wave-bar:nth-child(8) { animation-delay: 0.7s; }
+        .wave-bar:nth-child(9) { animation-delay: 0.8s; }
+        .wave-bar:nth-child(10) { animation-delay: 0.9s; }
+        
+        /* 录音界面 */
+        .recording-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 0 16px;
+        }
+        
+        .recording-header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .recording-title {
+            font-family: var(--font-title);
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        
+        .recording-subtitle {
+            font-size: 18px;
+            color: var(--text-medium);
+        }
+        
+        .recording-visualization {
+            width: 100%;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        
+        .recording-timer {
+            font-family: var(--font-title);
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--primary-orange);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .recording-timer.warning {
+            color: var(--accent-yellow);
+        }
+        
+        .recording-timer.danger {
+            color: var(--danger-red);
+            animation: blink 1s infinite;
+        }
+        
+        .recording-instruction {
+            font-size: 18px;
+            color: var(--text-medium);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .recording-controls {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .control-button {
+            padding: 12px 32px;
+            border-radius: 24px;
+            font-family: var(--font-title);
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            min-width: 120px;
+        }
+        
+        .stop-button {
+            background-color: var(--danger-red);
+            color: var(--bg-white);
+        }
+        
+        .stop-button:hover, .stop-button:active {
+            background-color: #E03A3A;
+        }
+        
+        .cancel-button {
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+        }
+        
+        .cancel-button:hover, .cancel-button:active {
+            background-color: #E0E0E0;
+        }
+        
+        /* 文字输入界面 */
+        .text-input-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-white);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        
+        .text-input-header {
+            padding: 20px 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .text-input-title {
+            font-family: var(--font-title);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .text-input-area {
+            flex: 1;
+            padding: 24px 16px;
+        }
+        
+        .text-input-field {
+            width: 100%;
+            height: 200px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            font-family: var(--font-body);
+            font-size: 18px;
+            color: var(--text-dark);
+            resize: none;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .text-input-field:focus {
+            border-color: var(--primary-blue);
+        }
+        
+        .text-input-footer {
+            padding: 20px 16px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+        }
+        
+        .submit-button {
+            flex: 1;
+            background-color: var(--primary-blue);
+            color: var(--bg-white);
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-family: var(--font-title);
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-button:hover, .submit-button:active {
+            background-color: #2C6DB5;
+        }
+        
+        .submit-button:disabled {
+            background-color: var(--border-color);
+            color: var(--text-light);
+            cursor: not-allowed;
+        }
+        
+        .text-counter {
+            text-align: right;
+            margin-top: 8px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .text-counter.warning {
+            color: var(--accent-yellow);
+        }
+        
+        .text-counter.danger {
+            color: var(--danger-red);
+        }
+        
+        /* 暂停菜单 */
+        .pause-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .pause-content {
+            background-color: var(--bg-white);
+            border-radius: 20px;
+            width: 300px;
+            padding: 32px 24px;
+            text-align: center;
+        }
+        
+        .pause-title {
+            font-family: var(--font-title);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 24px;
+        }
+        
+        .pause-options {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .pause-button {
+            padding: 16px;
+            border-radius: 12px;
+            font-family: var(--font-title);
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .resume-button {
+            background-color: var(--primary-orange);
+            color: var(--bg-white);
+        }
+        
+        .resume-button:hover, .resume-button:active {
+            background-color: #FF7A1C;
+        }
+        
+        .restart-button {
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+        }
+        
+        .restart-button:hover, .restart-button:active {
+            background-color: #E0E0E0;
+        }
+        
+        .quit-button {
+            background-color: var(--bg-white);
+            color: var(--danger-red);
+            border: 2px solid var(--danger-red);
+        }
+        
+        .quit-button:hover, .quit-button:active {
+            background-color: #FFEEEE;
+        }
+        
+        /* 动画效果 */
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 90, 90, 0.7); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 90, 90, 0); }
+        }
+        
+        @keyframes wave {
+            0%, 100% { height: 10px; }
+            50% { height: 40px; }
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @keyframes progress {
+            0% { width: 100%; }
+            100% { width: 0%; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 工具类 */
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .flex-column {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        
+        .mb-16 {
+            margin-bottom: 16px;
+        }
+        
+        .mb-24 {
+            margin-bottom: 24px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 374px) {
+            .app-container {
+                max-width: 100%;
+            }
+            
+            .game-navbar, .item-display-section, .hints-section, .timer-section, .recording-section {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+            
+            .item-emoji {
+                font-size: 64px;
+            }
+            
+            .item-title {
+                font-size: 22px;
+            }
+        }
+        
+        /* 移动端触摸优化 */
+        .nav-button, .record-button, .text-input-button, .control-button, .pause-button, .submit-button {
+            -webkit-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 游戏主界面 -->
+        <div class="game-container" id="gameContainer">
+            <!-- 顶部导航栏 -->
+            <div class="game-navbar">
+                <button class="nav-button" id="backButton">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="game-title" id="gameTitle">等级2 · 第1轮</div>
+                <button class="nav-button" id="pauseButton">
+                    <i class="fas fa-pause"></i>
+                </button>
+            </div>
+            
+            <!-- 物品展示区域 -->
+            <div class="item-display-section">
+                <div class="item-emoji" id="itemEmoji">🎁</div>
+                <div class="item-title">神秘物品</div>
+                <div class="item-name" id="itemName">【需要描述：台灯】</div>
+            </div>
+            
+            <!-- 特征提示区域 -->
+            <div class="hints-section">
+                <div class="hints-title">🎨 物品特征提示：</div>
+                <div class="hints-list">
+                    <div class="hint-item">
+                        <div class="hint-bullet">·</div>
+                        <div class="hint-text" id="hint1">有不同形状</div>
+                    </div>
+                    <div class="hint-item">
+                        <div class="hint-bullet">·</div>
+                        <div class="hint-text" id="hint2">会发光</div>
+                    </div>
+                    <div class="hint-item">
+                        <div class="hint-bullet">·</div>
+                        <div class="hint-text" id="hint3">晚上特别有用</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 思考时间进度条 -->
+            <div class="timer-section">
+                <div class="timer-text" id="timerText">⏱ 思考时间：30秒</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <!-- 录音区域 -->
+            <div class="recording-section">
+                <!-- 声波动画（默认隐藏） -->
+                <div class="sound-wave" id="soundWave">
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                </div>
+                
+                <!-- 录音按钮 -->
+                <button class="record-button" id="recordButton">
+                    <div class="record-icon" id="recordIcon">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <div class="record-text" id="recordText">按住说话</div>
+                </button>
+                
+                <div class="or-text">或</div>
+                
+                <button class="text-input-button" id="textInputButton">
+                    <i class="fas fa-keyboard"></i>
+                    <span>文字输入</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 录音界面 -->
+        <div class="recording-screen" id="recordingScreen">
+            <div class="recording-header">
+                <div class="recording-title">正在录音</div>
+                <div class="recording-subtitle">请描述你看到的物品</div>
+            </div>
+            
+            <div class="recording-visualization">
+                <div class="sound-wave" id="recordingSoundWave">
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                </div>
+            </div>
+            
+            <div class="recording-timer" id="recordingTimer">12</div>
+            
+            <div class="recording-instruction" id="recordingInstruction">松开手指结束录音</div>
+            
+            <div class="recording-controls">
+                <button class="control-button stop-button" id="stopRecordingButton">
+                    停止录音
+                </button>
+                <button class="control-button cancel-button" id="cancelRecordingButton">
+                    取消
+                </button>
+            </div>
+        </div>
+        
+        <!-- 文字输入界面 -->
+        <div class="text-input-screen" id="textInputScreen">
+            <div class="text-input-header">
+                <button class="nav-button" id="backTextInputButton">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="text-input-title">文字描述</div>
+                <div style="width: 40px;"></div> <!-- 占位 -->
+            </div>
+            
+            <div class="text-input-area">
+                <textarea 
+                    class="text-input-field" 
+                    id="textInputField" 
+                    placeholder="请描述这个物品...&#10;例如：这是一个照明工具，通常放在书桌上..." 
+                    maxlength="500"></textarea>
+                <div class="text-counter" id="textCounter">0/500</div>
+            </div>
+            
+            <div class="text-input-footer">
+                <button class="submit-button" id="submitTextButton" disabled>
+                    提交描述
+                </button>
+            </div>
+        </div>
+        
+        <!-- 暂停菜单 -->
+        <div class="pause-menu" id="pauseMenu">
+            <div class="pause-content">
+                <div class="pause-title">游戏暂停</div>
+                <div class="pause-options">
+                    <button class="pause-button resume-button" id="resumeButton">
+                        继续游戏
+                    </button>
+                    <button class="pause-button restart-button" id="restartButton">
+                        重新开始
+                    </button>
+                    <button class="pause-button quit-button" id="quitButton">
+                        退出游戏
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 游戏状态变量
+            let gameState = {
+                level: 2,
+                round: 1,
+                itemName: "台灯",
+                hints: [
+                    "有不同形状",
+                    "会发光",
+                    "晚上特别有用"
+                ],
+                thinkingTime: 30, // 思考时间（秒）
+                recordingTime: 12, // 录音时间（秒）
+                isRecording: false,
+                isPaused: false,
+                timerInterval: null,
+                recordingTimerInterval: null
+            };
+            
+            // 更新思考进度条
+            function updateProgressBar() {
+                const progressFill = document.getElementById('progressFill');
+                const timerText = document.getElementById('timerText');
+                
+                // 重置进度条
+                progressFill.style.width = '100%';
+                progressFill.style.transition = 'none';
+                
+                // 强制重绘
+                progressFill.offsetHeight;
+                
+                // 开始动画
+                progressFill.style.transition = `width ${gameState.thinkingTime}s linear`;
+                progressFill.style.width = '0%';
+                
+                // 更新倒计时文本
+                let timeLeft = gameState.thinkingTime;
+                timerText.textContent = `⏱ 思考时间：${timeLeft}秒`;
+                
+                // 更新倒计时
+                const countdownInterval = setInterval(() => {
+                    timeLeft--;
+                    timerText.textContent = `⏱ 思考时间：${timeLeft}秒`;
+                    
+                    // 根据剩余时间改变颜色
+                    if (timeLeft <= 10) {
+                        progressFill.style.backgroundColor = timeLeft <= 5 ? 
+                            'var(--danger-red)' : 'var(--accent-yellow)';
+                    }
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(countdownInterval);
+                        // 时间到，自动开始录音
+                        startRecording();
+                    }
+                }, 1000);
+            }
+            
+            // 开始录音
+            function startRecording() {
+                gameState.isRecording = true;
+                
+                // 显示录音界面
+                document.getElementById('recordingScreen').style.display = 'flex';
+                
+                // 显示声波动画
+                document.getElementById('recordingSoundWave').style.display = 'block';
+                
+                // 开始录音倒计时
+                let timeLeft = gameState.recordingTime;
+                const recordingTimer = document.getElementById('recordingTimer');
+                const recordingInstruction = document.getElementById('recordingInstruction');
+                
+                recordingTimer.textContent = timeLeft;
+                recordingTimer.className = 'recording-timer';
+                
+                // 更新倒计时
+                gameState.recordingTimerInterval = setInterval(() => {
+                    timeLeft--;
+                    recordingTimer.textContent = timeLeft;
+                    
+                    // 根据剩余时间改变样式
+                    if (timeLeft <= 5) {
+                        recordingTimer.classList.add('warning');
+                    }
+                    
+                    if (timeLeft <= 3) {
+                        recordingTimer.classList.remove('warning');
+                        recordingTimer.classList.add('danger');
+                        recordingInstruction.textContent = '时间快到了，请尽快完成描述！';
+                    }
+                    
+                    if (timeLeft <= 0) {
+                        stopRecording();
+                    }
+                }, 1000);
+            }
+            
+            // 停止录音
+            function stopRecording() {
+                gameState.isRecording = false;
+                
+                // 清除计时器
+                if (gameState.recordingTimerInterval) {
+                    clearInterval(gameState.recordingTimerInterval);
+                    gameState.recordingTimerInterval = null;
+                }
+                
+                // 隐藏录音界面
+                document.getElementById('recordingScreen').style.display = 'none';
+                document.getElementById('recordingSoundWave').style.display = 'none';
+                
+                // 重置录音按钮状态
+                const recordButton = document.getElementById('recordButton');
+                const recordIcon = document.getElementById('recordIcon');
+                const recordText = document.getElementById('recordText');
+                
+                recordButton.classList.remove('recording');
+                recordIcon.innerHTML = '<i class="fas fa-microphone"></i>';
+                recordText.textContent = '按住说话';
+                
+                // 模拟AI分析过程
+                simulateAIAnalysis();
+            }
+            
+            // 取消录音
+            function cancelRecording() {
+                gameState.isRecording = false;
+                
+                // 清除计时器
+                if (gameState.recordingTimerInterval) {
+                    clearInterval(gameState.recordingTimerInterval);
+                    gameState.recordingTimerInterval = null;
+                }
+                
+                // 隐藏录音界面
+                document.getElementById('recordingScreen').style.display = 'none';
+                document.getElementById('recordingSoundWave').style.display = 'none';
+                
+                // 重置录音按钮状态
+                const recordButton = document.getElementById('recordButton');
+                const recordIcon = document.getElementById('recordIcon');
+                const recordText = document.getElementById('recordText');
+                
+                recordButton.classList.remove('recording');
+                recordIcon.innerHTML = '<i class="fas fa-microphone"></i>';
+                recordText.textContent = '按住说话';
+            }
+            
+            // 模拟AI分析过程
+            function simulateAIAnalysis() {
+                // 显示加载状态
+                const gameContainer = document.getElementById('gameContainer');
+                gameContainer.classList.add('loading');
+                
+                // 模拟AI处理时间
+                setTimeout(() => {
+                    // 在实际应用中，这里会跳转到评分页面
+                    // window.location.href = 'score.html?item=' + encodeURIComponent(gameState.itemName);
+                    
+                    // 显示评分结果
+                    showScoreResult();
+                    
+                    // 移除加载状态
+                    gameContainer.classList.remove('loading');
+                }, 2000);
+            }
+            
+            // 显示评分结果（模拟）
+            function showScoreResult() {
+                // 随机生成一个分数（80-95之间）
+                const score = Math.floor(Math.random() * 16) + 80;
+                
+                alert(`🎉 AI评分完成！\n\n物品：${gameState.itemName}\n得分：${score}分\n\n${score >= 90 ? '太棒了！你的描述非常准确！' : '不错，但还有提升空间！'}`);
+                
+                // 根据分数决定下一步
+                if (score >= 90) {
+                    // 高分，显示胜利界面
+                    alert('🎊 恭喜你！本轮游戏结束！\n\n点击确定返回游戏大厅。');
+                    // 在实际应用中，这里会跳转到胜利界面
+                } else if (score >= 80) {
+                    // 中等分数，可以选择再描述一次
+                    const shouldRedescribe = confirm(`你的得分是 ${score} 分，还不错！\n\n是否要再描述一次以争取更高分？`);
+                    if (shouldRedescribe) {
+                        // 重置游戏状态，准备第二轮
+                        gameState.round = 2;
+                        document.getElementById('gameTitle').textContent = `等级${gameState.level} · 第${gameState.round}轮`;
+                        alert('开始第二轮描述！\n\n请继续描述这个物品。');
+                    } else {
+                        alert('本轮游戏结束！\n\n点击确定返回游戏大厅。');
+                    }
+                } else {
+                    // 低分，显示引导
+                    alert(`你的得分是 ${score} 分，需要多加练习。\n\nAI会给你一些建议来改进描述。`);
+                    // 在实际应用中，这里会显示引导界面
+                }
+            }
+            
+            // 提交文字描述
+            function submitTextDescription() {
+                const textInput = document.getElementById('textInputField');
+                const description = textInput.value.trim();
+                
+                if (description.length === 0) {
+                    alert('请输入描述内容！');
+                    return;
+                }
+                
+                // 显示加载状态
+                const textInputScreen = document.getElementById('textInputScreen');
+                textInputScreen.classList.add('loading');
+                
+                // 模拟AI处理时间
+                setTimeout(() => {
+                    // 关闭文字输入界面
+                    textInputScreen.style.display = 'none';
+                    textInputScreen.classList.remove('loading');
+                    
+                    // 显示评分结果
+                    showScoreResult();
+                    
+                    // 清空输入框
+                    textInput.value = '';
+                    document.getElementById('submitTextButton').disabled = true;
+                    document.getElementById('textCounter').textContent = '0/500';
+                    document.getElementById('textCounter').className = 'text-counter';
+                }, 1500);
+            }
+            
+            // 暂停游戏
+            function pauseGame() {
+                gameState.isPaused = true;
+                
+                // 显示暂停菜单
+                document.getElementById('pauseMenu').style.display = 'flex';
+                
+                // 暂停思考进度条动画
+                const progressFill = document.getElementById('progressFill');
+                progressFill.style.animationPlayState = 'paused';
+                
+                // 如果正在录音，也暂停录音计时器
+                if (gameState.isRecording) {
+                    if (gameState.recordingTimerInterval) {
+                        clearInterval(gameState.recordingTimerInterval);
+                        gameState.recordingTimerInterval = null;
+                    }
+                }
+            }
+            
+            // 继续游戏
+            function resumeGame() {
+                gameState.isPaused = false;
+                
+                // 隐藏暂停菜单
+                document.getElementById('pauseMenu').style.display = 'none';
+                
+                // 恢复思考进度条动画
+                const progressFill = document.getElementById('progressFill');
+                progressFill.style.animationPlayState = 'running';
+                
+                // 如果正在录音，恢复录音计时器
+                if (gameState.isRecording) {
+                    // 这里需要重新计算剩余时间并恢复计时器
+                    // 为了简化，我们直接重新开始录音计时
+                    // 在实际应用中，需要保存剩余时间并继续
+                }
+            }
+            
+            // 重新开始游戏
+            function restartGame() {
+                if (confirm('确定要重新开始本轮游戏吗？')) {
+                    // 重置游戏状态
+                    gameState.round = 1;
+                    gameState.isRecording = false;
+                    gameState.isPaused = false;
+                    
+                    // 清除所有计时器
+                    if (gameState.timerInterval) {
+                        clearInterval(gameState.timerInterval);
+                        gameState.timerInterval = null;
+                    }
+                    
+                    if (gameState.recordingTimerInterval) {
+                        clearInterval(gameState.recordingTimerInterval);
+                        gameState.recordingTimerInterval = null;
+                    }
+                    
+                    // 隐藏所有界面
+                    document.getElementById('recordingScreen').style.display = 'none';
+                    document.getElementById('textInputScreen').style.display = 'none';
+                    document.getElementById('pauseMenu').style.display = 'none';
+                    
+                    // 重置界面状态
+                    document.getElementById('gameTitle').textContent = `等级${gameState.level} · 第${gameState.round}轮`;
+                    
+                    const recordButton = document.getElementById('recordButton');
+                    const recordIcon = document.getElementById('recordIcon');
+                    const recordText = document.getElementById('recordText');
+                    
+                    recordButton.classList.remove('recording');
+                    recordIcon.innerHTML = '<i class="fas fa-microphone"></i>';
+                    recordText.textContent = '按住说话';
+                    
+                    // 重置进度条
+                    updateProgressBar();
+                }
+            }
+            
+            // 退出游戏
+            function quitGame() {
+                if (confirm('确定要退出游戏吗？未完成的进度将会丢失。')) {
+                    // 在实际应用中，这里会返回游戏大厅
+                    alert('返回游戏大厅');
+                    // window.location.href = 'home.html';
+                }
+            }
+            
+            // 更新文字计数器
+            function updateTextCounter() {
+                const textInput = document.getElementById('textInputField');
+                const textCounter = document.getElementById('textCounter');
+                const submitButton = document.getElementById('submitTextButton');
+                
+                const length = textInput.value.length;
+                const maxLength = 500;
+                
+                textCounter.textContent = `${length}/${maxLength}`;
+                
+                // 根据长度改变颜色
+                if (length >= maxLength * 0.9) {
+                    textCounter.className = 'text-counter danger';
+                } else if (length >= maxLength * 0.7) {
+                    textCounter.className = 'text-counter warning';
+                } else {
+                    textCounter.className = 'text-counter';
+                }
+                
+                // 启用/禁用提交按钮
+                submitButton.disabled = length === 0;
+            }
+            
+            // 初始化游戏
+            function initGame() {
+                // 设置物品名称
+                document.getElementById('itemName').textContent = `【需要描述：${gameState.itemName}】`;
+                
+                // 设置提示
+                document.getElementById('hint1').textContent = gameState.hints[0];
+                document.getElementById('hint2').textContent = gameState.hints[1];
+                document.getElementById('hint3').textContent = gameState.hints[2];
+                
+                // 启动思考进度条
+                updateProgressBar();
+            }
+            
+            // 事件监听器
+            document.getElementById('backButton').addEventListener('click', function() {
+                if (confirm('确定要返回游戏大厅吗？未完成的进度将会丢失。')) {
+                    // 在实际应用中，这里会返回游戏大厅
+                    alert('返回游戏大厅');
+                    // window.location.href = 'home.html';
+                }
+            });
+            
+            document.getElementById('pauseButton').addEventListener('click', pauseGame);
+            
+            // 录音按钮事件
+            const recordButton = document.getElementById('recordButton');
+            let isHolding = false;
+            let holdTimeout = null;
+            
+            recordButton.addEventListener('mousedown', function() {
+                isHolding = true;
+                holdTimeout = setTimeout(() => {
+                    if (isHolding) {
+                        startRecording();
+                        isHolding = false;
+                    }
+                }, 500); // 长按0.5秒开始录音
+            });
+            
+            recordButton.addEventListener('mouseup', function() {
+                isHolding = false;
+                if (holdTimeout) {
+                    clearTimeout(holdTimeout);
+                    holdTimeout = null;
+                }
+            });
+            
+            recordButton.addEventListener('mouseleave', function() {
+                isHolding = false;
+                if (holdTimeout) {
+                    clearTimeout(holdTimeout);
+                    holdTimeout = null;
+                }
+            });
+            
+            // 触摸设备支持
+            recordButton.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                isHolding = true;
+                holdTimeout = setTimeout(() => {
+                    if (isHolding) {
+                        startRecording();
+                        isHolding = false;
+                    }
+                }, 500);
+            });
+            
+            recordButton.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                isHolding = false;
+                if (holdTimeout) {
+                    clearTimeout(holdTimeout);
+                    holdTimeout = null;
+                }
+            });
+            
+            // 文字输入按钮
+            document.getElementById('textInputButton').addEventListener('click', function() {
+                document.getElementById('textInputScreen').style.display = 'flex';
+            });
+            
+            // 停止录音按钮
+            document.getElementById('stopRecordingButton').addEventListener('click', stopRecording);
+            
+            // 取消录音按钮
+            document.getElementById('cancelRecordingButton').addEventListener('click', cancelRecording);
+            
+            // 文字输入返回按钮
+            document.getElementById('backTextInputButton').addEventListener('click', function() {
+                const textInput = document.getElementById('textInputField');
+                if (textInput.value.trim().length > 0) {
+                    if (confirm('确定要返回吗？输入的内容将会丢失。')) {
+                        document.getElementById('textInputScreen').style.display = 'none';
+                        textInput.value = '';
+                        document.getElementById('submitTextButton').disabled = true;
+                        document.getElementById('textCounter').textContent = '0/500';
+                        document.getElementById('textCounter').className = 'text-counter';
+                    }
+                } else {
+                    document.getElementById('textInputScreen').style.display = 'none';
+                }
+            });
+            
+            // 文字输入框事件
+            document.getElementById('textInputField').addEventListener('input', updateTextCounter);
+            
+            // 提交文字描述按钮
+            document.getElementById('submitTextButton').addEventListener('click', submitTextDescription);
+            
+            // 文字输入框回车键提交
+            document.getElementById('textInputField').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    e.preventDefault();
+                    if (!document.getElementById('submitTextButton').disabled) {
+                        submitTextDescription();
+                    }
+                }
+            });
+            
+            // 暂停菜单按钮
+            document.getElementById('resumeButton').addEventListener('click', resumeGame);
+            document.getElementById('restartButton').addEventListener('click', restartGame);
+            document.getElementById('quitButton').addEventListener('click', quitGame);
+            
+            // 键盘快捷键
+            document.addEventListener('keydown', function(e) {
+                // ESC键暂停/继续游戏
+                if (e.key === 'Escape') {
+                    if (gameState.isPaused) {
+                        resumeGame();
+                    } else {
+                        pauseGame();
+                    }
+                }
+                
+                // 空格键开始/停止录音
+                if (e.key === ' ' || e.key === 'Spacebar') {
+                    e.preventDefault();
+                    if (gameState.isRecording) {
+                        stopRecording();
+                    } else {
+                        startRecording();
+                    }
+                }
+                
+                // T键切换到文字输入
+                if (e.key === 't' || e.key === 'T') {
+                    document.getElementById('textInputButton').click();
+                }
+            });
+            
+            // 初始化游戏
+            initGame();
+            
+            // 添加触摸优化
+            const touchableElements = document.querySelectorAll('.nav-button, .record-button, .text-input-button, .control-button, .pause-button, .submit-button');
+            touchableElements.forEach(element => {
+                element.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.95)';
+                });
+                
+                element.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                });
+            });
+            
+            // 防止页面滚动
+            document.body.addEventListener('touchmove', function(e) {
+                if (document.getElementById('textInputScreen').style.display === 'flex') {
+                    return; // 在文字输入界面允许滚动
+                }
+                e.preventDefault();
+            }, { passive: false });
+        });
+    </script>
+</body>
+</html>

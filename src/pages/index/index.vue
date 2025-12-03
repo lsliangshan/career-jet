@@ -10,10 +10,10 @@
         @change="handleChange"
       >
         <swiper-item>
-          <position />
+          <home />
         </swiper-item>
         <swiper-item>
-          <deliver />
+          <game />
         </swiper-item>
         <swiper-item>
           <profile />
@@ -45,8 +45,8 @@
 
 <script setup lang="ts">
 import BottomNav from "./components/bottom-nav.vue";
-import position from "./views/position/position.vue";
-import deliver from "./views/deliver/deliver.vue";
+import home from "./views/home/home.vue";
+import game from "./views/game/game.vue";
 import profile from "./views/profile/profile.vue";
 import { useNavStore } from "./stores/nav";
 import { storeToRefs } from "pinia";

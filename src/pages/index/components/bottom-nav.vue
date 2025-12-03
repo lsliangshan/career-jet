@@ -18,7 +18,7 @@
         />
         <text
           class="text-[24rpx] transition-all duration-300"
-          :class="[index === currentIndex ? 'text-[#000]' : 'text-[#c8c8c8]']"
+          :class="[index === currentIndex ? 'text-[#FF9A3C]' : 'text-[#999999]']"
           >{{ item.label }}</text
         >
       </view>

@@ -4,22 +4,22 @@ import { SupportedPlatform } from "@/types";
 
 export const tabbars = [
   {
-    name: "position",
-    label: "职位",
-    icon: "../../../static/tab_position_unselect.png",
-    activeIcon: "../../../static/tab_position_select.png",
+    name: "home",
+    label: "大厅",
+    icon: "../../../static/tabs/tab_home_unselect.png",
+    activeIcon: "../../../static/tabs/tab_home_select.png",
   },
   {
     name: "deliver",
-    label: "投递",
-    icon: "../../../static/tab_deliver_unselect.png",
-    activeIcon: "../../../static/tab_deliver_select.png",
+    label: "游戏",
+    icon: "../../../static/tabs/tab_game_unselect.png",
+    activeIcon: "../../../static/tabs/tab_game_select.png",
   },
   {
     name: "profile",
     label: "我的",
-    icon: "../../../static/tab_profile_unselect.png",
-    activeIcon: "../../../static/tab_profile_select.png",
+    icon: "../../../static/tabs/tab_profile_unselect.png",
+    activeIcon: "../../../static/tabs/tab_profile_select.png",
   },
 ];
 

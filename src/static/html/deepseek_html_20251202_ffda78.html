@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>描述大师 - 图片描述游戏</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        :root {
+            --primary-orange: #FF9A3C;
+            --primary-blue: #4A90E2;
+            --success-green: #6DD400;
+            --accent-yellow: #FFD93D;
+            --danger-red: #FF5A5A;
+            --text-dark: #333333;
+            --text-medium: #666666;
+            --text-light: #999999;
+            --bg-gray: #F5F5F5;
+            --bg-white: #FFFFFF;
+            --border-color: #E0E0E0;
+            --shadow-light: 0 2px 12px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.12);
+            --shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.15);
+            --font-title: 'Poppins', sans-serif;
+            --font-body: 'Quicksand', sans-serif;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            background-color: #FAFAFA;
+            color: var(--text-dark);
+            max-width: 100vw;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .app-container {
+            width: 100%;
+            max-width: 375px;
+            min-height: 100vh;
+            margin: 0 auto;
+            background-color: var(--bg-white);
+            position: relative;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 状态栏样式 */
+        .status-bar {
+            height: 44px;
+            background-color: var(--bg-white);
+            padding: 0 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: var(--text-dark);
+            border-bottom: 1px solid #F0F0F0;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .status-bar .time {
+            font-weight: 600;
+        }
+        
+        .status-bar .status-icons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .status-bar .status-icons i {
+            font-size: 12px;
+        }
+        
+        /* 内容区域 */
+        .content-area {
+            padding: 16px;
+            padding-bottom: 80px; /* 为底部导航栏留出空间 */
+            overflow-y: auto;
+            height: calc(100vh - 44px);
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* 用户信息区域 */
+        .user-info-section {
+            padding: 16px;
+            background: linear-gradient(135deg, #4A90E2 0%, #2C6DB5 100%);
+            border-radius: 20px;
+            margin-bottom: 24px;
+            color: var(--bg-white);
+            box-shadow: var(--shadow-medium);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .user-info-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .user-greeting h1 {
+            font-family: var(--font-title);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .user-greeting p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* 今日挑战卡片 */
+        .daily-challenge-card {
+            background: linear-gradient(135deg, #FF9A3C 0%, #FF7A1C 100%);
+            border-radius: 20px;
+            padding: 24px 20px;
+            margin-bottom: 24px;
+            color: var(--bg-white);
+            box-shadow: var(--shadow-strong);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .daily-challenge-card::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            right: -30px;
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 24px;
+        }
+        
+        .card-title {
+            font-family: var(--font-title);
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .challenge-info {
+            margin-bottom: 20px;
+        }
+        
+        .challenge-today {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .challenge-image-preview {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .preview-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #FFD93D 0%, #FFB347 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-right: 16px;
+            color: var(--bg-white);
+        }
+        
+        .preview-info {
+            flex: 1;
+        }
+        
+        .preview-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .preview-desc {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .challenge-stats {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            margin-right: 24px;
+        }
+        
+        .stat-icon {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+        }
+        
+        .start-button {
+            background-color: var(--bg-white);
+            color: var(--primary-orange);
+            border: none;
+            border-radius: 20px;
+            padding: 14px 32px;
+            font-family: var(--font-title);
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .start-button:hover, .start-button:active {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+        }
+        
+        /* 自由练习卡片 */
+        .practice-card {
+            background-color: var(--bg-white);
+            border-radius: 20px;
+            padding: 24px 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-color);
+        }
+        
+        .practice-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .practice-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #4A90E2 0%, #2C6DB5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 24px;
+            color: var(--bg-white);
+        }
+        
+        .level-selector {
+            margin-bottom: 24px;
+        }
+        
+        .level-selector-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+        
+        .level-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+        
+        .level-button {
+            background-color: var(--bg-gray);
+            border: none;
+            border-radius: 12px;
+            height: 56px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-title);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .level-button:hover, .level-button:active {
+            background-color: var(--primary-blue);
+            color: var(--bg-white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+        
+        .level-button.active {
+            background-color: var(--primary-orange);
+            color: var(--bg-white);
+            box-shadow: 0 4px 12px rgba(255, 154, 60, 0.3);
+        }
+        
+        .level-label {
+            font-size: 12px;
+            margin-top: 2px;
+            opacity: 0.8;
+        }
+        
+        .practice-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 16px;
+            background-color: var(--bg-gray);
+            border-radius: 12px;
+        }
+        
+        .practice-count {
+            font-size: 16px;
+            color: var(--text-medium);
+        }
+        
+        .practice-count strong {
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+        
+        .practice-button {
+            background-color: var(--primary-blue);
+            color: var(--bg-white);
+            border: none;
+            border-radius: 20px;
+            padding: 12px 28px;
+            font-family: var(--font-title);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .practice-button:hover, .practice-button:active {
+            background-color: #2C6DB5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+        }
+        
+        /* 成就卡片 */
+        .achievements-card {
+            background-color: var(--bg-white);
+            border-radius: 20px;
+            padding: 24px 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-color);
+        }
+        
+        .achievements-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .achievements-title {
+            font-family: var(--font-title);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .view-all {
+            font-size: 14px;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .badge-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .badge {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FFD93D 0%, #FFB347 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-white);
+            font-size: 24px;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 12px rgba(255, 217, 61, 0.3);
+        }
+        
+        .badge.locked {
+            background: var(--bg-gray);
+            color: var(--text-light);
+            box-shadow: none;
+        }
+        
+        .badge-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .achievement-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .achievement-progress {
+            font-size: 14px;
+            color: var(--text-medium);
+        }
+        
+        .achievement-progress strong {
+            color: var(--text-dark);
+        }
+        
+        .progress-bar {
+            width: 120px;
+            height: 6px;
+            background-color: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-orange);
+            border-radius: 3px;
+            width: 60%; /* 进度百分比 */
+        }
+        
+        /* 底部导航栏 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background-color: var(--bg-white);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 375px;
+            margin: 0 auto;
+            z-index: 100;
+            box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.08);
+            border-radius: 24px 24px 0 0;
+            padding: 0 16px;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 12px;
+            flex: 1;
+            height: 100%;
+            transition: all 0.3s ease;
+            padding: 8px 0;
+            border-radius: 12px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary-orange);
+            background-color: rgba(255, 154, 60, 0.1);
+        }
+        
+        .nav-item i {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+        
+        .nav-item .nav-label {
+            font-weight: 600;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .user-info-section {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        .daily-challenge-card {
+            animation: fadeIn 0.6s ease-out 0.1s both;
+        }
+        
+        .practice-card {
+            animation: fadeIn 0.6s ease-out 0.2s both;
+        }
+        
+        .achievements-card {
+            animation: fadeIn 0.6s ease-out 0.3s both;
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite ease-in-out;
+        }
+        
+        .float-animation {
+            animation: float 3s infinite ease-in-out;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 374px) {
+            .app-container {
+                max-width: 100%;
+            }
+            
+            .content-area {
+                padding: 12px;
+            }
+            
+            .level-button {
+                height: 48px;
+                font-size: 18px;
+            }
+            
+            .badge {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+        }
+        
+        /* 滚动条样式 */
+        .content-area::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .content-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .content-area::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+        
+        /* 移动端触摸优化 */
+        .level-button, .start-button, .practice-button, .nav-item {
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        /* 工具类 */
+        .flex-row {
+            display: flex;
+            align-items: center;
+        }
+        
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .mb-12 {
+            margin-bottom: 12px;
+        }
+        
+        .mb-16 {
+            margin-bottom: 16px;
+        }
+        
+        .mt-20 {
+            margin-top: 20px;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div class="time">14:30</div>
+            <div class="status-icons">
+                <i class="fas fa-signal"></i>
+                <i class="fas fa-wifi"></i>
+                <i class="fas fa-battery-three-quarters"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="content-area">
+            <!-- 用户信息区域 -->
+            <div class="user-info-section">
+                <div class="user-greeting">
+                    <h1>你好，小明！</h1>
+                    <p>今天想描述什么图片呢？</p>
+                </div>
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+            
+            <!-- 今日挑战卡片 -->
+            <div class="daily-challenge-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-calendar-star"></i>
+                    </div>
+                    <div class="card-title">今日挑战</div>
+                </div>
+                
+                <div class="challenge-info">
+                    <div class="challenge-today">今日挑战图片</div>
+                    
+                    <div class="challenge-image-preview">
+                        <div class="preview-image">
+                            <i class="fas fa-mountain"></i>
+                        </div>
+                        <div class="preview-info">
+                            <div class="preview-title">雪山风景</div>
+                            <div class="preview-desc">描述这张美丽的雪山图片</div>
+                        </div>
+                    </div>
+                    
+                    <div class="challenge-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <div class="stat-value">连续3天</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">
+                                <i class="fas fa-gift"></i>
+                            </div>
+                            <div class="stat-value">双倍奖励</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="start-button pulse-animation" id="dailyChallengeBtn">
+                    <i class="fas fa-play-circle"></i>
+                    <span>开始今日挑战</span>
+                </button>
+            </div>
+            
+            <!-- 自由练习卡片 -->
+            <div class="practice-card">
+                <div class="practice-header">
+                    <div class="practice-icon">
+                        <i class="fas fa-images"></i>
+                    </div>
+                    <div class="card-title">自由练习</div>
+                </div>
+                
+                <div class="level-selector">
+                    <div class="level-selector-title">选择难度等级</div>
+                    <div class="level-buttons">
+                        <button class="level-button active" data-level="1">
+                            <span>L1</span>
+                            <span class="level-label">简单</span>
+                        </button>
+                        <button class="level-button" data-level="2">
+                            <span>L2</span>
+                            <span class="level-label">基础</span>
+                        </button>
+                        <button class="level-button" data-level="3">
+                            <span>L3</span>
+                            <span class="level-label">中等</span>
+                        </button>
+                        <button class="level-button" data-level="4">
+                            <span>L4</span>
+                            <span class="level-label">困难</span>
+                        </button>
+                        <button class="level-button" data-level="5">
+                            <span>L5</span>
+                            <span class="level-label">专家</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="practice-info">
+                    <div class="practice-count">
+                        已练习: <strong>24</strong> 张图片
+                    </div>
+                    <button class="practice-button" id="practiceBtn">
+                        <i class="fas fa-play"></i>
+                        <span>开始练习</span>
+                    </button>
+                </div>
+                
+                <div class="difficulty-hint">
+                    <div style="font-size: 14px; color: var(--text-medium); text-align: center;">
+                        等级越高，图片越复杂，挑战越大！
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 成就卡片 -->
+            <div class="achievements-card">
+                <div class="achievements-header">
+                    <div class="achievements-title">我的成就</div>
+                    <a href="#" class="view-all" id="viewAchievementsBtn">查看全部</a>
+                </div>
+                
+                <div class="badges-grid">
+                    <div class="badge-item">
+                        <div class="badge">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="badge-name">观察家</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="badge-name">描述王</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="badge-name">挑战者</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge locked">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <div class="badge-name">大师</div>
+                    </div>
+                </div>
+                
+                <div class="achievement-stats">
+                    <div class="achievement-progress">
+                        成就进度: <strong>8/12</strong>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="achievementProgress"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 快速游戏区域 -->
+            <div style="margin-top: 20px; padding: 20px; background: linear-gradient(135deg, #6DD400 0%, #4CA600 100%); border-radius: 20px; color: white; box-shadow: var(--shadow-medium);">
+                <div style="font-family: var(--font-title); font-size: 20px; font-weight: 700; margin-bottom: 12px; text-align: center;">快速游戏</div>
+                <div style="font-size: 16px; margin-bottom: 20px; text-align: center; opacity: 0.9;">随机挑战一张图片，测试你的观察力！</div>
+                <button class="start-button" id="quickPlayBtn" style="background: white; color: #6DD400; font-weight: 700;">
+                    <i class="fas fa-bolt"></i>
+                    <span>快速开始</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 底部导航栏 -->
+        <div class="bottom-nav">
+            <a href="#" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span class="nav-label">大厅</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-gamepad"></i>
+                <span class="nav-label">游戏</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-history"></i>
+                <span class="nav-label">历史</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span class="nav-label">我的</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- 难度等级说明模态框 -->
+    <div id="levelInfoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 16px;">
+        <div style="background-color: white; border-radius: 20px; width: 100%; max-width: 320px; padding: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+            <div style="font-family: var(--font-title); font-size: 24px; font-weight: 700; margin-bottom: 20px; text-align: center; color: var(--text-dark);">难度等级说明</div>
+            
+            <div style="margin-bottom: 24px;">
+                <div style="display: flex; align-items: center; margin-bottom: 16px; padding: 12px; border-radius: 12px; background-color: rgba(74, 144, 226, 0.1);">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background-color: #4A90E2; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; margin-right: 16px;">L1</div>
+                    <div>
+                        <div style="font-weight: 700; margin-bottom: 4px;">简单</div>
+                        <div style="font-size: 14px; color: var(--text-medium);">单个简单物品，易于识别</div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; margin-bottom: 16px; padding: 12px; border-radius: 12px; background-color: rgba(255, 154, 60, 0.1);">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background-color: #FF9A3C; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; margin-right: 16px;">L2</div>
+                    <div>
+                        <div style="font-weight: 700; margin-bottom: 4px;">基础</div>
+                        <div style="font-size: 14px; color: var(--text-medium);">常见物品，中等复杂度</div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; margin-bottom: 16px; padding: 12px; border-radius: 12px; background-color: rgba(109, 212, 0, 0.1);">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background-color: #6DD400; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; margin-right: 16px;">L3</div>
+                    <div>
+                        <div style="font-weight: 700; margin-bottom: 4px;">中等</div>
+                        <div style="font-size: 14px; color: var(--text-medium);">场景图片，包含多个元素</div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; margin-bottom: 16px; padding: 12px; border-radius: 12px; background-color: rgba(255, 90, 90, 0.1);">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background-color: #FF5A5A; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; margin-right: 16px;">L4</div>
+                    <div>
+                        <div style="font-weight: 700; margin-bottom: 4px;">困难</div>
+                        <div style="font-size: 14px; color: var(--text-medium);">复杂场景，需要详细描述</div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; margin-bottom: 16px; padding: 12px; border-radius: 12px; background-color: rgba(155, 81, 224, 0.1);">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background-color: #9B51E0; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; margin-right: 16px;">L5</div>
+                    <div>
+                        <div style="font-weight: 700; margin-bottom: 4px;">专家</div>
+                        <div style="font-size: 14px; color: var(--text-medium);">抽象或专业图片，挑战性高</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 12px;">
+                <button id="closeLevelInfoBtn" style="flex: 1; background-color: var(--primary-blue); border: none; border-radius: 12px; padding: 14px; font-family: var(--font-title); font-weight: 600; color: white; cursor: pointer;">我知道了</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 更新当前时间
+            function updateTime() {
+                const now = new Date();
+                const timeString = now.getHours().toString().padStart(2, '0') + ':' + 
+                                  now.getMinutes().toString().padStart(2, '0');
+                document.querySelector('.time').textContent = timeString;
+            }
+            
+            // 初始化时间
+            updateTime();
+            // 每分钟更新时间
+            setInterval(updateTime, 60000);
+            
+            // 成就进度条动画
+            function updateAchievementProgress() {
+                const progressFill = document.getElementById('achievementProgress');
+                // 设置初始宽度为0
+                progressFill.style.width = '0%';
+                // 延迟后动画到66%
+                setTimeout(() => {
+                    progressFill.style.width = '66%';
+                }, 300);
+            }
+            
+            updateAchievementProgress();
+            
+            // 等级选择交互
+            const levelButtons = document.querySelectorAll('.level-button');
+            let selectedLevel = 1; // 默认选择L1
+            
+            levelButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除所有按钮的active类
+                    levelButtons.forEach(btn => btn.classList.remove('active'));
+                    // 为点击的按钮添加active类
+                    this.classList.add('active');
+                    
+                    // 更新选中的等级
+                    selectedLevel = parseInt(this.getAttribute('data-level'));
+                    
+                    // 显示等级提示信息
+                    showLevelInfo(selectedLevel);
+                });
+            });
+            
+            // 显示等级信息
+            function showLevelInfo(level) {
+                const levelInfo = {
+                    1: {name: "简单", desc: "单个简单物品，易于识别", examples: ["苹果", "书包", "椅子"]},
+                    2: {name: "基础", desc: "常见物品，中等复杂度", examples: ["自行车", "微波炉", "冰箱"]},
+                    3: {name: "中等", desc: "场景图片，包含多个元素", examples: ["公园", "厨房", "教室"]},
+                    4: {name: "困难", desc: "复杂场景，需要详细描述", examples: ["城市街景", "自然风景", "人群场景"]},
+                    5: {name: "专家", desc: "抽象或专业图片，挑战性高", examples: ["艺术作品", "科学概念", "历史场景"]}
+                };
+                
+                // 显示一个简短的提示
+                const info = levelInfo[level];
+                console.log(`已选择等级 ${level}: ${info.name} - ${info.desc}`);
+            }
+            
+            // 按钮点击效果
+            const clickableButtons = document.querySelectorAll('.start-button, .practice-button, .nav-item, .view-all');
+            clickableButtons.forEach(button => {
+                button.addEventListener('touchstart', function() {
+                    this.style.transform = 'translateY(-2px) scale(0.98)';
+                });
+                
+                button.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                });
+                
+                button.addEventListener('mousedown', function() {
+                    this.style.transform = 'translateY(-2px) scale(0.98)';
+                });
+                
+                button.addEventListener('mouseup', function() {
+                    this.style.transform = '';
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                });
+            });
+            
+            // 今日挑战按钮点击事件
+            document.getElementById('dailyChallengeBtn').addEventListener('click', function() {
+                // 添加加载效果
+                this.classList.add('loading');
+                const originalHTML = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>加载中...</span>';
+                
+                // 模拟加载过程
+                setTimeout(() => {
+                    alert('🎯 开始今日挑战：雪山风景\n\n挑战规则：\n1. 仔细观察图片中的雪山风景\n2. 用语言描述你看到的内容\n3. AI会根据你的描述评分\n4. 获得90分以上即可获胜！\n\n奖励：双倍经验值和专属徽章！');
+                    
+                    // 在实际应用中，这里会跳转到游戏页面
+                    // window.location.href = 'game.html?mode=daily';
+                    
+                    // 恢复按钮状态
+                    this.classList.remove('loading');
+                    this.innerHTML = originalHTML;
+                }, 1500);
+            });
+            
+            // 自由练习按钮点击事件
+            document.getElementById('practiceBtn').addEventListener('click', function() {
+                // 显示等级选择确认
+                const levelNames = {
+                    1: "简单", 2: "基础", 3: "中等", 4: "困难", 5: "专家"
+                };
+                
+                alert(`开始自由练习！\n难度等级：L${selectedLevel} (${levelNames[selectedLevel]})\n\n系统将为你随机选择一张图片进行描述。`);
+                
+                // 在实际应用中，这里会跳转到游戏页面
+                // window.location.href = `game.html?mode=practice&level=${selectedLevel}`;
+            });
+            
+            // 快速游戏按钮点击事件
+            document.getElementById('quickPlayBtn').addEventListener('click', function() {
+                // 随机选择一个等级
+                const randomLevel = Math.floor(Math.random() * 5) + 1;
+                const levelNames = {
+                    1: "简单", 2: "基础", 3: "中等", 4: "困难", 5: "专家"
+                };
+                
+                alert(`⚡ 快速游戏开始！\n随机难度：L${randomLevel} (${levelNames[randomLevel]})\n\n准备好接受挑战了吗？`);
+                
+                // 在实际应用中，这里会跳转到游戏页面
+                // window.location.href = `game.html?mode=quick&level=${randomLevel}`;
+            });
+            
+            // 查看成就按钮点击事件
+            document.getElementById('viewAchievementsBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                // 显示等级信息模态框
+                document.getElementById('levelInfoModal').style.display = 'flex';
+            });
+            
+            // 关闭等级信息模态框
+            document.getElementById('closeLevelInfoBtn').addEventListener('click', function() {
+                document.getElementById('levelInfoModal').style.display = 'none';
+            });
+            
+            // 等级信息模态框点击外部关闭
+            document.getElementById('levelInfoModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            // 底部导航栏点击事件
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // 移除所有active类
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    // 为点击的项添加active类
+                    this.classList.add('active');
+                    
+                    // 获取导航目标
+                    const target = this.querySelector('.nav-label').textContent;
+                    
+                    // 模拟导航切换
+                    if (target === '游戏') {
+                        alert('切换到游戏页面（功能开发中）');
+                    } else if (target === '历史') {
+                        alert('切换到历史记录页面（功能开发中）');
+                    } else if (target === '我的') {
+                        alert('切换到个人中心页面（功能开发中）');
+                    }
+                    // 大厅页面已经是当前页面，不需要处理
+                });
+            });
+            
+            // 等级按钮悬停显示详细信息
+            levelButtons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    const level = this.getAttribute('data-level');
+                    showLevelInfo(level);
+                });
+            });
+            
+            // 添加键盘快捷键支持
+            document.addEventListener('keydown', function(e) {
+                // 数字1-5选择等级
+                if (e.key >= '1' && e.key <= '5') {
+                    const level = parseInt(e.key);
+                    levelButtons.forEach(btn => btn.classList.remove('active'));
+                    document.querySelector(`.level-button[data-level="${level}"]`).classList.add('active');
+                    selectedLevel = level;
+                    showLevelInfo(level);
+                }
+                
+                // 空格键开始今日挑战
+                if (e.key === ' ' || e.key === 'Spacebar') {
+                    e.preventDefault();
+                    document.getElementById('dailyChallengeBtn').click();
+                }
+                
+                // Enter键开始自由练习
+                if (e.key === 'Enter') {
+                    document.getElementById('practiceBtn').click();
+                }
+                
+                // Q键快速游戏
+                if (e.key === 'q' || e.key === 'Q') {
+                    document.getElementById('quickPlayBtn').click();
+                }
+            });
+            
+            // 模拟数据更新（每60秒更新一次）
+            setInterval(() => {
+                // 随机更新今日挑战的图片
+                const challengeImages = [
+                    {icon: "fa-mountain", title: "雪山风景", desc: "描述这张美丽的雪山图片"},
+                    {icon: "fa-tree", title: "森林", desc: "描述这片茂密的森林"},
+                    {icon: "fa-water", title: "湖泊", desc: "描述这个宁静的湖泊"},
+                    {icon: "fa-city", title: "城市", desc: "描述这座繁华的城市"},
+                    {icon: "fa-paw", title: "动物", desc: "描述这只可爱的动物"}
+                ];
+                
+                const randomImage = challengeImages[Math.floor(Math.random() * challengeImages.length)];
+                const previewImage = document.querySelector('.preview-image i');
+                const previewTitle = document.querySelector('.preview-title');
+                const previewDesc = document.querySelector('.preview-desc');
+                
+                // 添加淡出效果
+                document.querySelector('.challenge-image-preview').style.opacity = '0.5';
+                
+                setTimeout(() => {
+                    previewImage.className = `fas ${randomImage.icon}`;
+                    previewTitle.textContent = randomImage.title;
+                    previewDesc.textContent = randomImage.desc;
+                    
+                    // 恢复透明度
+                    document.querySelector('.challenge-image-preview').style.opacity = '1';
+                }, 300);
+                
+                // 更新连续天数
+                const statValue = document.querySelector('.stat-item:first-child .stat-value');
+                const currentDays = parseInt(statValue.textContent);
+                if (Math.random() > 0.8) {
+                    statValue.textContent = `${currentDays + 1}天`;
+                }
+                
+                // 更新已练习次数
+                const practiceCount = document.querySelector('.practice-count strong');
+                const currentCount = parseInt(practiceCount.textContent);
+                if (Math.random() > 0.7) {
+                    practiceCount.textContent = `${currentCount + 1}`;
+                }
+                
+            }, 60000); // 60秒更新一次
+            
+            // 初始化显示等级信息
+            showLevelInfo(selectedLevel);
+        });
+    </script>
+</body>
+</html>

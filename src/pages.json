@@ -9,24 +9,6 @@
 			}
 		},
 		{
-			"path": "pages/edit-followed-data/edit-followed-data",
-			"style": {
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/thirdpart-login/thirdpart-login",
-			"style": {
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/position-detail/position-detail",
-			"style": {
-				"navigationStyle": "custom"
-			}
-		},
-		{
 			"path": "pages/profile-detail/profile-detail",
 			"style": {
 				"navigationStyle": "custom"

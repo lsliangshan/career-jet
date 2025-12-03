@@ -38,17 +38,6 @@
           <view class="w-full h-[24rpx]"></view>
 
           <view class="w-full p-[24rpx] box-border">
-            <GeneralSettings />
-
-            <view class="w-full h-[24rpx]"></view>
-
-            <AccountSettings />
-
-            <template v-if="isLoggedIn && subscriber && subscriber.id">
-              <view class="w-full h-[24rpx]"></view>
-
-              <SubscribeSettings />
-            </template>
 
             <view
               class="w-full px-[12rpx] box-border h-[80rpx] mt-[64rpx] flex flex-row items-center justify-center"
@@ -80,24 +69,14 @@
 <script setup lang="ts">
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
-import GeneralSettings from "./general-settings.vue";
-import AccountSettings from "./account-settings.vue";
-import SubscribeSettings from "./subscribe-settings.vue";
 import BaseInfo from "./base-info.vue";
 import { useUserStore } from "../../stores/user";
 import { storeToRefs } from "pinia";
-import { useSubscriberStore } from "../../stores/subscriber";
 import { nextTick, ref } from "vue";
-import { useDeliverStore } from "../../stores/deliver";
 import RefresherSuccess from "@/components/RefresherSuccess.vue";
 
 const userStore = useUserStore();
 const { isLoggedIn } = storeToRefs(userStore);
-
-const subscriberStore = useSubscriberStore();
-const { subscriber } = storeToRefs(subscriberStore);
-
-const deliverStore = useDeliverStore();
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
@@ -117,8 +96,6 @@ const refresherrefresh = async () => {
 
   isRefreshing.value = true;
   refresherTriggered.value = true;
-
-  await deliverStore.getMyAutoDeliveredInfo();
 
   nextTick(() => {
     const t = setTimeout(() => {

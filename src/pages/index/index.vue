@@ -28,7 +28,7 @@ import BottomNav from "./components/bottom-nav.vue";
 import home from "./views/home/home.vue";
 import game from "./views/game/game.vue";
 import profile from "./views/profile/profile.vue";
-import { useNavStore } from "./stores/nav";
+import { useNavStore } from "@/stores/nav";
 import { storeToRefs } from "pinia";
 import { onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
 

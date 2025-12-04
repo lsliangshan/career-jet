@@ -82,7 +82,7 @@
 
 <script setup lang="ts">
 import { ThemeColors } from "@/config/config";
-import { useUserStore } from "../../stores/user";
+import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 

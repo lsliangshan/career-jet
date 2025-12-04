@@ -70,7 +70,7 @@
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import BaseInfo from "./base-info.vue";
-import { useUserStore } from "../../stores/user";
+import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { nextTick, ref } from "vue";
 import RefresherSuccess from "@/components/RefresherSuccess.vue";

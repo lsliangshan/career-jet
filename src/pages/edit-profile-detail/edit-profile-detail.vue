@@ -41,7 +41,7 @@
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import { onLoad } from "@dcloudio/uni-app";
-import { ProfileDetailType, useUserStore } from "../index/stores/user";
+import { ProfileDetailType, useUserStore } from "@/stores/user";
 import { computed, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 

@@ -204,7 +204,7 @@
 <script setup lang="ts">
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
-import { ProfileDetailType, useUserStore } from "../index/stores/user";
+import { ProfileDetailType, useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { computed, onMounted, ref } from "vue";
 import { ThemeColors } from "@/config/config";

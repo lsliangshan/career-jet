@@ -28,8 +28,7 @@
 
 <script setup lang="ts">
 import { tabbars } from "@/config/config";
-import { ref } from "vue";
-import { useNavStore } from "../stores/nav";
+import { useNavStore } from "@/stores/nav";
 import { storeToRefs } from "pinia";
 
 const navStore = useNavStore();

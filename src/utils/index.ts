@@ -7,3 +7,9 @@ export function removeDuplicates(arr: any[], byKey: string): any[] {
   });
   return Array.from(map.values());
 }
+
+export function previewImage(urls: string[]) {
+  uni.previewImage({
+    urls,
+  });
+}

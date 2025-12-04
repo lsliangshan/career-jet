@@ -20,6 +20,19 @@
       </swiper>
     </view>
     <BottomNav />
+
+    <page-container
+      :show="modalVisible"
+      z-index="999"
+      round
+      @leave="handleLeave"
+    >
+      <view class="w-full" :style="{ backgroundColor: ThemeColors.bgCard }">
+        <ChooseGameLevelModal
+          v-if="modalData?.component === EModalComponent.CHOOSE_GAME_LEVEL_MODAL"
+        />
+      </view>
+    </page-container>
   </view>
 </template>
 
@@ -31,9 +44,36 @@ import profile from "./views/profile/profile.vue";
 import { useNavStore } from "@/stores/nav";
 import { storeToRefs } from "pinia";
 import { onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
+import { onMounted, ref } from "vue";
+import { ThemeColors } from "@/config/config";
+import ChooseGameLevelModal from "./modals/ChooseGameLevelModal.vue";
+import { EModalComponent } from "./modals/types";
 
 const navStore = useNavStore();
 const { currentIndex } = storeToRefs(navStore);
+
+const modalVisible = ref(false)
+const modalData = ref<{
+  component?: string;
+  [key: string]: any;
+}>();
+
+onMounted(() => {
+  uni.$on("show-modal", (e: any) => {
+    if (e.component === EModalComponent.CHOOSE_GAME_LEVEL_MODAL) {
+      modalVisible.value = true;
+      modalData.value = e;
+    }
+  });
+
+  uni.$on("hide-modal", () => {
+    modalVisible.value = false;
+  });
+})
+
+function handleLeave() {
+  modalVisible.value = false;
+}
 
 function handleChange(e: any) {
   if (e.detail.source !== "touch") {

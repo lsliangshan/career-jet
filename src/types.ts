@@ -9,3 +9,9 @@ export interface IQuestion {
   date: string;
   creator: "admin" | string;
 }
+
+export interface ILevel {
+  name: string;
+  desc: string;
+  level: number;
+}

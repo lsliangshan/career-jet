@@ -1,3 +1,4 @@
 export enum EModalComponent {
-  FOLLOWED_PLATFORMS_MODAL = "FollowedPlatformsModal",
+  // 选择游戏难度级别
+  CHOOSE_GAME_LEVEL_MODAL = "ChooseGameLevelModal",
 }

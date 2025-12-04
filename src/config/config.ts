@@ -21,6 +21,34 @@ export const tabbars = [
   },
 ];
 
+export const supportedLevels = [
+  {
+    name: "新叶视界",
+    desc: "初窥画面，描述基础内容。如嫩芽初绽，清晰即可。",
+    level: 1,
+  },
+  {
+    name: "溪流之眼",
+    desc: "细致观察，捕捉动态与关联。如溪流蜿蜒，需叙述脉络。",
+    level: 2,
+  },
+  {
+    name: "光影画师",
+    desc: "把握氛围与情感，用语言调配光影。挑战诗意与准确性的平衡。",
+    level: 3,
+  },
+  {
+    name: "万物共鸣",
+    desc: "超越表象，描述隐喻、文化符号或深层叙事。要求洞察与共情。",
+    level: 4,
+  },
+  {
+    name: "灵魂棱镜",
+    desc: "以极致创意重构图像，以语言折射万象之魂。",
+    level: 5,
+  },
+];
+
 export const ThemeColors = {
   primary: "#FF9A3C",
   primary100: "rgba(255, 154, 60, 0.1)",

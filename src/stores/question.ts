@@ -3,6 +3,8 @@ import { computed, onMounted, ref } from "vue";
 import type { IQuestion } from "@/types";
 import { isSameDay } from "@/utils/date";
 import { requestGetDailyQuestion } from "@/request";
+import { useProfileStore } from "./profile";
+import { storeToRefs } from "pinia";
 
 const LocalDailyQuestionsKey = "localDailyQuestions";
 
@@ -36,12 +38,16 @@ function setLocalDailyQuestions(questions: IQuestion[]) {
 
 export const useQuestionStore = defineStore("question", () => {
   const question = ref<IQuestion[]>([]);
-
+  const profileStore = useProfileStore();
+  const { level } = storeToRefs(profileStore);
   // 所有的每日挑战题目
   const dailyQuestions = ref<IQuestion[]>([]);
 
   const dailyQuestion = computed(() => {
-    return dailyQuestions.value[0];
+    const item = dailyQuestions.value.find(
+      (item) => item.level === level.value.level
+    );
+    return item;
   });
 
   onMounted(async () => {});

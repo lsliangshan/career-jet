@@ -38,6 +38,9 @@
           <view class="w-full h-[24rpx]"></view>
 
           <view class="w-full p-[24rpx] box-border">
+            <GeneralSettings />
+
+            <view class="w-full h-[24rpx]"></view>
 
             <view
               class="w-full px-[12rpx] box-border h-[80rpx] mt-[64rpx] flex flex-row items-center justify-center"
@@ -74,6 +77,7 @@ import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { nextTick, ref } from "vue";
 import RefresherSuccess from "@/components/RefresherSuccess.vue";
+import GeneralSettings from "./general-settings.vue";
 
 const userStore = useUserStore();
 const { isLoggedIn } = storeToRefs(userStore);

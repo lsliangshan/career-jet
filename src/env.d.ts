@@ -8,3 +8,13 @@ declare module "*.vue" {
 }
 
 declare module "pinia";
+
+interface ImportMetaEnv {
+  readonly VITE_TENCENT_ASR_SECRET_ID: string;
+  readonly VITE_TENCENT_ASR_SECRET_KEY: string;
+  readonly VITE_TENCENT_ASR_APP_ID: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}

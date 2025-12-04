@@ -39,7 +39,7 @@
 <script setup lang="ts">
 import { supportedLevels, ThemeColors } from "@/config/config";
 import { useProfileStore } from "@/stores/profile";
-import { ILevel } from "@/types";
+import type { ILevel } from "@/types";
 import { storeToRefs } from "pinia";
 
 const profileStore = useProfileStore();

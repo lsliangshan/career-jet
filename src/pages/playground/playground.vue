@@ -74,6 +74,20 @@
           </view>
         </view>
       </view>
+
+      <view class="w-full h-[200rpx] flex flex-row items-center justify-center">
+        <view class="relative w-[200rpx] h-[200rpx] rounded-full flex flex-row items-center justify-center">
+          <span class="absolute left-0 top-0 inline-flex h-full w-full animate-beat rounded-full opacity-75"
+          :style="{
+            backgroundColor: ThemeColors.primary
+          }"></span>
+          <view class="start_btn_bg w-[190rpx] h-[190rpx] rounded-[50%] overflow-hidden">
+            
+          </view>
+        </view>
+        
+        
+      </view>
     </scroll-view>
   </Layout>
   </view>
@@ -112,5 +126,8 @@ async function getQuestionDetailById() {
 <style scoped>
 .playground_page {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+.start_btn_bg {
+  background: linear-gradient(135deg, #FF9A3C 0%, #FF7A1C 100%);
 }
 </style>

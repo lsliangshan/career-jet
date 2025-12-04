@@ -93,16 +93,18 @@ export function requestUpdateUserInfo(params: {
 /**
  * 获取每日挑战
  */
-export function requestGetDailyQuestion(params: {
-  level: number;
+export function requestGetDailyQuestion(params?: {
+  level?: number;
 }): Promise<any> {
   return new Promise<any>((resolve) => {
     uni.request({
       url: `${baseUrl}/cm/get-daily-question`,
       method: "POST",
-      data: {
-        level: params.level,
-      },
+      data: params?.level
+        ? {
+            level: params.level,
+          }
+        : {},
       success: (res) => {
         resolve(res.data);
       },

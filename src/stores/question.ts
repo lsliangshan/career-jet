@@ -58,9 +58,7 @@ export const useQuestionStore = defineStore("question", () => {
 
   function getDailyQuestion() {
     return new Promise(async (resolve) => {
-      const res = await requestGetDailyQuestion({
-        level: 1,
-      });
+      const res = await requestGetDailyQuestion();
       if (res.code === 200) {
         setLocalDailyQuestions(res.data.list);
         dailyQuestions.value = res.data.list;
@@ -72,7 +70,6 @@ export const useQuestionStore = defineStore("question", () => {
   function getQuestionDetailById(id: string): Promise<IQuestion | null> {
     return new Promise((resolve) => {
       let questionDetail: IQuestion | null = null;
-      console.log(">>>>>>> dailyQuestions", dailyQuestions.value);
       const index = dailyQuestions.value.findIndex((item) => item.id === id);
       if (index !== -1) {
         questionDetail = dailyQuestions.value[index];

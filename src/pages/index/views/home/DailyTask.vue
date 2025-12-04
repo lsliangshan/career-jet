@@ -66,7 +66,8 @@
         </view>
 
       </view>
-      <view class="w-full h-[102rpx] rounded-[32rpx] overflow-hidden shadow-[0_4rpx_24rpx_2rpx_rgba(255,255,255,0.3)] bg-[#fff] active:scale-[0.95] transition-all duration-300 flex flex-row items-center justify-center gap-[20rpx]">
+      <view class="w-full h-[102rpx] rounded-[32rpx] overflow-hidden shadow-[0_4rpx_24rpx_2rpx_rgba(255,255,255,0.3)] bg-[#fff] active:scale-[0.95] transition-all duration-300 flex flex-row items-center justify-center gap-[20rpx]"
+      @click="goToPlayground">
         <view class="w-[48rpx] h-[48rpx] flex flex-row items-center justify-center">
           <image
               class="w-full h-full"
@@ -90,6 +91,12 @@ import { storeToRefs } from 'pinia';
 
 const questionStore = useQuestionStore();
 const { dailyQuestion: info } = storeToRefs(questionStore);
+
+function goToPlayground() {
+  uni.navigateTo({
+    url: `/pages/playground/playground?id=${info.value.id}`,
+  });
+}
 
 </script>
 

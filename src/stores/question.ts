@@ -44,13 +44,17 @@ export const useQuestionStore = defineStore("question", () => {
     return dailyQuestions.value[0];
   });
 
-  onMounted(async () => {
+  onMounted(async () => {});
+
+  init();
+
+  async function init() {
     dailyQuestions.value = getLocalDailyQuestions();
 
     if (dailyQuestions.value.length === 0) {
       await getDailyQuestion();
     }
-  });
+  }
 
   function getDailyQuestion() {
     return new Promise(async (resolve) => {
@@ -65,8 +69,21 @@ export const useQuestionStore = defineStore("question", () => {
     });
   }
 
+  function getQuestionDetailById(id: string): Promise<IQuestion | null> {
+    return new Promise((resolve) => {
+      let questionDetail: IQuestion | null = null;
+      console.log(">>>>>>> dailyQuestions", dailyQuestions.value);
+      const index = dailyQuestions.value.findIndex((item) => item.id === id);
+      if (index !== -1) {
+        questionDetail = dailyQuestions.value[index];
+      }
+      resolve(questionDetail);
+    });
+  }
+
   return {
     question,
     dailyQuestion,
+    getQuestionDetailById,
   };
 });

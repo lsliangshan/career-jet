@@ -125,7 +125,7 @@ export default class TencentAsrService {
     numberOfChannels: 1, // 单声道
     encodeBitRate: 48000,
     format: "mp3", // 或 'aac'，需与 voiceFormat 对应
-    frameSize: 2048, // 每帧大小
+    frameSize: 10, // 每帧大小
   };
 
   // 事件回调

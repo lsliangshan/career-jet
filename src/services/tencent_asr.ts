@@ -1,5 +1,4 @@
-import { sha1 } from "js-sha1";
-import { Base64 } from "@/utils/base64";
+import CryptoJS from "crypto-js";
 import { uuid } from "@/utils";
 
 export interface IAsrConfig {
@@ -71,15 +70,16 @@ function generateSignature(params: {
   nonce: number;
   voiceId: string;
 }) {
-  const rawString = `asr.cloud.tencent.com/asr/v2/$appId?engine_model_type=${engineModelType}&expired=${
+  const rawString = `asr.cloud.tencent.com/asr/v2/${appId}?engine_model_type=${engineModelType}&expired=${
     params.timestamp + 24 * 60 * 60
   }&needvad=1&nonce=${params.nonce}&secretid=${secretId}&timestamp=${
     params.timestamp
   }&voice_format=1&voice_id=${params.voiceId}`;
-  const hmac = sha1.hmac.create(secretKey);
-  hmac.update(rawString);
-  const digest = hmac.hex();
-  return Base64.encode(digest);
+  const hmac = CryptoJS.HmacSHA1(
+    CryptoJS.enc.Utf8.parse(rawString),
+    CryptoJS.enc.Utf8.parse(secretKey)
+  );
+  return CryptoJS.enc.Base64.stringify(hmac);
 }
 
 function getAsrServerUrl() {
@@ -91,7 +91,7 @@ function getAsrServerUrl() {
     nonce: nonce,
     voiceId: voiceId,
   });
-  return `wss://asr.cloud.tencent.com/asr/v2/$appId?engine_model_type=${engineModelType}&expired=${
+  return `wss://asr.cloud.tencent.com/asr/v2/${appId}?engine_model_type=${engineModelType}&expired=${
     timestamp + 24 * 60 * 60
   }&needvad=1&nonce=${nonce}&secretid=${secretId}&timestamp=${timestamp}&voice_format=1&voice_id=${voiceId}&signature=${encodeURIComponent(
     signature
@@ -147,8 +147,11 @@ export default class TencentAsrService {
   private initRecorder(): void {
     this.recorderManager = uni.getRecorderManager();
 
+    console.log(">>>>>>>>> initRecorder: ", this.recorderManager);
+
     // 监听录音帧数据（实时传输的关键）
     this.recorderManager.onFrameRecorded((res) => {
+      console.log(">>>>>>>>> onFrameRecorded: ", res);
       if (this.isRecognizing && res.frameBuffer) {
         this.sendAudioFrame(res.frameBuffer, res.isLastFrame);
       }
@@ -169,17 +172,13 @@ export default class TencentAsrService {
       try {
         this.updateStatus("正在连接...");
         const wssUrl = getAsrServerUrl();
-        console.log(">>>>>>>>>>>>>>> wssUrl: ", wssUrl);
         this.socketTask = uni.connectSocket({
           url: wssUrl,
           success: (res) => {
-            console.log(">>>>>>>>>>>>>>> susccess: ", this.socketTask);
-
             resolve();
           },
         });
         this.setupSocketListeners();
-        console.log(">>>>>>>>>>>>>>> socketTask: ", this.socketTask);
       } catch (err: any) {
         reject(new Error(`连接失败: ${err.message}`));
       }
@@ -188,17 +187,14 @@ export default class TencentAsrService {
 
   // 设置WebSocket监听器
   private setupSocketListeners(): void {
-    console.log(">>>>>>>>>>>>>>> socketTask: 222", this.socketTask);
     if (!this.socketTask) return;
-    console.log(">>>>>>>>>>>>>>> setupSocketListeners: ");
     this.socketTask.onOpen(() => {
-      console.log(">>>>>>>>>>>>>>> onOpen: ");
       this.isConnected = true;
       this.updateStatus("已连接");
       console.log("✅ WebSocket连接成功");
 
       // 发送初始化请求
-      this.sendInitialRequest();
+      // this.sendInitialRequest();
     });
 
     this.socketTask.onMessage((res) => {
@@ -287,7 +283,7 @@ export default class TencentAsrService {
     this.isRecording = false;
 
     // 发送结束标记
-    // this.sendAudioFrame(new ArrayBuffer(0), true)
+    this.sendAudioFrame(new ArrayBuffer(0), true);
 
     this.updateStatus("识别结束");
     console.log("🛑 停止语音识别");
@@ -305,6 +301,8 @@ export default class TencentAsrService {
     // 将音频数据转换为base64
     const base64Audio = this.arrayBufferToBase64(audioBuffer);
 
+    console.log(">>>>>>> send: ", base64Audio);
+
     const audioRequest = {
       request: {
         requestId: requestId.toString(),
@@ -312,7 +310,10 @@ export default class TencentAsrService {
       },
       audio: base64Audio,
     };
-
+    console.log(
+      ">>>>>>>>...... JSON.stringify(audioRequest)",
+      JSON.stringify(audioRequest)
+    );
     this.send(JSON.stringify(audioRequest));
   }
 

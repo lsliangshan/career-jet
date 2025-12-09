@@ -44,10 +44,14 @@ export interface IAsrConfig {
 }
 
 export interface AsrResult {
-  text: string;
+  id: string;
+  voiceId: string;
   isFinal: boolean;
-  volume?: number;
-  sessionId?: string;
+  text?: string;
+  index?: number;
+  sliceType?: number;
+  startTime?: number;
+  endTime?: number;
 }
 
 export interface AsrError {
@@ -99,16 +103,6 @@ function getAsrServerUrl() {
 }
 
 export default class TencentAsrService {
-  private config: IAsrConfig = {
-    duration: 60000,
-    sampleRate: 8000,
-    numberOfChannels: 2,
-    encodeBitRate: 48000,
-    format: "aac",
-  };
-
-  private requestId: number = 0;
-
   // 录音管理
   private recorderManager: UniApp.RecorderManager | null = null;
   private isRecording: boolean = false;
@@ -118,14 +112,21 @@ export default class TencentAsrService {
   private isConnected: boolean = false;
   private isRecognizing: boolean = false;
 
+  private audioData: any[] = [];
+
+  // 每次发送数据的时长
+  private sendInterval: number = 0;
+
+  private preWriteTime: number = 0;
+
   // 录音参数（根据腾讯云要求设置）
   private readonly recordOptions: UniApp.RecorderManagerStartOptions = {
     duration: 60000,
     sampleRate: 16000, // 16kHz 采样率
     numberOfChannels: 1, // 单声道
     encodeBitRate: 48000,
-    format: "mp3", // 或 'aac'，需与 voiceFormat 对应
-    frameSize: 10, // 每帧大小
+    format: "PCM", // 或 'aac'，需与 voiceFormat 对应
+    frameSize: 1.28, // 每帧大小
   };
 
   // 事件回调
@@ -146,15 +147,38 @@ export default class TencentAsrService {
   // 初始化录音管理器
   private initRecorder(): void {
     this.recorderManager = uni.getRecorderManager();
-
-    console.log(">>>>>>>>> initRecorder: ", this.recorderManager);
-
     // 监听录音帧数据（实时传输的关键）
     this.recorderManager.onFrameRecorded((res) => {
-      console.log(">>>>>>>>> onFrameRecorded: ", res);
       if (this.isRecognizing && res.frameBuffer) {
-        this.sendAudioFrame(res.frameBuffer, res.isLastFrame);
+        this.audioData.push(...new Int8Array(res.frameBuffer));
+        if (new Date().getTime() - this.preWriteTime > this.sendInterval) {
+          const i = this.audioData.splice(0, this.audioData.length);
+          const r = new Int8Array(i);
+          const s = new Date().getTime();
+          this.preWriteTime = s;
+          this.sendAudioFrame(r.buffer, res.isLastFrame);
+        }
       }
+    });
+
+    this.recorderManager.onStop((res) => {
+      const finalTimer = setInterval(() => {
+        if (new Date().getTime() - this.preWriteTime > this.sendInterval) {
+          if (this.audioData.length > 3200) {
+            this.sendAudioFrame(
+              new Int8Array(this.audioData.splice(0, 3200)).buffer,
+              res.isLastFrame
+            );
+            this.preWriteTime = new Date().getTime();
+          } else {
+            this.sendAudioFrame(
+              new Int8Array(this.audioData).buffer,
+              res.isLastFrame
+            );
+            clearInterval(finalTimer);
+          }
+        }
+      }, 100);
     });
 
     // 录音错误处理
@@ -192,13 +216,10 @@ export default class TencentAsrService {
       this.isConnected = true;
       this.updateStatus("已连接");
       console.log("✅ WebSocket连接成功");
-
-      // 发送初始化请求
-      // this.sendInitialRequest();
     });
 
     this.socketTask.onMessage((res) => {
-      console.log(">>>>>>>>>>>>>>> onMessage: ", res);
+      console.log(">>>>>>>>>>>>>>> onMessage: ", JSON.parse(res.data));
       this.handleServerMessage(res.data);
     });
 
@@ -215,34 +236,6 @@ export default class TencentAsrService {
         message: `WebSocket错误: ${err.errMsg}`,
       });
     });
-  }
-
-  // 发送初始化请求
-  private sendInitialRequest(): void {
-    const requestId = this.generateRequestId();
-    const initRequest = {
-      request: {
-        requestId: requestId.toString(),
-        appId: appId,
-        secretId: secretId, // 实际项目中可能需要 secretId
-        timestamp: Math.floor(Date.now() / 1000),
-        expired: Math.floor(Date.now() / 1000) + 24 * 3600,
-        // engineModelType: this.config.engineModelType,
-        // voiceFormat: this.config.voiceFormat,
-        // needVad: this.config.needVad,
-        // hotwordId: this.config.hotwordId || '',
-        speakerDiarization: 0,
-        filterDirty: 0,
-        filterModal: 0,
-        filterPunc: 0,
-        convertNumMode: 1,
-        wordInfo: 0,
-        firstChannelOnly: 1,
-      },
-      audio: "",
-    };
-
-    this.send(JSON.stringify(initRequest));
   }
 
   // 开始语音识别
@@ -296,25 +289,12 @@ export default class TencentAsrService {
   ): void {
     if (!this.socketTask || !this.isConnected) return;
 
-    const requestId = this.generateRequestId();
+    if (isLast) {
+      this.send(JSON.stringify({ type: "end" }));
+      return;
+    }
 
-    // 将音频数据转换为base64
-    const base64Audio = this.arrayBufferToBase64(audioBuffer);
-
-    console.log(">>>>>>> send: ", base64Audio);
-
-    const audioRequest = {
-      request: {
-        requestId: requestId.toString(),
-        audioEnd: isLast ? 1 : 0,
-      },
-      audio: base64Audio,
-    };
-    console.log(
-      ">>>>>>>>...... JSON.stringify(audioRequest)",
-      JSON.stringify(audioRequest)
-    );
-    this.send(JSON.stringify(audioRequest));
+    this.send(audioBuffer);
   }
 
   // 处理服务端消息
@@ -328,13 +308,26 @@ export default class TencentAsrService {
       const message = JSON.parse(data);
 
       // 处理不同的消息类型
-      if (message.code === 0 && message.message === "SUCCESS") {
+      if (message.code === 0 && message.message.toLowerCase() === "success") {
+        if (message.final == 1) {
+          return;
+        }
+        if (
+          !message.result ||
+          [0, 1, 2].indexOf(message.result.slice_type) === -1
+        ) {
+          return;
+        }
         // 识别结果
         const result: AsrResult = {
-          text: message.result?.text || "",
+          id: message.message_id,
+          voiceId: message.voice_id,
+          text: message.result?.voice_text_str || "",
+          index: message.result?.index || 0,
+          sliceType: message.result?.slice_type,
+          startTime: message.result?.start_time,
+          endTime: message.result?.end_time,
           isFinal: message.result?.final === 1,
-          volume: message.result?.volume,
-          sessionId: message.sessionId,
         };
 
         this.onResultCallback?.(result);
@@ -352,16 +345,16 @@ export default class TencentAsrService {
       }
 
       // 处理中间状态
-      if (message.status) {
-        this.updateStatus(message.status);
-      }
+      // if (message.status) {
+      //   this.updateStatus(message.status);
+      // }
     } catch (err) {
       console.error("消息解析失败:", err, "原始数据:", data);
     }
   }
 
   // 发送数据
-  private send(data: string): void {
+  private send(data: any): void {
     if (this.socketTask && this.isConnected) {
       this.socketTask.send({ data });
     }
@@ -380,25 +373,6 @@ export default class TencentAsrService {
 
     this.isConnected = false;
     this.updateStatus("已断开连接");
-  }
-
-  // 生成请求ID
-  private generateRequestId(): number {
-    return ++this.requestId;
-  }
-
-  // ArrayBuffer转Base64
-  private arrayBufferToBase64(buffer: ArrayBuffer): string {
-    if (buffer.byteLength === 0) return "";
-
-    let binary = "";
-    const bytes = new Uint8Array(buffer);
-    for (let i = 0; i < bytes.byteLength; i++) {
-      binary += String.fromCharCode(bytes[i]);
-    }
-    return uni.arrayBufferToBase64
-      ? uni.arrayBufferToBase64(buffer)
-      : btoa(binary);
   }
 
   // 错误处理

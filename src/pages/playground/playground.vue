@@ -4,7 +4,7 @@
 
     <Layout :hasHeader="true">
 
-      <scroll-view type="custom" scroll-y class="w-full h-full">
+      <scroll-view type="custom" scroll-y class="relative w-full h-full">
         <view class="w-full h-[32rpx]"></view>
         <view class="w-full h-[386rpx] px-[32rpx] box-border" @click="previewImage(questionDetail?.image ? [questionDetail?.image] : [])">
           <view class="relative w-full h-full rounded-[24rpx] overflow-hidden bg-[#fff] shadow-[0_8rpx_32rpx_rgba(0,0,0,0.15)] flex flex-row items-center justify-center">
@@ -76,7 +76,7 @@
         </view>
 
         <view class="w-full h-[200rpx] mt-[40rpx] flex flex-row items-center justify-center">
-          <view class="relative w-[200rpx] h-[200rpx] rounded-full flex flex-row items-center justify-center" @click="startDescribe">
+          <view class="relative w-[200rpx] h-[200rpx] rounded-full flex flex-row items-center justify-center" @touchstart="startDescribe"  @touchend="handleEndDescribe">
             <span class="absolute left-0 top-0 inline-flex h-full w-full animate-beat rounded-full opacity-75"
             :style="{
               backgroundColor: ThemeColors.primary
@@ -89,19 +89,29 @@
                 mode="aspectFit"
               />
               </view>
-              <text class="text-[30rpx] text-[#fff] font-[700]">{{ isRecording ? '停止描述' : '开始描述' }}</text>
+              <text class="text-[30rpx] text-[#fff] font-[700]">按住描述</text>
             </view>
           </view>
         </view>
+
+        <view class="absolute left-0 top-[400rpx] w-full p-[32rpx] bg-[#000]">
+          <text class="text-[28rpx] text-[#fff]">识别时长：{{ asrDuration }}</text>
+          <br>
+          <text class="text-[28rpx] text-[#fff]">识别结果：{{ asrText }}</text>
+        </view>
         
       </scroll-view>
-
-      <view class="absolute left-0 top-[400rpx] w-full p-[32rpx] bg-[#000]">
-        <text class="text-[28rpx] text-[#fff]">识别时长：{{ asrDuration }}</text>
-        <br>
-        <text class="text-[28rpx] text-[#fff]">识别结果：{{ asrText }}</text>
-      </view>
     </Layout>
+
+    <page-container
+      :show="modalVisible"
+      z-index="999"
+      custom-style="background-color: transparent;"
+      round
+      @leave="handleLeave"
+    >
+      <ChatModal :is-speaking="isSpeaking" />
+    </page-container>
   </view>
 </template>
 
@@ -116,13 +126,23 @@ import { useQuestionStore } from "@/stores/question";
 import { previewImage } from '@/utils';
 import TencentAsrService from "@/services/tencent_asr";
 import type { AsrResult } from "@/services/tencent_asr";
+import ChatModal from "./modals/ChatModal.vue";
 
 const questionStore = useQuestionStore();
 
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
+const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
+
+const isSpeaking = ref(false);
 
 const questionId = ref<string>("");
 const questionDetail = ref<IQuestion | null>(null);
+
+const modalVisible = ref(false);
+const modalData = ref<{
+  component?: string;
+  [key: string]: any;
+}>();
 
 const tencentAsrService = new TencentAsrService();
 
@@ -166,13 +186,24 @@ async function getQuestionDetailById() {
 }
 
 function startDescribe() {
-  if (isRecording.value) {
-    tencentAsrService.stopRecognition();
-  } else {
-    tencentAsrService.startRecognition();
-  }
+  isSpeaking.value = true;
+  modalVisible.value = true;
+
+  // if (isRecording.value) {
+  //   tencentAsrService.stopRecognition();
+  // } else {
+  //   tencentAsrService.startRecognition();
+  // }
 }
 
+function handleEndDescribe(e: any) {
+  console.log('>>>> handleEndDescribe', e)
+  isSpeaking.value = false;
+}
+
+function handleLeave() {
+  modalVisible.value = false;
+}
 </script>
 
 <style scoped>

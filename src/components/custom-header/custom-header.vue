@@ -1,10 +1,11 @@
 <template>
   <view
-    class="w-full fixed left-0 top-0 z-10 border-b border-[1rpx] flex flex-row items-center justify-start bg-[#fff]"
+    class="w-full fixed left-0 top-0 z-10 border-b border-[1rpx] flex flex-row items-center justify-start"
     :style="{
+      backgroundColor: bgColor,
       height: `calc(88rpx + ${safeTop}px)`,
       paddingTop: `${safeTop}px`,
-      borderColor: ThemeColors.border,
+      borderColor: bgColor,
     }"
   >
     <view
@@ -47,12 +48,14 @@ interface Props {
   title?: string;
   showBack?: boolean;
   titleAlign?: "start" | "center" | "end";
+  bgColor?: string;
 }
 
 withDefaults(defineProps<Props>(), {
   title: "",
   showBack: false,
   titleAlign: "center",
+  bgColor: "#fff",
 });
 
 const safeTop = ref(uni.getWindowInfo().safeAreaInsets?.top || 0);

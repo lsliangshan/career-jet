@@ -15,3 +15,33 @@ export interface ILevel {
   desc: string;
   level: number;
 }
+
+export interface IAIResultDimension {
+  score: number;
+  totalScore: number;
+  label: string;
+  reasoning: string;
+}
+
+export interface IAIResultScoreBreakdown {
+  visual_accuracy: IAIResultDimension;
+  completeness_observation: IAIResultDimension;
+  language_clarity: IAIResultDimension;
+  structure_logic: IAIResultDimension;
+  detail_vividness: IAIResultDimension;
+  inference_value: IAIResultDimension;
+}
+
+export interface IAIResultOverallFeedback {
+  strengths: string;
+  inaccuracies_or_omissions: string;
+  suggestions_for_improvement: string;
+}
+export interface IAIResult {
+  user_description: string;
+  score_breakdown: IAIResultScoreBreakdown;
+  total_score: number;
+  rating_grade: string;
+  overall_feedback: IAIResultOverallFeedback;
+  response_text: string;
+}

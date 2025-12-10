@@ -130,6 +130,7 @@ export function requestAnswerQuestion(params?: {
       url: `${baseUrl}/cm/answer`,
       method: "POST",
       data: params,
+      timeout: 10 * 60 * 1000,
       success: (res) => {
         resolve(res.data);
       },

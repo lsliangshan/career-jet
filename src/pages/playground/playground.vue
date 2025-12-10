@@ -102,9 +102,8 @@
       z-index="999"
       :custom-style="modalData?.component === EModalComponent.CHAT_MODAL ? 'background-color: transparent;' : ''"
       round
-      @leave="handleLeave"
     >
-      <ChatModal v-if="modalData?.component === EModalComponent.CHAT_MODAL" :is-speaking="isSpeaking" />
+      <ChatModal v-if="modalData?.component === EModalComponent.CHAT_MODAL" :is-speaking="isSpeaking" :info="questionDetail" />
     </page-container>
   </view>
 </template>
@@ -130,7 +129,7 @@ const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 const isSpeaking = ref(false);
 
 const questionId = ref<string>("");
-const questionDetail = ref<IQuestion | null>(null);
+const questionDetail = ref<IQuestion>();
 
 const modalVisible = ref(false);
 const modalData = ref<{

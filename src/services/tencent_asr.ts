@@ -219,7 +219,6 @@ export default class TencentAsrService {
     });
 
     this.socketTask.onMessage((res) => {
-      console.log(">>>>>>>>>>>>>>> onMessage: ", JSON.parse(res.data));
       this.handleServerMessage(res.data);
     });
 

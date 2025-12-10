@@ -75,7 +75,7 @@
           </view>
         </view>
 
-        <view class="w-full h-[200rpx] mt-[40rpx] flex flex-row items-center justify-center">
+        <view class="w-full h-[200rpx] mt-[40rpx] flex flex-row items-center justify-center" v-if="!modalVisible">
           <view class="relative w-[200rpx] h-[200rpx] rounded-full flex flex-row items-center justify-center" @touchstart="startDescribe"  @touchend="handleEndDescribe">
             <span class="absolute left-0 top-0 inline-flex h-full w-full animate-beat rounded-full opacity-75"
             :style="{
@@ -93,12 +93,6 @@
             </view>
           </view>
         </view>
-
-        <view class="absolute left-0 top-[400rpx] w-full p-[32rpx] bg-[#000]">
-          <text class="text-[28rpx] text-[#fff]">识别时长：{{ asrDuration }}</text>
-          <br>
-          <text class="text-[28rpx] text-[#fff]">识别结果：{{ asrText }}</text>
-        </view>
         
       </scroll-view>
     </Layout>
@@ -106,11 +100,11 @@
     <page-container
       :show="modalVisible"
       z-index="999"
-      custom-style="background-color: transparent;"
+      :custom-style="modalData?.component === EModalComponent.CHAT_MODAL ? 'background-color: transparent;' : ''"
       round
       @leave="handleLeave"
     >
-      <ChatModal :is-speaking="isSpeaking" />
+      <ChatModal v-if="modalData?.component === EModalComponent.CHAT_MODAL" :is-speaking="isSpeaking" />
     </page-container>
   </view>
 </template>
@@ -124,9 +118,9 @@ import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import { useQuestionStore } from "@/stores/question";
 import { previewImage } from '@/utils';
-import TencentAsrService from "@/services/tencent_asr";
-import type { AsrResult } from "@/services/tencent_asr";
+
 import ChatModal from "./modals/ChatModal.vue";
+import { EModalComponent } from "./modals/types";
 
 const questionStore = useQuestionStore();
 
@@ -144,39 +138,13 @@ const modalData = ref<{
   [key: string]: any;
 }>();
 
-const tencentAsrService = new TencentAsrService();
-
-const isRecording = ref<boolean>(false);
-
-const asrText = ref('');
-const asrDuration = ref(0);
-const asrResult = ref<AsrResult>();
-
 onLoad(async (options: any) => {
   questionId.value = options.id;
 
   await getQuestionDetailById();
 
-  console.log('>>>>>>>>> import.meta.env: ', import.meta.env)
-
-  tencentAsrService.onResult((result: AsrResult) => {
-    console.log('>>>>>>> result', result);
-    asrResult.value = result;
-    if (!result.isFinal) {
-      asrText.value = result.text || '';
-      asrDuration.value = result.endTime || 0;
-    }
-  });
-  tencentAsrService.onError((error) => {
-    console.log('>>>>>>> error', error);
-  });
-  tencentAsrService.onStatus((status) => {
-    if (status === '正在录音识别中...') {
-      isRecording.value = true;
-    } else if (status === '识别结束') {
-      isRecording.value = false;
-    }
-    console.log('>>>>>>> status', status);
+  uni.$on("close-modal", (e: any) => {
+    closeModal(e?.component as EModalComponent)
   });
 });
 
@@ -187,22 +155,30 @@ async function getQuestionDetailById() {
 
 function startDescribe() {
   isSpeaking.value = true;
-  modalVisible.value = true;
-
-  // if (isRecording.value) {
-  //   tencentAsrService.stopRecognition();
-  // } else {
-  //   tencentAsrService.startRecognition();
-  // }
+  openModal(EModalComponent.CHAT_MODAL)
 }
 
 function handleEndDescribe(e: any) {
-  console.log('>>>> handleEndDescribe', e)
   isSpeaking.value = false;
 }
 
-function handleLeave() {
+function openModal(component: EModalComponent) {
+  modalData.value = {
+    component,
+  };
+  modalVisible.value = true;
+}
+
+function closeModal(component?: EModalComponent) {
+  if (component && component !== (modalData.value?.component as EModalComponent)) {
+    return;
+  }
+  modalData.value = {};
   modalVisible.value = false;
+}
+
+function handleLeave() {
+  closeModal()
 }
 </script>
 

@@ -36,6 +36,9 @@ import { nextTick, onMounted, ref, watch } from 'vue';
 import TencentAsrService from "@/services/tencent_asr";
 import type { AsrResult } from "@/services/tencent_asr";
 import type { IQuestion } from '@/types';
+import { requestAnswerQuestion } from '@/request';
+import { useUserStore } from '@/stores/user';
+import { storeToRefs } from 'pinia';
 
 interface Props {
   isSpeaking: boolean;
@@ -43,6 +46,9 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const userStore = useUserStore();
+const { loginInfo, isLoggedIn } = storeToRefs(userStore);
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
@@ -108,7 +114,7 @@ function closeModal() {
   });
 }
 
-function sendMessage() {
+async function sendMessage() {
   if (!asrText.value) {
     uni.showToast({
       title: '请输入内容',
@@ -117,6 +123,28 @@ function sendMessage() {
     focused.value = true;
     return;
   }
+
+  if (!props.info) { 
+    return;
+  }
+
+  if (!isLoggedIn.value) {
+    uni.showToast({
+      title: '请先登录',
+      icon: 'none',
+    });
+    return;
+  }
+
+  const res = await requestAnswerQuestion({
+    userId: loginInfo.value.id,
+    questionId: props.info.id,
+    answer: asrText.value,
+    answerTime: 0,
+    thinkingTime: 0,
+  });
+
+  console.log('>>>>>>> 答题返回: ', res)
 }
 
 function handleBlur() {

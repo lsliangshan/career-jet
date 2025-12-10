@@ -114,3 +114,50 @@ export function requestGetDailyQuestion(params?: {
     });
   });
 }
+
+/**
+ * 答题
+ */
+export function requestAnswerQuestion(params?: {
+  userId: string;
+  questionId: string;
+  answer: string;
+  answerTime?: number;
+  thinkingTime?: number;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/cm/answer`,
+      method: "POST",
+      data: params,
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 获取某道题的答题历史
+ */
+export function requestGetAnswers(params?: {
+  userId: string;
+  questionId: string;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/cm/get-answers`,
+      method: "POST",
+      data: params,
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}

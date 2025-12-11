@@ -45,3 +45,17 @@ export interface IAIResult {
   overall_feedback: IAIResultOverallFeedback;
   response_text: string;
 }
+
+export interface IAnswer {
+  id: string;
+  userId: string;
+  questionId: string;
+  answer: string;
+  answerTime: number;
+  thinkingTime: number;
+  createAt: string;
+  attemptNumber: number;
+  aiAnswer: IAIResult;
+  points: number;
+  type: "daily" | "normal" | string;
+}

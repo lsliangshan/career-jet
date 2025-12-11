@@ -9,13 +9,26 @@
         <view class="w-full h-[386rpx] px-[32rpx] box-border" @click="previewImage(questionDetail?.image ? [questionDetail?.image] : [])">
           <view class="relative w-full h-full rounded-[24rpx] overflow-hidden bg-[#fff] shadow-[0_8rpx_32rpx_rgba(0,0,0,0.15)] flex flex-row items-center justify-center">
             <image class="w-full h-full" :src="questionDetail?.image" mode="aspectFit"></image>
-            <view class="absolute bottom-[32rpx] right-[32rpx] w-[80rpx] h-[80rpx] bg-[#fff] shadow-[0_4rpx_24rpx_rgba(0,0,0,0.1)] rounded-[50%] flex flex-row items-center justify-center">
+            <!-- <view class="absolute bottom-[32rpx] right-[32rpx] w-[80rpx] h-[80rpx] bg-[#fff] shadow-[0_4rpx_24rpx_rgba(0,0,0,0.1)] rounded-[50%] flex flex-row items-center justify-center"
+            @click.stop="handleViewAnswerHistory">
               <image
                 class="w-[42rpx] h-[42rpx]"
-                src="@static/icon_magnify_black.png"
+                src="@static/icon_answer_history.png"
                 mode="aspectFit"
               />
-            </view>
+
+              <view class="absolute right-0 -top-[84rpx] h-[64rpx] px-[20rpx] box-border rounded-[8rpx] whitespace-nowrap bg-[#000] flex flex-row items-center justify-center">
+                <text class="text-[24rpx] text-[#fff]">点击查看答题历史</text>
+                <view class="absolute right-[28rpx] top-[54rpx] w-[24rpx] h-[24rpx] flex flex-row items-center justify-center">
+                  <image
+                    class="w-full h-full"
+                    src="@static/icon_caret_down.png"
+                    mode="aspectFit"
+                  />
+                </view>
+              </view>
+            </view> -->
+            <AnswerHistory :question-id="questionId" />
           </view>
         </view>
 
@@ -120,6 +133,7 @@ import { previewImage } from '@/utils';
 
 import ChatModal from "./modals/ChatModal.vue";
 import { EModalComponent } from "./modals/types";
+import AnswerHistory from "./components/AnswerHistory.vue";
 
 const questionStore = useQuestionStore();
 
@@ -176,9 +190,7 @@ function closeModal(component?: EModalComponent) {
   modalVisible.value = false;
 }
 
-function handleLeave() {
-  closeModal()
-}
+function handleViewAnswerHistory() {}
 </script>
 
 <style scoped>

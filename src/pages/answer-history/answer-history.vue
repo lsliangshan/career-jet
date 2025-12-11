@@ -10,10 +10,17 @@
       <scroll-view type="custom" scroll-y class="relative w-full h-full flex flex-col" v-else>
         <view class="w-full h-[32rpx]"></view>
 
-        <view class="w-full mt-[32rpx] px-[32rpx] box-border flex flex-col gap-[32rpx]" v-for="(answer, index) in answers" :key="answer.id">
+        <view class="w-full mb-[64rpx] px-[32rpx] box-border flex flex-col gap-[64rpx]" v-for="(answer, index) in answers" :key="answer.id">
           <view
-            class="max-w-[calc(100%-32rpx)] ml-[32rpx] py-[32rpx] box-border rounded-[32rpx] overflow-hidden bg-[#07c160] shadow-[0_8rpx_32rpx_rgba(0,0,0,0.15)] flex flex-row">
-            <view class="w-full px-[32rpx] box-border transition-all duration-300 will-change-height">
+            class="max-w-[calc(100%-32rpx)] ml-[32rpx] flex flex-col gap-[16rpx]">
+            <view class="w-full h-[64rpx] flex flex-row items-center justify-end gap-[32rpx]">
+              <text class="text-[24rpx] text-[#888]">{{ answer?.createAt }}</text>
+              <view class="w-[64rpx] h-[64rpx] rounded-[12rpx] overflow-hidden bg-[#fff] shadow-[0_8rpx_32rpx_rgba(0,0,0,0.15)] flex flex-row items-center justify-center">
+                
+                <image class="w-full h-full" :src="renderAvatar" mode="aspectFill" @error="handleAvatarError" @click="previewImage([renderAvatar])" />
+              </view>
+            </view>
+            <view class="w-full p-[32rpx] box-border rounded-[32rpx] overflow-hidden bg-[#07c160] shadow-[0_8rpx_32rpx_rgba(0,0,0,0.15)] transition-all duration-300 will-change-height">
               <view class="flex flex-col gap-[16rpx]">
                 <text class="text-[#222] text-[30rpx]">{{
                   answer?.answer
@@ -21,9 +28,17 @@
               </view>
             </view>
           </view>
+
           <view
-            class="max-w-[calc(100%-32rpx)] py-[32rpx] box-border rounded-[32rpx] overflow-hidden bg-[#ffffff] shadow-[0_8rpx_32rpx_rgba(0,0,0,0.15)] flex flex-row">
-            <view class="w-full px-[32rpx] box-border transition-all duration-300 will-change-height">
+            class="max-w-[calc(100%-32rpx)] flex flex-col gap-[16rpx]">
+            <view class="w-full h-[64rpx] flex flex-row items-center justify-start gap-[16rpx]">
+              <view class="w-[64rpx] h-[64rpx] rounded-[12rpx] overflow-hidden bg-[#fff] shadow-[0_8rpx_32rpx_rgba(0,0,0,0.15)] flex flex-row items-center justify-center">
+                <image class="w-full h-full" :src="renderAIAvatar" mode="aspectFill" @click="previewImage([renderAIAvatar])" />
+                
+              </view>
+              <text class="text-[24rpx] text-[#888]">灵境画猜</text>
+            </view>
+            <view class="w-full p-[32rpx] box-border rounded-[32rpx] overflow-hidden bg-[#ffffff] shadow-[0_8rpx_32rpx_rgba(0,0,0,0.15)] transition-all duration-300 will-change-height">
               <view class="flex flex-col gap-[16rpx]">
                 <view class="w-full flex flex-row items-baseline gap-[12rpx]">
                   <text class="text-[green] text-[48rpx]">{{ answer?.aiAnswer?.total_score }}分</text>
@@ -38,6 +53,8 @@
             </view>
           </view>
         </view>
+
+        <view class="w-full h-[32rpx]"></view>
       </scroll-view>
     </Layout>
   </view>
@@ -47,22 +64,27 @@
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import PageLoading from "@/components/page-loading/page-loading.vue";
+import { DEFAULT_AI_AVATAR, DEFAULT_AVATAR } from "@/config/config";
 import { requestGetAnswers } from "@/request";
-import { useUserStore } from "@/stores/user";
+import {type LoginInfo, useUserStore } from "@/stores/user";
 import type { IAnswer } from "@/types";
 import { getDescriptionByScore } from "@/utils/qa";
 import { onLoad } from "@dcloudio/uni-app";
 import { storeToRefs } from "pinia";
-import { computed, nextTick, ref } from "vue";
+import { computed, nextTick, type Ref, ref } from "vue";
+import { previewImage } from "@/utils";
 
 const userStore = useUserStore();
-const { loginInfo } = storeToRefs(userStore);
+const { loginInfo }: { loginInfo: Ref<LoginInfo> } = storeToRefs(userStore);
 
 const questionId = ref<string>("");
 
 const pageReady = ref(false);
 
 const answers = ref<IAnswer[]>([]);
+
+const renderAvatar = ref();
+const renderAIAvatar = ref(DEFAULT_AI_AVATAR);
 
 const renderScore = computed(() => {
   return function (score: number) {
@@ -74,6 +96,7 @@ onLoad((options: any) => {
   questionId.value = options.questionId;
   nextTick(() => {
     setTimeout(() => {
+      renderAvatar.value = loginInfo.value?.avatar || DEFAULT_AVATAR;
       getAnswerHistory();
     }, 400);
   });
@@ -89,6 +112,10 @@ async function getAnswerHistory() {
   }
 
   pageReady.value = true;
+}
+
+function handleAvatarError() {
+  renderAvatar.value = DEFAULT_AVATAR;
 }
 </script>
 

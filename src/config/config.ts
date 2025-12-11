@@ -1,5 +1,11 @@
 // 图标  https://www.figma.com/design/awcDBnJQrEtyp1pyqbNudX/Iconicool-%7C-Free-Iconset--Community-?node-id=201-2755&t=a295C2jBOqBU2wA2-0
 
+export const DEFAULT_AVATAR =
+  "https://img.liangqy.com/crawlerjet/img/default_avatar.png";
+
+export const DEFAULT_AI_AVATAR =
+  "https://img.liangqy.com/crawlerjet/img/ai_avatar.png";
+
 export const tabbars = [
   {
     name: "home",

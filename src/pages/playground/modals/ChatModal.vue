@@ -5,52 +5,102 @@
     <Layout :hasHeader="true">
       <view class="relative w-full h-full flex flex-col">
         <view class="w-full h-[32rpx] shrink-0"></view>
-        <view class="w-full h-[386rpx] px-[32rpx] box-border shrink-0 transition-all duration-300"
+        <view
+          class="w-full h-[386rpx] px-[32rpx] box-border shrink-0 transition-all duration-300"
           @click="previewImage(info?.image ? [info?.image] : [])"
-          :class="[modalInitialized ? 'opacity-100' : 'opacity-0']">
+          :class="[modalInitialized ? 'opacity-100' : 'opacity-0']"
+        >
           <view
-            class="relative w-full h-full rounded-[24rpx] overflow-hidden bg-[#fff] shadow-[0_8rpx_32rpx_rgba(0,0,0,0.15)] flex flex-row items-center justify-center">
-            <image class="w-full h-full" :src="info?.image" mode="aspectFit"></image>
+            class="relative w-full h-full rounded-[24rpx] overflow-hidden bg-[#fff] shadow-[0_8rpx_32rpx_rgba(0,0,0,0.15)] flex flex-row items-center justify-center"
+          >
+            <image
+              class="w-full h-full"
+              :src="info?.image"
+              mode="aspectFill"
+            ></image>
             <view
-              class="absolute bottom-[32rpx] right-[32rpx] w-[80rpx] h-[80rpx] bg-[#fff] shadow-[0_4rpx_24rpx_rgba(0,0,0,0.1)] rounded-[50%] flex flex-row items-center justify-center">
-              <image class="w-[42rpx] h-[42rpx]" src="@static/icon_magnify_black.png" mode="aspectFit" />
+              class="absolute bottom-[32rpx] right-[32rpx] w-[80rpx] h-[80rpx] bg-[#fff] shadow-[0_4rpx_24rpx_rgba(0,0,0,0.1)] rounded-[50%] flex flex-row items-center justify-center"
+            >
+              <image
+                class="w-[42rpx] h-[42rpx]"
+                src="@static/icon_magnify_black.png"
+                mode="aspectFit"
+              />
             </view>
           </view>
         </view>
 
-        <scroll-view class="w-full p-[32rpx] box-border" type="custom" scroll-y
-          :style="{ height: `calc(100% - 418rpx - 120rpx - 100rpx - ${safeBottom}px)` }">
+        <scroll-view
+          class="w-full p-[32rpx] box-border"
+          type="custom"
+          scroll-y
+          :style="{
+            height: `calc(100% - 418rpx - 120rpx - 100rpx - ${safeBottom}px)`,
+          }"
+        >
           <view class="w-full flex flex-col gap-[24rpx]">
             <view
               class="relative w-full max-h-full pt-[32rpx] box-border rounded-[32rpx] overflow-hidden bg-[#07c160] shadow-[0_8rpx_32rpx_rgba(0,0,0,0.15)] flex flex-row transition-all duration-300 will-change-height"
-              :style="{ paddingBottom: isRecording ? '72rpx' : '32rpx' }">
-              <view class="w-full max-h-full px-[32rpx] box-border overflow-auto">
-                <textarea type="text" class="text-[#222] text-[30rpx]" :cursor-spacing="32" v-model="asrText"
-                  :disabled="isRecording" :focus="focused" auto-height @blur="handleBlur" />
+              :style="{ paddingBottom: isRecording ? '72rpx' : '32rpx' }"
+            >
+              <view
+                class="w-full max-h-full px-[32rpx] box-border overflow-auto"
+              >
+                <textarea
+                  type="text"
+                  class="text-[#222] text-[30rpx]"
+                  :cursor-spacing="32"
+                  v-model="asrText"
+                  :disabled="isRecording"
+                  :focus="focused"
+                  auto-height
+                  @blur="handleBlur"
+                />
               </view>
 
               <view
                 class="absolute left-0 bottom-0 w-full h-[72rpx] pr-[24rpx] box-border flex flex-row items-center justify-end"
-                v-if="isRecording">
-                <image src="https://img.liangqy.com/crawlerjet/img/sound-wave.gif" class="w-[50rpx] h-[50rpx]"></image>
-                <image src="https://img.liangqy.com/crawlerjet/img/sound-wave.gif" class="w-[50rpx] h-[50rpx]"></image>
+                v-if="isRecording"
+              >
+                <image
+                  src="https://img.liangqy.com/crawlerjet/img/sound-wave.gif"
+                  class="w-[50rpx] h-[50rpx]"
+                ></image>
+                <image
+                  src="https://img.liangqy.com/crawlerjet/img/sound-wave.gif"
+                  class="w-[50rpx] h-[50rpx]"
+                ></image>
               </view>
             </view>
 
             <view
               class="w-full py-[32rpx] box-border rounded-[32rpx] overflow-hidden bg-[#ffffff] shadow-[0_8rpx_32rpx_rgba(0,0,0,0.15)] flex flex-row"
-              v-if="aiAnalyzing || aiResult">
-              <view class="w-full px-[32rpx] box-border transition-all duration-300 will-change-height">
+              v-if="aiAnalyzing || aiResult"
+            >
+              <view
+                class="w-full px-[32rpx] box-border transition-all duration-300 will-change-height"
+              >
                 <view class="flex flex-col gap-[16rpx]" v-if="aiAnalyzing">
-                  <image src="https://img.liangqy.com/crawlerjet/img/loading.gif" class="w-[78rpx] h-[30rpx]"></image>
-                  <text class="text-[#222] text-[24rpx] animate-pulse">AI正在分析中...</text>
+                  <image
+                    src="https://img.liangqy.com/crawlerjet/img/loading.gif"
+                    class="w-[78rpx] h-[30rpx]"
+                  ></image>
+                  <text class="text-[#222] text-[24rpx] animate-pulse"
+                    >AI正在分析中...</text
+                  >
                 </view>
                 <view class="flex flex-col gap-[16rpx]" v-else>
                   <view class="w-full flex flex-row items-baseline gap-[12rpx]">
-                    <text class="text-[green] text-[48rpx]">{{ aiResult?.total_score }}分</text>
-                    <text class="text-[#222] text-[24rpx]">{{ renderScore(aiResult?.total_score || 0) }}</text>
+                    <text class="text-[green] text-[48rpx]"
+                      >{{ aiResult?.total_score }}分</text
+                    >
+                    <text class="text-[#222] text-[24rpx]">{{
+                      renderScore(aiResult?.total_score || 0)
+                    }}</text>
                   </view>
-                  <text class="text-[#222] text-[30rpx]">{{ aiResult?.response_text }}</text>
+                  <text class="text-[#222] text-[30rpx]">{{
+                    aiResult?.response_text
+                  }}</text>
                 </view>
               </view>
             </view>
@@ -60,42 +110,49 @@
 
         <view
           class="absolute left-0 w-full h-[120rpx] pr-[32rpx] box-border flex flex-row items-center justify-end gap-[32rpx]"
-          :style="{ bottom: `calc(100rpx + ${safeBottom}px)` }">
+          :style="{ bottom: `calc(100rpx + ${safeBottom}px)` }"
+        >
           <view
             class="h-[88rpx] px-[32rpx] box-border rounded-[44rpx] bg-[rgba(255,255,255,0.2)] active:bg-[rgba(255,255,255,0.3)] flex flex-row items-center justify-center transition-all duration-300"
-            @click="closeModal">
+            @click="closeModal"
+          >
             <text class="text-[#fff] text-[32rpx]">取消</text>
           </view>
           <view
             class="h-[88rpx] px-[64rpx] box-border bg-[#fff] active:bg-[#f5f5f5] rounded-[44rpx] flex flex-row items-center justify-center transition-all duration-300"
-            :class="[aiAnalyzing || aiResult ? 'opacity-10 pointer-events-none' : 'opacity-100 pointer-events-auto']"
-            @click="sendMessage">
+            :class="[
+              aiAnalyzing || aiResult
+                ? 'opacity-10 pointer-events-none'
+                : 'opacity-100 pointer-events-auto',
+            ]"
+            @click="sendMessage"
+          >
             <text class="text-[#222] text-[32rpx]">发送</text>
           </view>
         </view>
-        <view class="absolute left-0 bottom-0 w-full" :style="{ height: `calc(100rpx + ${safeBottom}px)` }">
-
+        <view
+          class="absolute left-0 bottom-0 w-full"
+          :style="{ height: `calc(100rpx + ${safeBottom}px)` }"
+        >
         </view>
       </view>
     </Layout>
-
-
   </view>
 </template>
 
 <script setup lang="ts">
-import { EModalComponent } from './types';
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { EModalComponent } from "./types";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import TencentAsrService from "@/services/tencent_asr";
 import type { AsrResult } from "@/services/tencent_asr";
-import type { IAIResult, IQuestion } from '@/types';
-import { requestAnswerQuestion } from '@/request';
-import { useUserStore } from '@/stores/user';
-import { storeToRefs } from 'pinia';
-import CustomHeader from '@/components/custom-header/custom-header.vue';
-import Layout from '@/components/layout/layout.vue';
-import { previewImage } from '@/utils';
-import { getDescriptionByScore } from '@/utils/qa';
+import type { IAIResult, IQuestion } from "@/types";
+import { requestAnswerQuestion } from "@/request";
+import { useUserStore } from "@/stores/user";
+import { storeToRefs } from "pinia";
+import CustomHeader from "@/components/custom-header/custom-header.vue";
+import Layout from "@/components/layout/layout.vue";
+import { previewImage } from "@/utils";
+import { getDescriptionByScore } from "@/utils/qa";
 
 interface Props {
   isSpeaking: boolean;
@@ -111,7 +168,7 @@ const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
 const tencentAsrService = new TencentAsrService();
 
-const asrText = ref('');
+const asrText = ref("");
 const asrDuration = ref(0);
 const asrResult = ref<AsrResult>();
 
@@ -128,21 +185,24 @@ const aiAnalyzing = ref<boolean>(false);
 const renderScore = computed(() => {
   return function (score: number) {
     return getDescriptionByScore(score);
-  }
-})
-
-watch(() => props.isSpeaking, (newVal) => {
-  if (!newVal) {
-    stopRecognize();
-  }
+  };
 });
+
+watch(
+  () => props.isSpeaking,
+  (newVal) => {
+    if (!newVal) {
+      stopRecognize();
+    }
+  }
+);
 
 onMounted(() => {
   tencentAsrService.onResult((result: AsrResult) => {
     // console.log('>>>>>>> result', result);
     asrResult.value = result;
     if (!result.isFinal) {
-      asrText.value = result.text || '';
+      asrText.value = result.text || "";
       asrDuration.value = result.endTime || 0;
     }
   });
@@ -150,9 +210,9 @@ onMounted(() => {
     // console.log('>>>>>>> error', error);
   });
   tencentAsrService.onStatus((status) => {
-    if (status === '正在录音识别中...') {
+    if (status === "正在录音识别中...") {
       isRecording.value = true;
-    } else if (status === '识别结束') {
+    } else if (status === "识别结束") {
       isRecording.value = false;
     }
   });
@@ -161,8 +221,8 @@ onMounted(() => {
     await startRecognize();
 
     modalInitialized.value = true;
-  }, 300)
-})
+  }, 300);
+});
 
 async function startRecognize() {
   if (props.isSpeaking) {
@@ -176,11 +236,11 @@ async function startRecognize() {
 function stopRecognize() {
   nextTick(() => {
     tencentAsrService.stopRecognition();
-  })
+  });
 }
 
 function closeModal() {
-  uni.$emit('close-modal', {
+  uni.$emit("close-modal", {
     component: EModalComponent.CHAT_MODAL,
   });
 }
@@ -188,8 +248,8 @@ function closeModal() {
 async function sendMessage() {
   if (!asrText.value) {
     uni.showToast({
-      title: '请输入内容',
-      icon: 'none',
+      title: "请输入内容",
+      icon: "none",
     });
     focused.value = true;
     return;
@@ -201,8 +261,8 @@ async function sendMessage() {
 
   if (!isLoggedIn.value) {
     uni.showToast({
-      title: '请先登录',
-      icon: 'none',
+      title: "请先登录",
+      icon: "none",
     });
     return;
   }
@@ -228,7 +288,7 @@ async function sendMessage() {
     }
 
     aiAnalyzing.value = false;
-  }, 500)
+  }, 500);
 }
 
 function handleBlur() {

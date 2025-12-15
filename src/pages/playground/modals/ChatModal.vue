@@ -275,6 +275,7 @@ async function sendMessage() {
     answer: asrText.value,
     answerTime: 0,
     thinkingTime: 0,
+    birthday: loginInfo.value.birthday,
   });
 
   const t = setTimeout(() => {

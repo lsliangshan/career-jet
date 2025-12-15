@@ -128,6 +128,7 @@ export function requestAnswerQuestion(params?: {
   answer: string;
   answerTime?: number;
   thinkingTime?: number;
+  birthday?: string;
 }): Promise<any> {
   return new Promise<any>((resolve) => {
     uni.request({

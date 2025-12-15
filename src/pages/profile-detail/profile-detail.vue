@@ -195,6 +195,45 @@
               </picker>
             </view>
           </view>
+
+          <view
+            class="w-full h-[100rpx] px-[32rpx] bg-[#fff] active:bg-[#f8f8f8] box-border flex flex-row items-center justify-between transition-all duration-300"
+          >
+            <view class="h-full flex flex-row items-center shrink-0">
+              <text
+                class="text-[30rpx] font-[500]"
+                :style="{ color: ThemeColors.text.title }"
+                >出生日期</text
+              >
+            </view>
+            <view class="w-full h-full">
+              <picker
+                @change="handleChangeBirthday"
+                mode="date"
+                class="relative w-full h-full"
+                :value="loginInfo?.birthday"
+                :start="'1900-01-01'"
+                :end="new Date().toISOString().split('T')[0]"
+              >
+                <view
+                  class="absolute top-0 left-0 w-full h-full flex flex-row items-center justify-end gap-[12rpx]"
+                >
+                  <text
+                    class="text-[26rpx]"
+                    :style="{ color: ThemeColors.text.label }"
+                  >
+                    {{ loginInfo?.birthday }}
+                  </text>
+
+                  <image
+                    class="w-[32rpx] h-[32rpx]"
+                    src="@static/icon_arraw_right.png"
+                    mode="aspectFill"
+                  ></image>
+                </view>
+              </picker>
+            </view>
+          </view>
         </view>
       </scroll-view>
     </Layout>
@@ -245,10 +284,17 @@ function handleChangeGender(e: any) {
   });
 }
 
+function handleChangeBirthday(e: any) {
+  updateUserInfo({
+    birthday: e.detail.value,
+  });
+}
+
 function updateUserInfo(params: {
   avatar?: string;
   nickname?: string;
   gender?: string;
+  birthday?: string;
   phonenum?: string;
   email?: string;
   username?: string;

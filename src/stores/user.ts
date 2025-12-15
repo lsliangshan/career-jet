@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
 import { computed, onMounted, ref } from "vue";
 import { requestLogin, requestLogout, requestUpdateUserInfo } from "@/request";
-import { jwtDecode } from '@/utils/jwt';
+import { jwtDecode } from "@/utils/jwt";
 
 export enum ProfileDetailType {
   NICKNAME = "nickname",
-  EMAIL = "email"
+  EMAIL = "email",
 }
 
 export interface LoginInfo {
@@ -15,11 +15,12 @@ export interface LoginInfo {
   nickName?: string;
   phonenum?: string;
   gender?: string;
+  birthday?: string;
   token?: string;
   email?: string;
 }
 
-const LOGIN_INFO_KEY = 'loginInfo';
+const LOGIN_INFO_KEY = "loginInfo";
 
 export const useUserStore = defineStore("user", () => {
   const loginInfo = ref<LoginInfo>();
@@ -28,19 +29,21 @@ export const useUserStore = defineStore("user", () => {
     if (!loginInfo.value || !loginInfo.value.id || !loginInfo.value.token) {
       return false;
     }
-    
+
     const decoded: any = jwtDecode(loginInfo.value.token);
 
     if (!decoded.iat) {
       return false;
     }
-    return (decoded.iat + (decoded.exp || decoded.expiresIn)) * 1000 > Date.now();
+    return (
+      (decoded.iat + (decoded.exp || decoded.expiresIn)) * 1000 > Date.now()
+    );
   });
 
   onMounted(() => {
     try {
       let localLoginInfo = uni.getStorageSync(LOGIN_INFO_KEY);
-    
+
       if (localLoginInfo) {
         if (!localLoginInfo.token) {
           loginInfo.value = undefined;
@@ -48,21 +51,23 @@ export const useUserStore = defineStore("user", () => {
           return;
         }
         const token = localLoginInfo.token;
-        
+
         const decoded: any = jwtDecode(token);
 
-        if (!decoded.iat || (decoded.iat + (decoded.exp || decoded.expiresIn)) * 1000 <= Date.now()) {
+        if (
+          !decoded.iat ||
+          (decoded.iat + (decoded.exp || decoded.expiresIn)) * 1000 <=
+            Date.now()
+        ) {
           loginInfo.value = undefined;
           uni.removeStorageSync(LOGIN_INFO_KEY);
           return;
         }
 
         loginInfo.value = localLoginInfo;
-        
       }
-    } catch(e) {
-    }
-  })
+    } catch (e) {}
+  });
 
   function login() {
     return new Promise((resolve) => {
@@ -72,10 +77,10 @@ export const useUserStore = defineStore("user", () => {
         success: async (res) => {
           if (res.errMsg == "login:ok") {
             const loginResult = await requestLogin(res.code);
-            
+
             if (loginResult.code == 200 && loginResult.data) {
               loginInfo.value = loginResult.data;
-            
+
               uni.setStorageSync(LOGIN_INFO_KEY, loginInfo.value);
               resolve(loginResult.data);
             } else {
@@ -116,6 +121,7 @@ export const useUserStore = defineStore("user", () => {
     avatar?: string;
     nickname?: string;
     gender?: string;
+    birthday?: string;
     phonenum?: string;
     email?: string;
     username?: string;

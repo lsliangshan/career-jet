@@ -50,6 +50,7 @@ export function requestUpdateUserInfo(params: {
   avatar?: string;
   nickname?: string;
   gender?: string;
+  birthday?: string;
   phonenum?: string;
   email?: string;
   username?: string;
@@ -66,6 +67,9 @@ export function requestUpdateUserInfo(params: {
     }
     if (params.gender) {
       requestParams.gender = params.gender;
+    }
+    if (params.birthday) {
+      requestParams.birthday = params.birthday;
     }
     if (params.phonenum) {
       requestParams.phonenum = params.phonenum;

@@ -6,6 +6,13 @@ export const DEFAULT_AVATAR =
 export const DEFAULT_AI_AVATAR =
   "https://img.liangqy.com/crawlerjet/img/ai_avatar.png";
 
+export enum GameType {
+  // 快速挑战
+  normal = "normal",
+  // 今日挑战
+  daily = "daily",
+}
+
 export const tabbars = [
   {
     name: "home",

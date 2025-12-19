@@ -2,8 +2,14 @@ import { defineStore, storeToRefs } from "pinia";
 import { computed, onMounted, ref } from "vue";
 import type { IQuestion } from "@/types";
 import { isSameDay } from "@/utils/date";
-import { requestGetDailyQuestion } from "@/request";
+import {
+  requestGetAiAnswer,
+  requestGetDailyQuestion,
+  requestGetQuestionByLevel,
+} from "@/request";
 import { useProfileStore } from "./profile";
+import { useUserStore } from "./user";
+import { GameType } from "@/config/config";
 
 const LocalDailyQuestionsKey = "localDailyQuestions";
 
@@ -37,8 +43,13 @@ function setLocalDailyQuestions(questions: IQuestion[]) {
 
 export const useQuestionStore = defineStore("question", () => {
   const question = ref<IQuestion[]>([]);
+
   const profileStore = useProfileStore();
   const { level } = storeToRefs(profileStore);
+
+  const userStore = useUserStore();
+  const { loginInfo } = storeToRefs(userStore);
+
   // 所有的每日挑战题目
   const dailyQuestions = ref<IQuestion[]>([]);
 
@@ -83,9 +94,35 @@ export const useQuestionStore = defineStore("question", () => {
     });
   }
 
+  function getQuestionDetailByLevel(level: number): Promise<IQuestion | null> {
+    return new Promise(async (resolve) => {
+      const res = await requestGetQuestionByLevel({
+        userId: loginInfo.value?.id,
+        level,
+        type: GameType.normal,
+      });
+      if (res.code === 200) {
+        resolve(res.data);
+      } else {
+        resolve(null);
+      }
+    });
+  }
+
+  function getAiAnswerById(id: string) {
+    return new Promise(async (resolve) => {
+      const res = await requestGetAiAnswer({
+        questionId: id,
+      });
+      resolve(res);
+    });
+  }
+
   return {
     question,
     dailyQuestion,
     getQuestionDetailById,
+    getQuestionDetailByLevel,
+    getAiAnswerById,
   };
 });

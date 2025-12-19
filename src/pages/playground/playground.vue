@@ -2,12 +2,14 @@
   <view class="playground_page w-full h-full">
     <CustomHeader
       show-back
-      :title="`今日挑战 - 等级${questionDetail?.level}`"
+      :title="`${getTypeLabel()} - 等级${level}`"
     />
 
     <Layout :hasHeader="true">
       <scroll-view type="custom" scroll-y class="relative w-full h-full">
-        <view class="w-full h-[32rpx]"></view>
+        <page-loading v-if="!isReady"></page-loading>
+        <template v-else>
+          <view class="w-full h-[32rpx]"></view>
         <view
           class="w-full h-[386rpx] px-[32rpx] box-border"
           @click="
@@ -167,6 +169,7 @@
             </view>
           </view>
         </view>
+        </template>
       </scroll-view>
     </Layout>
 
@@ -190,7 +193,7 @@
 </template>
 
 <script setup lang="ts">
-import { ThemeColors } from "@/config/config";
+import { GameType, ThemeColors } from "@/config/config";
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import type { IQuestion } from "@/types";
@@ -202,16 +205,26 @@ import { previewImage } from "@/utils";
 import ChatModal from "./modals/ChatModal.vue";
 import { EModalComponent } from "./modals/types";
 import AnswerHistory from "./components/AnswerHistory.vue";
+import { useProfileStore } from "@/stores/profile";
+import { storeToRefs } from "pinia";
+import PageLoading from "@/components/page-loading/page-loading.vue";
 
 const questionStore = useQuestionStore();
+const profileStore = useProfileStore();
+const { level: profileLevel } = storeToRefs(profileStore);
 
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
+
+const isReady = ref(false);
 
 const isSpeaking = ref(false);
 
 const questionId = ref<string>("");
 const questionDetail = ref<IQuestion>();
+
+const type = ref<GameType>(GameType.normal);
+const level = ref<number>(1);
 
 const modalVisible = ref(false);
 const modalData = ref<{
@@ -220,20 +233,40 @@ const modalData = ref<{
 }>();
 
 onLoad(async (options: any) => {
-  questionId.value = options.id;
+  questionId.value = options?.id;
+  type.value = options?.type as GameType;
+  level.value = options?.level | profileLevel.value;
 
-  await getQuestionDetailById();
+  if (options?.id) {
+    await getQuestionDetailById();
+  } else if (options?.level) {
+    await getQuestionDetailByLevel();
+  }
 
   uni.$on("close-modal", (e: any) => {
     closeModal(e?.component as EModalComponent);
   });
 });
 
+function getTypeLabel() {
+  return type.value === GameType.daily ? "今日挑战" : "快速挑战";
+}
+
 async function getQuestionDetailById() {
   questionDetail.value = await questionStore.getQuestionDetailById(
     questionId.value
   );
-  console.log(">>>>>>> questionDetail", questionDetail.value);
+  level.value = questionDetail.value!.level;
+  isReady.value = true;
+}
+
+async function getQuestionDetailByLevel() {
+  const result = await questionStore.getQuestionDetailByLevel(level.value);
+  if (result && result.list && result.list.length > 0) {
+    questionDetail.value = result.list[0];
+    questionId.value = questionDetail.value?.id || "";
+  }
+  isReady.value = true;
 }
 
 function startDescribe() {

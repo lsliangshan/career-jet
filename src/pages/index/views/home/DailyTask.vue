@@ -81,7 +81,7 @@
           </view>
           <view class="h-full flex flex-row items-center">
             <text class="text-[32rpx] text-[#fff]"
-              >{{ info?.rate }} 倍奖励</text
+              >{{ info?.rate }} 倍积分奖励</text
             >
           </view>
         </view>
@@ -111,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { ThemeColors } from "@/config/config";
+import { GameType, ThemeColors } from "@/config/config";
 import { previewImage } from "@/utils";
 import { useQuestionStore } from "@/stores/question";
 import { storeToRefs } from "pinia";
@@ -121,7 +121,7 @@ const { dailyQuestion: info } = storeToRefs(questionStore);
 
 function goToPlayground() {
   uni.navigateTo({
-    url: `/pages/playground/playground?id=${info.value.id}`,
+    url: `/pages/playground/playground?id=${info.value.id}&type=${GameType.daily}`,
   });
 }
 </script>

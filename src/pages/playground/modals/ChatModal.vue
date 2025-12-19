@@ -73,6 +73,45 @@
               </view>
             </view>
 
+            <!-- AI描述 -->
+             <view class="relative w-full max-h-full mt-[32rpx] flex flex-row transition-all duration-300 will-change-height gap-[24rpx]">
+              <view class="w-[64rpx] h-[64rpx] rounded-[12rpx] overflow-hidden active:scale-95 transition-all duration-300 flex flex-row items-center justify-center shrink-0" @click="generateAiDescription">
+                <image
+                  class="w-full h-full"
+                  :src="DEFAULT_AI_AVATAR"
+                  mode="aspectFill"
+                ></image>
+              </view>
+              <view class="w-full min-h-full">
+                <view class="chat_bubble relative min-h-[64rpx] rounded-[16rpx] bg-[#ffffff] transition-all duration-300"
+                :class="[!!aiDescription ? 'w-full' : (aiDescriptionGenerating ? 'w-[120rpx]' : 'w-[200rpx]')]">
+                  <view class="w-[200rpx] h-[64rpx] flex flex-row items-center justify-center" v-if="!aiDescriptionGenerating && !aiDescription">
+                    <text class="text-[#666] text-[28rpx]">点击生成描述</text>
+                  </view>
+
+                  <view class="w-[120rpx] h-[64rpx] flex flex-row items-center justify-center" v-else-if="aiDescriptionGenerating && !aiDescription">
+                    <image
+                    src="https://img.liangqy.com/crawlerjet/img/loading.gif"
+                    class="w-[78rpx] h-[30rpx]"
+                  ></image>
+                  </view>
+
+                  <view class="w-[598rpx] px-[24rpx] py-[20rpx] box-border flex flex-col gap-[12rpx]" v-else-if="!aiDescriptionGenerating && aiDescription">
+                    <view class="w-full flex flex-row items-center justify-center">
+                      <text class="text-[#222] text-[28rpx] transition-opacity duration-300" :class="[aiDescriptionGenerated ? 'opacity-100' : 'opacity-0']">{{ aiDescription }}</text>
+                    </view>
+                    <view class="w-full h-[64rpx] flex flex-row items-center justify-end">
+                      <view class="h-full px-[16rpx] box-border bg-[#426eff] rounded-[10rpx] active:scale-95 transition-all duration-300 flex flex-row items-center justify-center"
+                      :class="[aiDescriptionGenerated ? 'opacity-100' : 'opacity-0']"
+                      @click="reGenerateAiDescription">
+                        <text class="text-[#fff] text-[28rpx]">重新生成</text>
+                      </view>
+                    </view>
+                  </view>
+                </view>
+              </view>
+             </view>
+
             <view
               class="w-full py-[32rpx] box-border rounded-[32rpx] overflow-hidden bg-[#ffffff] shadow-[0_8rpx_32rpx_rgba(0,0,0,0.15)] flex flex-row"
               v-if="aiAnalyzing || aiResult"
@@ -153,6 +192,7 @@ import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import { previewImage } from "@/utils";
 import { getDescriptionByScore } from "@/utils/qa";
+import { DEFAULT_AI_AVATAR } from "@/config/config";
 
 interface Props {
   isSpeaking: boolean;
@@ -171,6 +211,13 @@ const tencentAsrService = new TencentAsrService();
 const asrText = ref("");
 const asrDuration = ref(0);
 const asrResult = ref<AsrResult>();
+
+// AI的描述内容
+const aiDescription = ref<string>("");
+// AI生成描述中
+const aiDescriptionGenerating = ref<boolean>(false);
+// AI生成描述是否完成
+const aiDescriptionGenerated = ref<boolean>(false);
 
 const isRecording = ref<boolean>(false);
 
@@ -295,6 +342,38 @@ async function sendMessage() {
 function handleBlur() {
   focused.value = false;
 }
+
+function generateAiDescription() {
+  aiDescriptionGenerating.value = true;
+  // aiDescription.value = "";
+
+  setTimeout(() => { 
+    aiDescriptionGenerating.value = false;
+    aiDescription.value = "这张图片展示了一个木制衣夹，置于纯白色的背景前，整体视觉简洁明了。衣夹的主体由浅木色的木材制成，表面光滑，呈现出自然的木纹质感，给人质朴的感觉。衣夹的结构由两块木质部件通过一根银色的金属弹簧连接而成，金属弹簧呈螺旋状，巧妙地将两块木头固定并形成可开合的夹持结构。其中一块木质部件上有一个圆形的孔洞，可能是设计上的细节或功能用途。衣夹的整体造型为长条形，前端略呈尖状，整体设计简约，背景的纯白色进一步突出了衣夹的形态与细节，使其成为视觉焦点。";
+    setTimeout(() => {
+      aiDescriptionGenerated.value = true;
+     }, 300)
+  }, 3000)
+}
+
+function reGenerateAiDescription() {
+  aiDescription.value = ''
+  aiDescriptionGenerated.value = false;
+  generateAiDescription()
+}
 </script>
 
-<style scoped></style>
+<style scoped>
+.chat_bubble::before {
+  background: #ffffff;
+  border-radius: 6rpx;
+  content: "";
+  height: 28rpx;
+  left: -8rpx;
+  position: absolute;
+  top: 20rpx;
+  transform: rotate(45deg);
+  width: 28rpx;
+  z-index: -1;
+}
+</style>

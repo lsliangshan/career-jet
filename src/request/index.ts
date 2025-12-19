@@ -1,3 +1,5 @@
+import { GameType } from "@/config/config";
+
 const baseUrl = "https://wf.qyflows.com/webhook";
 
 /**
@@ -120,6 +122,34 @@ export function requestGetDailyQuestion(params?: {
 }
 
 /**
+ * 获取指定等级的问题
+ * @param params
+ * @param {number} params.userId 用户ID
+ * @param {number} params.level 等级
+ * @param {GameType} params.type 类型
+ * @returns {Promise<IQuestion>}
+ */
+export function requestGetQuestionByLevel(params?: {
+  userId: string;
+  level: number;
+  type: GameType;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/cm/get-question-by-level`,
+      method: "POST",
+      data: params,
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
  * 答题
  */
 export function requestAnswerQuestion(params?: {
@@ -136,6 +166,27 @@ export function requestAnswerQuestion(params?: {
       method: "POST",
       data: params,
       timeout: 10 * 60 * 1000,
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 获取AI的描述
+ */
+export function requestGetAiAnswer(params?: {
+  questionId: string;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/cm/ai-answer`,
+      method: "POST",
+      data: params,
       success: (res) => {
         resolve(res.data);
       },

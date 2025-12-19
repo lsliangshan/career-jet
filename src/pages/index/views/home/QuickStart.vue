@@ -54,6 +54,7 @@
 
       <view
         class="w-full h-[100rpx] bg-[rgba(255,255,255,1)] rounded-[32rpx] active:scale-[0.95] transition-all duration-300 flex flex-row items-center justify-center gap-[16rpx]"
+        @click="goToPlayground"
       >
         <view
           class="w-[36rpx] h-[36rpx] flex flex-row items-center justify-center"
@@ -73,7 +74,7 @@
 <script setup lang="ts">
 import { useProfileStore } from "@/stores/profile";
 import { storeToRefs } from "pinia";
-import { supportedLevels } from "@/config/config";
+import { GameType, supportedLevels } from "@/config/config";
 import { ref } from "vue";
 
 const profileStore = useProfileStore();
@@ -83,6 +84,12 @@ const activeLevel = ref(level.value?.level || 1);
 
 function handleChangeLevel(level: number) {
   activeLevel.value = level;
+}
+
+function goToPlayground() {
+  uni.navigateTo({
+    url: `/pages/playground/playground?level=${activeLevel.value}&type=${GameType.normal}`,
+  });
 }
 </script>
 

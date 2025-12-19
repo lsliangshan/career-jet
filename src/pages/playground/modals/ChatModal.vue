@@ -54,6 +54,8 @@
                   :disabled="isRecording"
                   :focus="focused"
                   auto-height
+                  placeholder="请描述"
+                  placeholder-style="color: #555; font-size: 28rpx;"
                   @blur="handleBlur"
                 />
               </view>

@@ -98,7 +98,7 @@
 
                   <view class="w-[598rpx] px-[24rpx] py-[20rpx] box-border flex flex-col gap-[12rpx]" v-else-if="!aiDescriptionGenerating && aiDescription">
                     <view class="w-full flex flex-row items-center justify-center">
-                      <text class="text-[#222] text-[28rpx] transition-opacity duration-300" :class="[aiDescriptionGenerated ? 'opacity-100' : 'opacity-0']">{{ aiDescription }}</text>
+                      <text user-select class="text-[#222] text-[28rpx] transition-opacity duration-300" :class="[aiDescriptionGenerated ? 'opacity-100' : 'opacity-0']">{{ aiDescription }}</text>
                     </view>
                     <view class="w-full h-[64rpx] flex flex-row items-center justify-end">
                       <view class="h-full px-[16rpx] box-border bg-[#426eff] rounded-[10rpx] active:scale-95 transition-all duration-300 flex flex-row items-center justify-center"
@@ -344,6 +344,9 @@ function handleBlur() {
 }
 
 function generateAiDescription() {
+  if (aiDescriptionGenerated.value) {
+    return
+  }
   aiDescriptionGenerating.value = true;
   // aiDescription.value = "";
 

@@ -84,18 +84,18 @@ function handleChange(e: any) {
 
 onShareAppMessage(() => {
   return {
-    title: "嘘…我的求职效率，全靠这个「小只」助手 🚀",
+    title: "解锁孩子的观察力与表达力！这个AI小工具太会了！🚀",
     path: `/pages/index/index`,
     imageUrl:
-      "https://img.liangqy.com/crawlerjet/img/crawlerjet_share_without_qrcode.png",
+      "https://img.liangqy.com/crawlerjet/img/description_share.png",
   };
 });
 
 onShareTimeline(() => {
   return {
-    title: "嘘…我的求职效率，全靠这个「小只」助手 🚀",
+    title: "解锁孩子的观察力与表达力！这个AI小工具太会了！🚀",
     imageUrl:
-      "https://img.liangqy.com/crawlerjet/img/crawlerjet_share_without_qrcode.png",
+      "https://img.liangqy.com/crawlerjet/img/description_share.png",
   };
 });
 </script>

@@ -199,7 +199,7 @@ import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import type { IQuestion } from "@/types";
 import { ref } from "vue";
-import { onLoad } from "@dcloudio/uni-app";
+import { onLoad, onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
 import { useQuestionStore } from "@/stores/question";
 import { previewImage } from "@/utils";
 
@@ -297,7 +297,22 @@ function closeModal(component?: EModalComponent) {
   modalVisible.value = false;
 }
 
-function handleViewAnswerHistory() {}
+onShareAppMessage(() => {
+  return {
+    title: "解锁孩子的观察力与表达力！这个AI小工具太会了！🚀",
+    path: `/pages/playground/playground?id=${questionId.value}`,
+    imageUrl:
+      "https://img.liangqy.com/crawlerjet/img/description_share.png",
+  };
+});
+
+onShareTimeline(() => {
+  return {
+    title: "解锁孩子的观察力与表达力！这个AI小工具太会了！🚀",
+    imageUrl:
+      "https://img.liangqy.com/crawlerjet/img/description_share.png",
+  };
+});
 </script>
 
 <style scoped>

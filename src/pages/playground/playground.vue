@@ -236,7 +236,7 @@ const modalData = ref<{
 onLoad(async (options: any) => {
   questionId.value = options?.id;
   type.value = options?.type as GameType;
-  level.value = options?.level | profileLevel.value;
+  level.value = options?.level || profileLevel?.value || 1;
 
   if (options?.id) {
     await getQuestionDetailById();
@@ -247,6 +247,7 @@ onLoad(async (options: any) => {
   uni.$on("close-modal", (e: any) => {
     closeModal(e?.component as EModalComponent);
   });
+
 });
 
 function getTypeLabel() {
@@ -257,6 +258,7 @@ async function getQuestionDetailById() {
   questionDetail.value = await questionStore.getQuestionDetailById(
     questionId.value
   );
+  
   level.value = questionDetail.value!.level;
   isReady.value = true;
 }
@@ -300,7 +302,7 @@ function closeModal(component?: EModalComponent) {
 onShareAppMessage(() => {
   return {
     title: "解锁孩子的观察力与表达力！这个AI小工具太会了！🚀",
-    path: `/pages/playground/playground?id=${questionId.value}`,
+    path: `/pages/playground/playground?id=${questionDetail.value?.id}&type=${questionDetail.value?.type}&level=${questionDetail.value?.level}`,
     imageUrl:
       "https://img.liangqy.com/crawlerjet/img/description_share.png",
   };

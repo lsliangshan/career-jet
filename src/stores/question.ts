@@ -6,6 +6,7 @@ import {
   requestGetAiAnswer,
   requestGetDailyQuestion,
   requestGetQuestionByLevel,
+  requestGetQuestionDetailById,
 } from "@/request";
 import { useProfileStore } from "./profile";
 import { useUserStore } from "./user";
@@ -84,11 +85,18 @@ export const useQuestionStore = defineStore("question", () => {
   }
 
   function getQuestionDetailById(id: string): Promise<IQuestion | null> {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
       let questionDetail: IQuestion | null = null;
       const index = dailyQuestions.value.findIndex((item) => item.id === id);
       if (index !== -1) {
         questionDetail = dailyQuestions.value[index];
+      } else {
+        const res = await requestGetQuestionDetailById({
+          id,
+        });
+        if (res.code === 200) {
+          questionDetail = res.data;
+        }
       }
       resolve(questionDetail);
     });

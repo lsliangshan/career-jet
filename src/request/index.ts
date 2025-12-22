@@ -150,6 +150,30 @@ export function requestGetQuestionByLevel(params?: {
 }
 
 /**
+ * 获取指定等级的问题
+ * @param params
+ * @param {number} params.id 问题ID
+ * @returns {Promise<IQuestion>}
+ */
+export function requestGetQuestionDetailById(params?: {
+  id: string;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/cm/get-question-by-id`,
+      method: "POST",
+      data: params,
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
  * 答题
  */
 export function requestAnswerQuestion(params?: {

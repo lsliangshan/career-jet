@@ -5,7 +5,7 @@
     >
       <view class="w-full h-[60rpx] flex flex-row items-center justify-center">
         <text class="text-[#333] text-[40rpx] font-[500]"
-          >快速游戏 ({{ level?.level }}级)</text
+          >快速挑战 ({{ level?.level }}级)</text
         >
       </view>
 

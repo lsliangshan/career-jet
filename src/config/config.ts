@@ -20,12 +20,12 @@ export const tabbars = [
     icon: "../../../static/tabs/tab_home_unselect.png",
     activeIcon: "../../../static/tabs/tab_home_select.png",
   },
-  {
-    name: "deliver",
-    label: "游戏",
-    icon: "../../../static/tabs/tab_game_unselect.png",
-    activeIcon: "../../../static/tabs/tab_game_select.png",
-  },
+  // {
+  //   name: "deliver",
+  //   label: "游戏",
+  //   icon: "../../../static/tabs/tab_game_unselect.png",
+  //   activeIcon: "../../../static/tabs/tab_game_select.png",
+  // },
   {
     name: "profile",
     label: "我的",

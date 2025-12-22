@@ -11,9 +11,9 @@
         <swiper-item>
           <home />
         </swiper-item>
-        <swiper-item>
+        <!-- <swiper-item>
           <game />
-        </swiper-item>
+        </swiper-item> -->
         <swiper-item>
           <profile />
         </swiper-item>

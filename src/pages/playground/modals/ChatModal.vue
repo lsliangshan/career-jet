@@ -53,6 +53,7 @@
                   v-model="asrText"
                   :disabled="isRecording"
                   :focus="focused"
+                  :maxlength="-1"
                   auto-height
                   placeholder="请描述"
                   placeholder-style="color: #555; font-size: 28rpx;"
@@ -187,7 +188,7 @@ import { computed, nextTick, onMounted, ref, watch } from "vue";
 import TencentAsrService from "@/services/tencent_asr";
 import type { AsrResult } from "@/services/tencent_asr";
 import type { IAIResult, IQuestion } from "@/types";
-import { requestAnswerQuestion } from "@/request";
+import { requestAnswerQuestion, requestGetAiAnswer } from "@/request";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import CustomHeader from "@/components/custom-header/custom-header.vue";
@@ -345,20 +346,27 @@ function handleBlur() {
   focused.value = false;
 }
 
-function generateAiDescription() {
-  if (aiDescriptionGenerated.value) {
+async function generateAiDescription() {
+  if (aiDescriptionGenerated.value || !props.info) {
     return
   }
   aiDescriptionGenerating.value = true;
   // aiDescription.value = "";
 
-  setTimeout(() => { 
-    aiDescriptionGenerating.value = false;
-    aiDescription.value = "这张图片展示了一个木制衣夹，置于纯白色的背景前，整体视觉简洁明了。衣夹的主体由浅木色的木材制成，表面光滑，呈现出自然的木纹质感，给人质朴的感觉。衣夹的结构由两块木质部件通过一根银色的金属弹簧连接而成，金属弹簧呈螺旋状，巧妙地将两块木头固定并形成可开合的夹持结构。其中一块木质部件上有一个圆形的孔洞，可能是设计上的细节或功能用途。衣夹的整体造型为长条形，前端略呈尖状，整体设计简约，背景的纯白色进一步突出了衣夹的形态与细节，使其成为视觉焦点。";
-    setTimeout(() => {
-      aiDescriptionGenerated.value = true;
+  const res = await requestGetAiAnswer({
+    questionId: props.info.id,
+  })
+
+  console.log('>>>>>>> res', res);
+  if (res.code == 200 && res.data && res.data.result) {
+    aiDescription.value = res.data.result;
+  }
+  aiDescriptionGenerating.value = false;
+  const t = setTimeout(() => {
+    aiDescriptionGenerated.value = true;
+      clearTimeout(t);
      }, 300)
-  }, 3000)
+
 }
 
 function reGenerateAiDescription() {

@@ -41,8 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { ThemeColors } from "@/config/config";
-import { onMounted, ref } from "vue";
+import { nextTick, onMounted, ref } from "vue";
 
 interface Props {
   title?: string;
@@ -58,12 +57,14 @@ withDefaults(defineProps<Props>(), {
   bgColor: "#fff",
 });
 
-const safeTop = ref(uni.getWindowInfo().safeAreaInsets?.top || 0);
+const safeTop = ref(uni.getWindowInfo().safeArea?.top || 88);
 
 const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
 
 onMounted(() => {
-  safeTop.value = uni.getWindowInfo().safeAreaInsets?.top || 0;
+  nextTick(() => {
+    safeTop.value = uni.getWindowInfo().safeArea?.top || 88;
+  })
 });
 
 function handleBack() {

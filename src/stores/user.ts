@@ -1,6 +1,11 @@
 import { defineStore } from "pinia";
-import { computed, onMounted, ref } from "vue";
-import { requestLogin, requestLogout, requestUpdateUserInfo } from "@/request";
+import { computed, onMounted, ref, watch } from "vue";
+import {
+  requestGetUserSummary,
+  requestLogin,
+  requestLogout,
+  requestUpdateUserInfo,
+} from "@/request";
 import { jwtDecode } from "@/utils/jwt";
 
 export enum ProfileDetailType {
@@ -20,10 +25,22 @@ export interface LoginInfo {
   email?: string;
 }
 
+export interface IUserSummary {
+  id: string;
+  userId: string;
+  // 用户总得分
+  points: number;
+  // 用户"每日答题"连续答题天数
+  dailyTimes: number;
+  // 用户"每日答题"最后一次答题日期
+  lastDailyDate: string;
+}
+
 const LOGIN_INFO_KEY = "loginInfo";
 
 export const useUserStore = defineStore("user", () => {
   const loginInfo = ref<LoginInfo>();
+  const userSummary = ref<IUserSummary>();
 
   const isLoggedIn = computed(() => {
     if (!loginInfo.value || !loginInfo.value.id || !loginInfo.value.token) {
@@ -39,6 +56,20 @@ export const useUserStore = defineStore("user", () => {
       (decoded.iat + (decoded.exp || decoded.expiresIn)) * 1000 > Date.now()
     );
   });
+
+  watch(
+    isLoggedIn,
+    (newVal) => {
+      if (newVal) {
+        getUserSummary();
+      } else {
+        userSummary.value = undefined;
+      }
+    },
+    {
+      immediate: true,
+    }
+  );
 
   onMounted(() => {
     try {
@@ -68,6 +99,18 @@ export const useUserStore = defineStore("user", () => {
       }
     } catch (e) {}
   });
+
+  async function getUserSummary() {
+    if (!loginInfo.value?.id) {
+      return;
+    }
+    const res = await requestGetUserSummary({
+      userId: loginInfo.value.id,
+    });
+    if (res.code == 200) {
+      userSummary.value = res.data;
+    }
+  }
 
   function login() {
     return new Promise((resolve) => {
@@ -166,6 +209,7 @@ export const useUserStore = defineStore("user", () => {
   return {
     loginInfo,
     isLoggedIn,
+    userSummary,
     login,
     logout,
     updateUserInfo,

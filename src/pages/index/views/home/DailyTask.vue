@@ -66,7 +66,7 @@
             />
           </view>
           <view class="h-full flex flex-row items-center">
-            <text class="text-[32rpx] text-[#fff]">连续3天</text>
+            <text class="text-[32rpx] text-[#fff]">连续{{ userSummary?.dailyTimes }}天</text>
           </view>
         </view>
         <view class="h-full flex flex-row items-center gap-[12rpx]">
@@ -114,10 +114,14 @@
 import { GameType, ThemeColors } from "@/config/config";
 import { previewImage } from "@/utils";
 import { useQuestionStore } from "@/stores/question";
+import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 
 const questionStore = useQuestionStore();
 const { dailyQuestion: info } = storeToRefs(questionStore);
+
+const userStore = useUserStore();
+const { userSummary } = storeToRefs(userStore);
 
 function goToPlayground() {
   uni.navigateTo({

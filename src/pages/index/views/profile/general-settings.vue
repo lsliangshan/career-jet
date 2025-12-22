@@ -31,7 +31,7 @@
               :style="{
                 color: ThemeColors.text.title,
               }"
-              >游戏难度</text
+              >挑战难度</text
             >
           </view>
           <view

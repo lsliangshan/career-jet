@@ -218,3 +218,24 @@ export function requestGetAnswers(params?: {
     });
   });
 }
+
+/**
+ * 获取用户总结
+ */
+export function requestGetUserSummary(params?: {
+  userId: string;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/cm/get-user-summary`,
+      method: "POST",
+      data: params,
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}

@@ -182,6 +182,7 @@
           : ''
       "
       round
+      @leave="closeModal"
     >
       <ChatModal
         v-if="modalData?.component === EModalComponent.CHAT_MODAL"

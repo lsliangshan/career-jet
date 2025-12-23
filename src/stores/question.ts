@@ -1,12 +1,13 @@
 import { defineStore, storeToRefs } from "pinia";
 import { computed, onMounted, ref } from "vue";
-import type { IQuestion } from "@/types";
+import type { IAnswerHistory, IQuestion } from "@/types";
 import { isSameDay } from "@/utils/date";
 import {
   requestGetAiAnswer,
   requestGetDailyQuestion,
   requestGetQuestionByLevel,
   requestGetQuestionDetailById,
+  requestGetUserAnswerHistory,
 } from "@/request";
 import { useProfileStore } from "./profile";
 import { useUserStore } from "./user";
@@ -53,6 +54,8 @@ export const useQuestionStore = defineStore("question", () => {
 
   // 所有的每日挑战题目
   const dailyQuestions = ref<IQuestion[]>([]);
+
+  const totalHistoryCount = ref<number>(0);
 
   const dailyQuestion = computed(() => {
     const item = dailyQuestions.value.find(
@@ -126,11 +129,30 @@ export const useQuestionStore = defineStore("question", () => {
     });
   }
 
+  function getUserAnswerHistory(params?: {
+    type?: GameType;
+    pageIndex?: number;
+    pageSize?: number;
+  }) {
+    return new Promise(async (resolve) => {
+      const res = await requestGetUserAnswerHistory({
+        userId: loginInfo.value?.id,
+        ...(params || {}),
+      });
+      if (res.code === 200) {
+        totalHistoryCount.value = res.data.totalCount;
+      }
+      resolve(res);
+    });
+  }
+
   return {
     question,
     dailyQuestion,
+    totalHistoryCount,
     getQuestionDetailById,
     getQuestionDetailByLevel,
     getAiAnswerById,
+    getUserAnswerHistory,
   };
 });

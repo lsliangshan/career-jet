@@ -1,6 +1,6 @@
 <template>
   <view class="answer_history w-full h-full">
-    <CustomHeader show-back :title="`答题历史`" />
+    <CustomHeader show-back :title="`回答记录`" />
 
     <Layout :hasHeader="true">
       <PageLoading v-if="!pageReady" />
@@ -54,7 +54,16 @@
           </view>
         </view>
 
-        <view class="w-full h-[32rpx]"></view>
+        <view class="fixed left-0 bottom-0 w-full bg-[transparent] flex flex-row items-start" :style="{height: `calc(100rpx + ${safeBottom}px)`}" v-if="canContinue">
+          <view class="w-full h-[100rpx] flex flex-row items-center justify-center">
+            <view class="h-[80rpx] px-[24rpx] box-border rounded-[12rpx] overflow-hidden bg-[#ff7a1c] shadow-[0_8rpx_32rpx_rgba(0,0,0,0.15)] active:bg-[#ff9a3c] active:scale-95 transition-all duration-300 flex flex-row items-center justify-center"> 
+              <text class="text-[28rpx] text-[#fff]">继续描述</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="w-full" :style="{height: `calc(132rpx + ${safeBottom}px)`}"></view>
+        
       </scroll-view>
     </Layout>
   </view>
@@ -74,6 +83,8 @@ import { storeToRefs } from "pinia";
 import { computed, nextTick, type Ref, ref } from "vue";
 import { previewImage } from "@/utils";
 
+const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
+
 const userStore = useUserStore();
 const { loginInfo }: { loginInfo: Ref<LoginInfo> } = storeToRefs(userStore);
 
@@ -82,6 +93,9 @@ const questionId = ref<string>("");
 const pageReady = ref(false);
 
 const answers = ref<IAnswer[]>([]);
+
+// 是否显示继续描述按钮
+const canContinue = ref(false);
 
 const renderAvatar = ref();
 const renderAIAvatar = ref(DEFAULT_AI_AVATAR);
@@ -94,6 +108,7 @@ const renderScore = computed(() => {
 
 onLoad((options: any) => {
   questionId.value = options.questionId;
+  canContinue.value = options?.canContinue ? (options.canContinue == '1') : false;
   nextTick(() => {
     setTimeout(() => {
       renderAvatar.value = loginInfo.value?.avatar || DEFAULT_AVATAR;

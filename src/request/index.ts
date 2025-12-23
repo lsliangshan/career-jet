@@ -263,3 +263,31 @@ export function requestGetUserSummary(params?: {
     });
   });
 }
+
+/**
+ * 获取用户答题历史记录
+ */
+export function requestGetUserAnswerHistory(params: {
+  userId: string;
+  type?: GameType;
+  pageIndex?: number;
+  pageSize?: number;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/cm/get-history`,
+      method: "POST",
+      data: {
+        pageIndex: 1,
+        pageSize: 20,
+        ...params,
+      },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}

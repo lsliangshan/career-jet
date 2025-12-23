@@ -45,6 +45,10 @@
             <view class="w-full h-[24rpx]"></view>
 
             <GeneralSettings />
+            
+            <view class="w-full h-[24rpx]"></view>
+
+            <HistorySettings />
 
             <view class="w-full h-[24rpx]"></view>
 
@@ -74,13 +78,17 @@ import Layout from "@/components/layout/layout.vue";
 import BaseInfo from "./base-info.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-import { nextTick, ref } from "vue";
+import { nextTick, onMounted, ref } from "vue";
 import RefresherSuccess from "@/components/RefresherSuccess.vue";
 import GeneralSettings from "./general-settings.vue";
 import { ThemeColors } from "@/config/config";
+import HistorySettings from "./history-settings.vue";
+import { useQuestionStore } from "@/stores/question";
 
 const userStore = useUserStore();
 const { isLoggedIn, userSummary } = storeToRefs(userStore);
+
+const questionStore = useQuestionStore();
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
@@ -91,6 +99,14 @@ const refresherSuccessVisible = ref(false);
 const isRefreshing = ref(false);
 
 const successTip = ref("我的信息已更新");
+
+onMounted(async () => {
+  nextTick(async () => {
+    if (isLoggedIn.value) {
+    await questionStore.getUserAnswerHistory();
+  }
+  })
+})
 
 // 下拉刷新
 const refresherrefresh = async () => {

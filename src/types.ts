@@ -59,3 +59,7 @@ export interface IAnswer {
   points: number;
   type: "daily" | "normal" | string;
 }
+
+export interface IAnswerHistory extends IAnswer {
+  question: IQuestion;
+}

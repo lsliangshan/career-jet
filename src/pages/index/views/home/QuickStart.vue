@@ -5,7 +5,7 @@
     >
       <view class="w-full h-[60rpx] flex flex-row items-center justify-center">
         <text class="text-[#333] text-[40rpx] font-[500]"
-          >快速挑战 ({{ level?.level }}级)</text
+          >快速挑战 ({{ activeLevel }}级)</text
         >
       </view>
 
@@ -75,12 +75,19 @@
 import { useProfileStore } from "@/stores/profile";
 import { storeToRefs } from "pinia";
 import { GameType, supportedLevels } from "@/config/config";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 const profileStore = useProfileStore();
 const { level } = storeToRefs(profileStore);
 
 const activeLevel = ref(level.value?.level || 1);
+
+watch(level, (newVal) => {
+  activeLevel.value = newVal?.level || 1;
+}, {
+  immediate: true,
+  deep: true,
+});
 
 function handleChangeLevel(level: number) {
   activeLevel.value = level;

@@ -54,7 +54,7 @@
           </view>
         </view>
 
-        <view class="fixed left-0 bottom-0 w-full bg-[transparent] flex flex-row items-start" :style="{height: `calc(100rpx + ${safeBottom}px)`}" v-if="canContinue">
+        <view class="fixed left-0 bottom-0 w-full bg-[transparent] flex flex-row items-start" :style="{height: `calc(100rpx + ${safeBottom}px)`}" v-if="canContinue" @click="handleContinue">
           <view class="w-full h-[100rpx] flex flex-row items-center justify-center">
             <view class="h-[80rpx] px-[24rpx] box-border rounded-[12rpx] overflow-hidden bg-[#ff7a1c] shadow-[0_8rpx_32rpx_rgba(0,0,0,0.15)] active:bg-[#ff9a3c] active:scale-95 transition-all duration-300 flex flex-row items-center justify-center"> 
               <text class="text-[28rpx] text-[#fff]">继续描述</text>
@@ -78,7 +78,7 @@ import { requestGetAnswers } from "@/request";
 import {type LoginInfo, useUserStore } from "@/stores/user";
 import type { IAnswer } from "@/types";
 import { getDescriptionByScore } from "@/utils/qa";
-import { onLoad } from "@dcloudio/uni-app";
+import { onLoad, onShow } from "@dcloudio/uni-app";
 import { storeToRefs } from "pinia";
 import { computed, nextTick, type Ref, ref } from "vue";
 import { previewImage } from "@/utils";
@@ -109,13 +109,17 @@ const renderScore = computed(() => {
 onLoad((options: any) => {
   questionId.value = options.questionId;
   canContinue.value = options?.canContinue ? (options.canContinue == '1') : false;
+  
+});
+
+onShow(() => {
   nextTick(() => {
     setTimeout(() => {
       renderAvatar.value = loginInfo.value?.avatar || DEFAULT_AVATAR;
       getAnswerHistory();
     }, 400);
   });
-});
+})
 
 async function getAnswerHistory() {
   const res = await requestGetAnswers({
@@ -131,6 +135,12 @@ async function getAnswerHistory() {
 
 function handleAvatarError() {
   renderAvatar.value = DEFAULT_AVATAR;
+}
+
+function handleContinue() {
+  uni.navigateTo({
+    url: `/pages/playground/playground?id=${questionId.value}`,
+  });
 }
 </script>
 

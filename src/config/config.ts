@@ -320,3 +320,18 @@ export const moralities = [
     ],
   },
 ];
+
+export const authors = [
+  {
+    name: "李欧·李奥尼‌",
+    enName: "Leo Lionni",
+  },
+  {
+    name: "艾瑞克·卡尔",
+    enName: "Eric Carle",
+  },
+  {
+    name: "安东尼·布朗",
+    enName: "Anthony Browne",
+  },
+];

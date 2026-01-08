@@ -233,7 +233,26 @@
               </view>
             </view>
 
-            <view class="w-full h-[112rpx] mt-[12rpx] rounded-[24rpx] flex flex-row items-center justify-center gap-[16rpx] transition-all duration-300"
+            <!-- <view class="sticky top-[200rpx] left-0 w-full h-[112rpx] mt-[12rpx] rounded-[24rpx] flex flex-row items-center justify-center gap-[16rpx] transition-all duration-300"
+            :class="[canGenerate ? 'generate-btn-active active:scale-95' : 'generate-btn-disabled']" @click="generate">
+              <template v-if="canGenerate">
+                <view class="w-[40rpx] h-[40rpx] flex flex-row items-center justify-center">
+                  <image src="@static/icon_hot.png" mode="aspectFill" class="w-full h-full"></image>
+                </view>
+
+                <text class="text-[32rpx] text-[#fff] font-bold">开始创作绘本</text>
+              </template>
+              <template v-else>
+                <view class="w-[40rpx] h-[40rpx]  flex flex-row items-center justify-center">
+                  <image src="@static/icon_loading_white.png" mode="aspectFill" class="w-full h-full animate-spin"></image>
+                </view>
+
+                <text class="text-[32rpx] text-[#fff] font-bold">绘本生成中</text>
+              </template>
+            </view> -->
+          </view>
+          <view class="sticky top-0 left-0 w-full h-[160rpx] mt-[12rpx] flex flex-row items-center justify-center">
+          <view class="w-full h-[112rpx] rounded-[24rpx] flex flex-row items-center justify-center gap-[16rpx] transition-all duration-300"
             :class="[canGenerate ? 'generate-btn-active active:scale-95' : 'generate-btn-disabled']" @click="generate">
               <template v-if="canGenerate">
                 <view class="w-[40rpx] h-[40rpx] flex flex-row items-center justify-center">
@@ -250,9 +269,8 @@
                 <text class="text-[32rpx] text-[#fff] font-bold">绘本生成中</text>
               </template>
             </view>
-
           </view>
-
+          <view class="w-full h-[4000rpx]"></view>
           <view class="w-full" :style="{ height: `${safeBottom}px` }"></view>
         </view>
       </view>

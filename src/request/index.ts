@@ -291,3 +291,46 @@ export function requestGetUserAnswerHistory(params: {
     });
   });
 }
+
+/**
+ * 生成绘本
+ * @param params
+ * @param {string} params.theme 主题
+ * @param {string} params.storyStyle 故事风格
+ * @param {string} params.pictureStyle 图画风格
+ * @param {number} params.length 故事长度
+ * @param {string} params.language 语言
+ * @param {number} params.roleCount 角色个数，-1表示不限制
+ * @param {number} params.sceneCount 场景个数，-1表示不限制
+ * @param {string} params.ratio 绘本比例
+ * @param {boolean} params.autoConfirmedStory 自动确认故事
+ * @param {boolean} params.autoConfirmedRole 自动确认角色
+ * @param {boolean} params.autoConfirmedScene 自动确认场景
+ */
+export function requestGeneratePictureBook(params?: {
+  theme: string;
+  storyStyle: string;
+  pictureStyle: string;
+  length: number;
+  language: string;
+  roleCount: number;
+  sceneCount?: number;
+  ratio: string;
+  autoConfirmedStory?: boolean;
+  autoConfirmedRole?: boolean;
+  autoConfirmedScene?: boolean;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/pb/generate`,
+      method: "POST",
+      data: {...params},
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}

@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>儿童绘本创作工坊</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        :root {
+            --primary-color: #FF7BAC;
+            --primary-light: #FFC1D6;
+            --secondary-color: #5D9CEC;
+            --secondary-light: #C4E1FF;
+            --accent-color: #A8E6CF;
+            --accent-light: #E0F7E9;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-light: #888888;
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F8F9FF;
+            --bg-gradient: linear-gradient(135deg, #FFE6EE 0%, #E6F0FF 100%);
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.1);
+            --radius-small: 12px;
+            --radius-medium: 20px;
+            --radius-large: 30px;
+            --transition-fast: 0.2s ease;
+            --transition-medium: 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        
+        #app {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        /* 顶部导航 */
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg-primary);
+            padding: 15px 20px;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.4rem;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+        }
+        
+        /* 主要内容区域 */
+        .main-content {
+            padding: 0 20px 30px;
+        }
+        
+        /* 配置表单卡片 */
+        .config-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius-medium);
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: var(--primary-color);
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 22px;
+            position: relative;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            z-index: 1;
+        }
+        
+        .form-input, .form-select {
+            width: 100%;
+            padding: 16px 16px 16px 45px;
+            border: 2px solid #E6E9F0;
+            border-radius: var(--radius-small);
+            font-size: 1rem;
+            background-color: var(--bg-secondary);
+            transition: var(--transition-medium);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(255, 123, 172, 0.1);
+        }
+        
+        .form-select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235D9CEC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+        }
+        
+        /* Switch开关 */
+        .switch-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-small);
+            border: 2px solid #E6E9F0;
+        }
+        
+        .switch-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 54px;
+            height: 32px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #D1D6E0;
+            transition: var(--transition-medium);
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: var(--transition-medium);
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+        
+        /* 生成按钮 */
+        .generate-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 20px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: var(--radius-medium);
+            cursor: pointer;
+            width: 100%;
+            margin-top: 25px;
+            transition: var(--transition-medium);
+            box-shadow: 0 6px 20px rgba(255, 123, 172, 0.3);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .generate-btn:hover, .generate-btn:active {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 123, 172, 0.4);
+        }
+        
+        .generate-btn:disabled {
+            background: linear-gradient(135deg, #CCCCCC, #AAAAAA);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 生成中容器 */
+        .generating-container {
+            background: var(--bg-primary);
+            border-radius: var(--radius-medium);
+            padding: 25px;
+            margin-top: 25px;
+            box-shadow: var(--shadow-medium);
+            border: 2px dashed var(--primary-light);
+            text-align: center;
+            display: none;
+        }
+        
+        .generating-container.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .spinner {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+        
+        .spinner-inner {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 5px solid transparent;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .spinner-inner:nth-child(2) {
+            border: 5px solid transparent;
+            border-top: 5px solid var(--secondary-color);
+            animation: spin 1.5s linear infinite reverse;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .progress-container {
+            margin: 25px 0;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #E6E9F0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 5px;
+        }
+        
+        /* 预览区域 */
+        .preview-section {
+            margin-top: 30px;
+        }
+        
+        .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .preview-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .preview-title i {
+            color: var(--secondary-color);
+        }
+        
+        .preview-toggle {
+            background: var(--bg-secondary);
+            border: 2px solid #E6E9F0;
+            border-radius: var(--radius-small);
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .preview-content {
+            background: var(--bg-primary);
+            border-radius: var(--radius-medium);
+            padding: 25px;
+            box-shadow: var(--shadow-medium);
+            margin-bottom: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .story-preview {
+            background: var(--accent-light);
+            border-radius: var(--radius-small);
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--accent-color);
+        }
+        
+        .story-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .story-text {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+        
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .image-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-small);
+            overflow: hidden;
+            border: 2px solid #E6E9F0;
+            transition: var(--transition-medium);
+        }
+        
+        .image-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-soft);
+        }
+        
+        .image-header {
+            padding: 15px;
+            background: var(--bg-primary);
+            border-bottom: 1px solid #E6E9F0;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        .image-placeholder {
+            height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        
+        .image-placeholder i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--primary-light);
+        }
+        
+        /* 底部导航 */
+        .app-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-primary);
+            padding: 15px 20px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-around;
+            border-top-left-radius: var(--radius-medium);
+            border-top-right-radius: var(--radius-medium);
+            z-index: 10;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-light);
+            font-size: 0.8rem;
+            transition: var(--transition-fast);
+        }
+        
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+        
+        .nav-item i {
+            font-size: 1.3rem;
+        }
+        
+        /* 响应式调整 */
+        @media (min-width: 768px) {
+            .main-content {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+            
+            .images-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .app-footer {
+                max-width: 700px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-radius: var(--radius-medium);
+                bottom: 20px;
+                box-shadow: var(--shadow-medium);
+            }
+        }
+        
+        /* 滚动条样式 */
+        .preview-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .preview-content::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 3px;
+        }
+        
+        .preview-content::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 3px;
+        }
+        
+        .preview-content::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+        
+        /* 动画效果 */
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.3s;
+        }
+        
+        .fade-enter, .fade-leave-to {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- 顶部导航 -->
+        <header class="app-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="logo-text">绘本工坊</div>
+            </div>
+            <div class="user-avatar">
+                <i class="fas fa-child"></i>
+            </div>
+        </header>
+        
+        <!-- 主要内容区域 -->
+        <main class="main-content">
+            <!-- 配置表单 -->
+            <section class="config-card">
+                <h2 class="card-title">
+                    <i class="fas fa-palette"></i> 绘本配置
+                </h2>
+                
+                <form @submit.prevent="generateStorybook">
+                    <div class="form-group">
+                        <label class="form-label">绘本主题</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-feather-alt"></i>
+                            <input type="text" class="form-input" v-model="config.theme" placeholder="例如：勇敢的小兔子" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">故事风格</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-book-open"></i>
+                            <select class="form-select" v-model="config.storyStyle">
+                                <option value="adventure">冒险奇幻</option>
+                                <option value="educational">教育启发</option>
+                                <option value="funny">幽默搞笑</option>
+                                <option value="fairytale">经典童话</option>
+                                <option value="bedtime">睡前故事</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">图画风格</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-paint-brush"></i>
+                            <select class="form-select" v-model="config.pictureStyle">
+                                <option value="cartoon">卡通可爱</option>
+                                <option value="watercolor">水彩手绘</option>
+                                <option value="digital">数字绘画</option>
+                                <option value="clay">粘土动画</option>
+                                <option value="papercut">剪纸艺术</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">故事长度 (段落数: {{ config.length }})</label>
+                        <input type="range" class="form-input" v-model.number="config.length" min="1" max="10" style="padding: 16px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">故事语言</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-language"></i>
+                            <select class="form-select" v-model="config.language">
+                                <option value="chinese">中文</option>
+                                <option value="english">英文</option>
+                                <option value="bilingual">中英双语</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">角色个数 ({{ config.roleCount }})</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user-friends"></i>
+                            <input type="range" class="form-input" v-model.number="config.roleCount" min="1" max="5" style="padding: 16px;">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">场景个数 ({{ config.sceneCount }})</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-mountain"></i>
+                            <input type="range" class="form-input" v-model.number="config.sceneCount" min="1" max="8" style="padding: 16px;">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">绘本比例</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-expand-alt"></i>
+                            <select class="form-select" v-model="config.ratio">
+                                <option value="1:1">方形 (1:1)</option>
+                                <option value="4:3">传统 (4:3)</option>
+                                <option value="16:9">宽屏 (16:9)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="switch-group">
+                            <span class="switch-label">自动确认故事内容</span>
+                            <label class="switch">
+                                <input type="checkbox" v-model="config.autoConfirmedStory">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="switch-group">
+                            <span class="switch-label">自动确认故事角色</span>
+                            <label class="switch">
+                                <input type="checkbox" v-model="config.autoConfirmedRole">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="switch-group">
+                            <span class="switch-label">自动确认故事场景</span>
+                            <label class="switch">
+                                <input type="checkbox" v-model="config.autoConfirmedScene">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="generate-btn" :disabled="isGenerating">
+                        <i class="fas fa-magic"></i> {{ isGenerating ? '创作中...' : '开始创作绘本' }}
+                    </button>
+                </form>
+                
+                <!-- 生成中容器 -->
+                <div class="generating-container" :class="{active: isGenerating}">
+                    <div class="spinner">
+                        <div class="spinner-inner"></div>
+                        <div class="spinner-inner"></div>
+                    </div>
+                    <h3>正在创作您的绘本...</h3>
+                    <p>正在生成 {{ config.theme || '绘本' }} 的故事内容、角色和场景</p>
+                    
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>创作进度</span>
+                            <span>{{ generationProgress }}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress" :style="{width: generationProgress + '%'}"></div>
+                        </div>
+                    </div>
+                    
+                    <p>{{ generationStep }}</p>
+                </div>
+            </section>
+            
+            <!-- 预览区域 -->
+            <section class="preview-section">
+                <div class="preview-header">
+                    <h3 class="preview-title">
+                        <i class="fas fa-book-reader"></i> 绘本预览
+                    </h3>
+                    <button class="preview-toggle" @click="togglePreview">
+                        <i class="fas" :class="showPreview ? 'fa-eye-slash' : 'fa-eye'"></i>
+                        {{ showPreview ? '隐藏预览' : '显示预览' }}
+                    </button>
+                </div>
+                
+                <transition name="fade">
+                    <div class="preview-content" v-if="showPreview">
+                        <!-- 故事内容 -->
+                        <div class="story-preview">
+                            <h4 class="story-title">
+                                <i class="fas fa-scroll"></i> 故事内容
+                            </h4>
+                            <div class="story-text" v-if="storyContent">{{ storyContent }}</div>
+                            <div class="story-text" v-else>请配置绘本参数并点击"开始创作绘本"按钮，这里将显示生成的故事内容。</div>
+                        </div>
+                        
+                        <!-- 角色图片 -->
+                        <div v-if="roleImages.length > 0">
+                            <h4 style="margin-bottom: 15px; color: var(--text-primary); font-size: 1.1rem;">角色图片 ({{ roleImages.length }})</h4>
+                            <div class="images-grid">
+                                <div class="image-card" v-for="(role, index) in roleImages" :key="'role-'+index">
+                                    <div class="image-header">{{ role.name }}</div>
+                                    <div class="image-placeholder">
+                                        <i :class="role.icon"></i>
+                                        <p>{{ role.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 场景图片 -->
+                        <div style="margin-top: 25px;" v-if="sceneImages.length > 0">
+                            <h4 style="margin-bottom: 15px; color: var(--text-primary); font-size: 1.1rem;">场景图片 ({{ sceneImages.length }})</h4>
+                            <div class="images-grid">
+                                <div class="image-card" v-for="(scene, index) in sceneImages" :key="'scene-'+index">
+                                    <div class="image-header">{{ scene.name }}</div>
+                                    <div class="image-placeholder">
+                                        <i :class="scene.icon"></i>
+                                        <p>{{ scene.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 空状态提示 -->
+                        <div v-if="roleImages.length === 0 && sceneImages.length === 0" style="text-align: center; padding: 40px 20px; color: var(--text-light);">
+                            <i class="fas fa-images" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                            <p>生成后将显示角色和场景图片</p>
+                        </div>
+                    </div>
+                </transition>
+            </section>
+        </main>
+        
+        <!-- 底部导航 -->
+        <footer class="app-footer">
+            <div class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>创作</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-book"></i>
+                <span>我的绘本</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-heart"></i>
+                <span>收藏</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>我的</span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const { createApp, ref, reactive, watch, computed } = Vue;
+        
+        createApp({
+            setup() {
+                // 配置数据
+                const config = reactive({
+                    theme: '勇敢的小兔子',
+                    storyStyle: 'adventure',
+                    pictureStyle: 'cartoon',
+                    length: 3,
+                    language: 'chinese',
+                    roleCount: 2,
+                    sceneCount: 3,
+                    ratio: '4:3',
+                    autoConfirmedStory: true,
+                    autoConfirmedRole: false,
+                    autoConfirmedScene: false
+                });
+                
+                // 生成状态
+                const isGenerating = ref(false);
+                const generationProgress = ref(0);
+                const generationStep = ref('');
+                const showPreview = ref(true);
+                
+                // 生成结果
+                const storyContent = ref('');
+                const roleImages = ref([]);
+                const sceneImages = ref([]);
+                
+                // 监听角色个数变化
+                watch(() => config.roleCount, (newVal) => {
+                    if (newVal > 5) config.roleCount = 5;
+                    if (newVal < 1) config.roleCount = 1;
+                });
+                
+                // 监听场景个数变化
+                watch(() => config.sceneCount, (newVal) => {
+                    if (newVal > 8) config.sceneCount = 8;
+                    if (newVal < 1) config.sceneCount = 1;
+                });
+                
+                // 监听故事长度变化
+                watch(() => config.length, (newVal) => {
+                    if (newVal > 10) config.length = 10;
+                    if (newVal < 1) config.length = 1;
+                });
+                
+                // 切换预览显示
+                const togglePreview = () => {
+                    showPreview.value = !showPreview.value;
+                };
+                
+                // 生成绘本函数
+                const generateStorybook = () => {
+                    if (isGenerating.value) return;
+                    
+                    // 显示预览
+                    showPreview.value = true;
+                    
+                    // 重置状态
+                    isGenerating.value = true;
+                    generationProgress.value = 0;
+                    storyContent.value = '';
+                    roleImages.value = [];
+                    sceneImages.value = [];
+                    
+                    // 模拟生成过程
+                    const steps = [
+                        {text: '构思故事主题...', progress: 10},
+                        {text: '创建故事大纲...', progress: 20},
+                        {text: '编写故事内容...', progress: 35},
+                        {text: '设计角色形象...', progress: 50},
+                        {text: '生成角色图片...', progress: 65},
+                        {text: '设计场景构图...', progress: 80},
+                        {text: '生成场景图片...', progress: 95},
+                        {text: '完成绘本制作！', progress: 100}
+                    ];
+                    
+                    let stepIndex = 0;
+                    
+                    const processStep = () => {
+                        if (stepIndex >= steps.length) {
+                            isGenerating.value = false;
+                            // 生成最终结果
+                            generateResults();
+                            return;
+                        }
+                        
+                        const step = steps[stepIndex];
+                        generationStep.value = step.text;
+                        generationProgress.value = step.progress;
+                        
+                        stepIndex++;
+                        setTimeout(processStep, 600);
+                    };
+                    
+                    processStep();
+                };
+                
+                // 生成结果数据
+                const generateResults = () => {
+                    // 根据配置生成故事内容
+                    const styleMap = {
+                        adventure: '冒险奇幻',
+                        educational: '教育启发',
+                        funny: '幽默搞笑',
+                        fairytale: '经典童话',
+                        bedtime: '睡前故事'
+                    };
+                    
+                    const pictureStyleMap = {
+                        cartoon: '卡通可爱',
+                        watercolor: '水彩手绘',
+                        digital: '数字绘画',
+                        clay: '粘土动画',
+                        papercut: '剪纸艺术'
+                    };
+                    
+                    const languageMap = {
+                        chinese: '中文',
+                        english: '英文',
+                        bilingual: '中英双语'
+                    };
+                    
+                    // 生成故事内容
+                    storyContent.value = `这是一个关于《${config.theme}》的${styleMap[config.storyStyle]}故事，采用${pictureStyleMap[config.pictureStyle]}风格绘制，使用${languageMap[config.language]}讲述。
+
+故事共有${config.length}个段落，讲述了主角在${config.sceneCount}个不同场景中的冒险经历。故事中有${config.roleCount}个主要角色，每个角色都有自己独特的性格和特点。
+
+${config.autoConfirmedStory ? '系统已自动确认故事内容。' : '请手动确认故事内容。'}
+${config.autoConfirmedRole ? '系统已自动确认角色设计。' : '请手动确认角色设计。'}
+${config.autoConfirmedScene ? '系统已自动确认场景设计。' : '请手动确认场景设计。'}
+
+绘本将采用${config.ratio}的比例进行排版，适合在各种设备上阅读。`;
+                    
+                    // 生成角色图片数据
+                    const roleIcons = ['fas fa-dragon', 'fas fa-cat', 'fas fa-dog', 'fas fa-kiwi-bird', 'fas fa-fish', 'fas fa-hippo', 'fas fa-otter', 'fas fa-dove'];
+                    const roleNames = ['勇敢的狮子', '聪明的小兔', '调皮的猴子', '温和的大象', '神秘的小龙', '快乐的小鸟', '好奇的小猫', '友善的小狗'];
+                    const roleDescriptions = ['勇敢无畏的领袖', '聪明机智的参谋', '调皮捣蛋的开心果', '温和善良的巨人', '神秘强大的守护者', '快乐自由的歌唱家', '好奇探索的冒险家', '友善忠诚的伙伴'];
+                    
+                    for (let i = 0; i < config.roleCount; i++) {
+                        roleImages.value.push({
+                            name: roleNames[i % roleNames.length] + (i >= roleNames.length ? ` ${Math.floor(i/roleNames.length)+1}` : ''),
+                            icon: roleIcons[i % roleIcons.length],
+                            description: roleDescriptions[i % roleDescriptions.length]
+                        });
+                    }
+                    
+                    // 生成场景图片数据
+                    const sceneIcons = ['fas fa-mountain', 'fas fa-forest', 'fas fa-water', 'fas fa-home', 'fas fa-cloud', 'fas fa-star', 'fas fa-umbrella-beach', 'fas fa-ice-cream'];
+                    const sceneNames = ['神秘森林', '彩虹山谷', '魔法城堡', '海底世界', '云端王国', '星空之夜', '阳光海滩', '糖果乐园'];
+                    const sceneDescriptions = ['充满神秘生物的森林', '有着七色彩虹的山谷', '拥有古老魔法的城堡', '五彩斑斓的海底世界', '漂浮在云端的王国', '繁星点点的宁静夜晚', '阳光明媚的沙滩海岸', '甜蜜可口的糖果世界'];
+                    
+                    for (let i = 0; i < config.sceneCount; i++) {
+                        sceneImages.value.push({
+                            name: sceneNames[i % sceneNames.length] + (i >= sceneNames.length ? ` ${Math.floor(i/sceneNames.length)+1}` : ''),
+                            icon: sceneIcons[i % sceneIcons.length],
+                            description: sceneDescriptions[i % sceneDescriptions.length]
+                        });
+                    }
+                };
+                
+                // 初始生成示例结果
+                generateResults();
+                
+                return {
+                    config,
+                    isGenerating,
+                    generationProgress,
+                    generationStep,
+                    storyContent,
+                    roleImages,
+                    sceneImages,
+                    showPreview,
+                    togglePreview,
+                    generateStorybook
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

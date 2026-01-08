@@ -92,9 +92,9 @@ export const ThemeColors = {
 
 export const moralities = [
   {
-    category: "基础人格与品德",
-    category_en: "Foundational Character and Morality",
-    items: [
+    name: "基础人格与品德",
+    name_en: "Foundational Character and Morality",
+    children: [
       {
         name: "诚实与正直",
         name_en: "Honesty and Integrity",
@@ -134,9 +134,9 @@ export const moralities = [
     ],
   },
   {
-    category: "社会适应与情感能力",
-    category_en: "Social Adaptation and Emotional Intelligence",
-    items: [
+    name: "社会适应与情感能力",
+    name_en: "Social Adaptation and Emotional Intelligence",
+    children: [
       {
         name: "同理心与善良",
         name_en: "Empathy and Kindness",
@@ -176,9 +176,9 @@ export const moralities = [
     ],
   },
   {
-    category: "心理韧性与成长思维",
-    category_en: "Psychological Resilience and Growth Mindset",
-    items: [
+    name: "心理韧性与成长思维",
+    name_en: "Psychological Resilience and Growth Mindset",
+    children: [
       {
         name: "抗挫折能力",
         name_en: "Resilience (Anti-Frustration Ability)",
@@ -218,9 +218,9 @@ export const moralities = [
     ],
   },
   {
-    category: "认知与学习能力",
-    category_en: "Cognitive and Learning Abilities",
-    items: [
+    name: "认知与学习能力",
+    name_en: "Cognitive and Learning Abilities",
+    children: [
       {
         name: "好奇心与探索精神",
         name_en: "Curiosity and Exploratory Spirit",
@@ -260,9 +260,9 @@ export const moralities = [
     ],
   },
   {
-    category: "生活与健康习惯",
-    category_en: "Life and Health Habits",
-    items: [
+    name: "生活与健康习惯",
+    name_en: "Life and Health Habits",
+    children: [
       {
         name: "自我照顾能力",
         name_en: "Self-Care Ability",
@@ -290,9 +290,9 @@ export const moralities = [
     ],
   },
   {
-    category: "内在动力与价值观",
-    category_en: "Inner Drive and Values",
-    items: [
+    name: "内在动力与价值观",
+    name_en: "Inner Drive and Values",
+    children: [
       {
         name: "目标感与意义感",
         name_en: "Sense of Purpose and Meaning",
@@ -324,14 +324,46 @@ export const moralities = [
 export const authors = [
   {
     name: "李欧·李奥尼‌",
-    enName: "Leo Lionni",
+    name_en: "Leo Lionni",
   },
   {
     name: "艾瑞克·卡尔",
-    enName: "Eric Carle",
+    name_en: "Eric Carle",
   },
   {
     name: "安东尼·布朗",
-    enName: "Anthony Browne",
+    name_en: "Anthony Browne",
   },
+];
+
+export const ratios = [
+  "2:3",
+  "3:4",
+  "4:5",
+  "9:16",
+  "1:1",
+  "3:2",
+  "4:3",
+  "5:4",
+  "16:9",
+  "21:9",
+];
+
+export const languages = [
+  "中文",
+  "繁体中文",
+  "英文",
+  "日语",
+  "韩语",
+  "法语",
+  "德语",
+  "西班牙语",
+  "俄语",
+  "阿拉伯语",
+  "葡萄牙语",
+  "意大利语",
+  "荷兰语",
+  "泰语",
+  "越南语",
+  "印尼语",
 ];

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI 绘本生成器</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+
+    <style>
+      :root {
+        --primary: #6366f1;
+        --secondary: #22c55e;
+        --bg: #f4f6fb;
+        --card: #ffffff;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --radius: 16px;
+      }
+
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
+          "Helvetica Neue", Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      header {
+        padding: 18px 16px 22px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: #fff;
+        border-bottom-left-radius: 22px;
+        border-bottom-right-radius: 22px;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 20px;
+      }
+
+      header p {
+        margin: 6px 0 0;
+        font-size: 13px;
+        opacity: 0.9;
+      }
+
+      main {
+        padding: 16px;
+      }
+
+      .card {
+        background: var(--card);
+        border-radius: var(--radius);
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      }
+
+      .card h2 {
+        margin: 0 0 14px;
+        font-size: 16px;
+      }
+
+      .form-group {
+        margin-bottom: 14px;
+      }
+
+      label {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        font-size: 14px;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+
+      /* Switch */
+      .switch-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+
+      .switch {
+        position: relative;
+        width: 44px;
+        height: 24px;
+      }
+
+      .switch input {
+        display: none;
+      }
+
+      .slider {
+        position: absolute;
+        inset: 0;
+        background: #e5e7eb;
+        border-radius: 999px;
+        transition: 0.25s;
+      }
+
+      .slider::after {
+        content: "";
+        width: 20px;
+        height: 20px;
+        background: #fff;
+        border-radius: 50%;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        transition: 0.25s;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      .switch input:checked + .slider {
+        background: var(--primary);
+      }
+
+      .switch input:checked + .slider::after {
+        transform: translateX(20px);
+      }
+
+      .btn {
+        width: 100%;
+        margin-top: 8px;
+        padding: 14px;
+        font-size: 15px;
+        border-radius: 999px;
+        border: none;
+        color: #fff;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        box-shadow: 0 10px 24px rgba(99, 102, 241, 0.4);
+      }
+
+      .btn:active {
+        transform: scale(0.98);
+      }
+
+      /* Loading */
+      .loading {
+        display: none;
+        text-align: center;
+        padding: 32px 0;
+        color: var(--muted);
+      }
+
+      .spinner {
+        width: 36px;
+        height: 36px;
+        margin: 0 auto 12px;
+        border: 4px solid #e5e7eb;
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Result */
+      .result {
+        display: none;
+      }
+
+      .story-box {
+        background: #f9fafb;
+        padding: 14px;
+        border-radius: 12px;
+        font-size: 14px;
+        line-height: 1.7;
+        white-space: pre-wrap;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .img-card {
+        background: #f3f4f6;
+        border-radius: 12px;
+        padding: 6px;
+        text-align: center;
+      }
+
+      .img-card img {
+        width: 100%;
+        border-radius: 10px;
+      }
+
+      .img-card p {
+        font-size: 11px;
+        margin: 4px 0 0;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>📚 AI 绘本生成器</h1>
+      <p>为孩子定制一个专属故事</p>
+    </header>
+
+    <main>
+      <!-- 配置 -->
+      <div class="card">
+        <h2>绘本配置</h2>
+
+        <div class="form-group">
+          <label>主题</label>
+          <input type="text" placeholder="例如：勇敢的小猫" />
+        </div>
+
+        <div class="form-group">
+          <label>故事风格</label>
+          <select>
+            <option>温馨</option>
+            <option>冒险</option>
+            <option>幽默</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>图画风格</label>
+          <select>
+            <option>水彩</option>
+            <option>卡通</option>
+            <option>日系绘本</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>故事长度（页）</label>
+          <input type="number" value="10" />
+        </div>
+
+        <div class="form-group">
+          <label>语言</label>
+          <select>
+            <option>中文</option>
+            <option>English</option>
+            <option>中英双语</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>角色个数</label>
+          <input type="number" value="2" />
+        </div>
+
+        <div class="form-group">
+          <label>场景个数</label>
+          <input type="number" value="5" />
+        </div>
+
+        <div class="form-group">
+          <label>绘本比例</label>
+          <select>
+            <option>1:1</option>
+            <option>4:3</option>
+            <option>16:9</option>
+          </select>
+        </div>
+
+        <div class="switch-row">
+          <span>自动确认故事</span>
+          <label class="switch">
+            <input type="checkbox" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="switch-row">
+          <span>自动确认角色</span>
+          <label class="switch">
+            <input type="checkbox" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="switch-row">
+          <span>自动确认场景</span>
+          <label class="switch">
+            <input type="checkbox" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <button class="btn" onclick="generate()">✨ 生成绘本</button>
+      </div>
+
+      <!-- 生成中 -->
+      <div class="card loading" id="loading">
+        <div class="spinner"></div>
+        正在生成绘本内容…
+      </div>
+
+      <!-- 结果 -->
+      <div class="card result" id="result">
+        <h2>📖 故事内容</h2>
+        <div class="story-box">
+          从前有一只小猫，它总是害怕黑夜。 直到有一天，它学会了勇敢……
+        </div>
+
+        <h2 style="margin-top: 16px">🎭 角色</h2>
+        <div class="grid">
+          <div class="img-card">
+            <img src="https://placehold.co/300x300?text=角色1" />
+            <p>小猫</p>
+          </div>
+          <div class="img-card">
+            <img src="https://placehold.co/300x300?text=角色2" />
+            <p>小鸟</p>
+          </div>
+        </div>
+
+        <h2 style="margin-top: 16px">🌄 场景</h2>
+        <div class="grid">
+          <div class="img-card">
+            <img src="https://placehold.co/400x300?text=森林" />
+            <p>森林</p>
+          </div>
+          <div class="img-card">
+            <img src="https://placehold.co/400x300?text=夜晚" />
+            <p>夜晚</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      function generate() {
+        document.getElementById("loading").style.display = "block";
+        document.getElementById("result").style.display = "none";
+
+        setTimeout(() => {
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("result").style.display = "block";
+        }, 1600);
+      }
+    </script>
+  </body>
+</html>

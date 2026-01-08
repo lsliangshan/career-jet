@@ -251,7 +251,7 @@
               </template>
             </view> -->
           </view>
-          <view class="sticky top-0 left-0 w-full h-[160rpx] mt-[12rpx] flex flex-row items-center justify-center">
+          <view class="w-full h-[160rpx] mt-[12rpx] flex flex-row items-center justify-center">
           <view class="w-full h-[112rpx] rounded-[24rpx] flex flex-row items-center justify-center gap-[16rpx] transition-all duration-300"
             :class="[canGenerate ? 'generate-btn-active active:scale-95' : 'generate-btn-disabled']" @click="generate">
               <template v-if="canGenerate">
@@ -270,6 +270,12 @@
               </template>
             </view>
           </view>
+
+          <view class="sticky top-0 left-0 w-full h-[400rpx] py-[24rpx] box-border">
+            <view class="w-full h-full rounded-[24rpx] border border-dashed border-[1rpx] bg-[#fff]" :style="{borderColor: mainColor}">
+            </view>
+          </view>
+
           <view class="w-full h-[4000rpx]"></view>
           <view class="w-full" :style="{ height: `${safeBottom}px` }"></view>
         </view>

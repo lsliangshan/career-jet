@@ -620,6 +620,18 @@
         </view>
       </scroll-view>
     </Layout>
+
+    <page-container
+      :show="modalVisible"
+      z-index="999"
+      round
+      overlay-style="background-color: rgba(0,0,0,0.05);"
+      custom-style="background-color: transparent;"
+    >
+      <ConfirmStoryModal
+        v-if="modalData?.component === EModalComponent.CONFIRM_STORY_MODAL"
+      />
+    </page-container>
   </view>
 </template>
 
@@ -629,6 +641,8 @@ import Layout from "@/components/layout/layout.vue";
 import { computed, nextTick, onMounted, ref } from "vue";
 import { moralities, authors, languages, ratios } from "@/config/config";
 import { requestGeneratePictureBook } from "@/request";
+import { EModalComponent } from "./modals/types";
+import ConfirmStoryModal from "./modals/ConfirmStoryModal.vue";
 
 enum GenerateStep {
   // 未开始
@@ -675,8 +689,11 @@ const focusElement = ref<string | null>(null);
 
 const focusedNode = ref<string | null>(null);
 
-// 绘本生成中
-const isGenerating = ref(false);
+const modalVisible = ref(false);
+const modalData = ref<{
+  component?: string;
+  [key: string]: any;
+}>();
 
 const generateStep = ref<GenerateStep>(GenerateStep.unstart);
 
@@ -899,10 +916,10 @@ function validateForm() {
 }
 
 async function generate() {
-  if (!canGenerate.value) {
-    // 生成中
-    return;
-  }
+  // if (!canGenerate.value) {
+  //   // 生成中
+  //   return;
+  // }
 
   const isValid = validateForm();
   if (!isValid) {
@@ -953,6 +970,14 @@ async function generate() {
 
   if (res.action === "confirm-story") {
     generateStep.value = GenerateStep.confirmStory;
+    modalData.value = {
+      component: EModalComponent.CONFIRM_STORY_MODAL,
+      data: res.data,
+    };
+    const t = setTimeout(() => {
+      openModal();
+      clearTimeout(t);
+    }, 300);
   } else if (res.action === "confirm-role") {
     generateStep.value = GenerateStep.confirmRole;
   } else if (res.action === "confirm-scene") {
@@ -969,6 +994,21 @@ function scrollToGeneratePanel(id: string) {
   nextTick(() => {
     scrollToElementId.value = id;
   });
+}
+
+function closeModal() {
+  // modalVisible.value = false;
+  console.log(">>>>> closeModal");
+  return false;
+}
+
+function handleClickOverlay(e: any) {
+  console.log(">>>>> handleClickOverlay: ", e);
+  return false;
+}
+
+function openModal() {
+  modalVisible.value = true;
 }
 </script>
 

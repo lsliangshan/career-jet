@@ -324,11 +324,34 @@ export function requestGeneratePictureBook(params?: {
     uni.request({
       url: `${baseUrl}/pb/generate`,
       method: "POST",
-      data: {...params},
+      data: { ...params },
       success: (res) => {
         resolve(res.data);
       },
       fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+export function requestCustomUrl(params: {
+  url: string;
+  method: "POST" | "GET" | "PUT" | "DELETE";
+  data: any;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: params.url,
+      method: params.method,
+      data: params.data,
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+      complete: () => {
         resolve({});
       },
     });

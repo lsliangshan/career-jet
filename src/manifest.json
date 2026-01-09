@@ -69,5 +69,8 @@
     "uniStatistics": {
         "enable": false
     },
-    "vueVersion": "3"
+    "vueVersion": "3",
+    "networkTimeout": {
+        "request": "60 * 60 * 1000"
+    }
 }

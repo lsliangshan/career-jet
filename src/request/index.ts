@@ -357,3 +357,24 @@ export function requestCustomUrl(params: {
     });
   });
 }
+
+export function requestGetImageUrls(params: {
+  taskIds: string[];
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/pb/get-image-urls`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+      complete: () => {
+        resolve({});
+      },
+    });
+  });
+}

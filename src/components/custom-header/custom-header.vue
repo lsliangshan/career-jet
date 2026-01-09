@@ -1,6 +1,6 @@
 <template>
   <view
-    class="w-full fixed left-0 top-0 z-10 border-b border-[1rpx] flex flex-row items-center justify-start"
+    class="w-full absolute left-0 top-0 z-10 border-b border-[1rpx] flex flex-row items-center justify-start"
     :style="{
       backgroundColor: bgColor,
       height: `calc(88rpx + ${safeTop}px)`,
@@ -32,7 +32,7 @@
         ]"
       >
         <text
-          class="text-[32rpx] font-bold text-[#000] clamp-1 overflow-hidden text-ellipsis whitespace-nowrap break-all"
+          class="text-[32rpx] font-bold text-[#000] line-clamp-1 overflow-hidden text-ellipsis break-all"
           >{{ title }}</text
         >
       </view>
@@ -64,7 +64,7 @@ const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
 onMounted(() => {
   nextTick(() => {
     safeTop.value = uni.getWindowInfo().safeArea?.top || 88;
-  })
+  });
 });
 
 function handleBack() {

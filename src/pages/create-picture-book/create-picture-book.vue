@@ -618,6 +618,13 @@
         @on-regenerate="handleRegenerateStory"
         @on-cancel="handleCancelConfirmStory"
       />
+
+      <ConfirmRolesModal
+        :info="modalData?.data"
+        :ratio="formData.ratio"
+        v-else-if="modalData?.component === EModalComponent.CONFIRM_ROLES_MODAL"
+        @on-cancel="handleCancelConfirmStory"
+      />
     </page-container>
   </view>
 </template>
@@ -630,10 +637,12 @@ import { moralities, authors, languages, ratios } from "@/config/config";
 import { requestGeneratePictureBook } from "@/request";
 import {
   EModalComponent,
-  IConfirmRoleInfo,
-  IConfirmStoryInfo,
+  type IConfirmRoleInfo,
+  type IConfirmStoryInfo,
 } from "./modals/types";
 import ConfirmStoryModal from "./modals/ConfirmStoryModal.vue";
+import { EConfirmAction } from "./types";
+import ConfirmRolesModal from "./modals/ConfirmRolesModal.vue";
 
 const info = ref<IConfirmStoryInfo>({
   id: "b0c90a919f8df86c2fe04550",
@@ -1028,7 +1037,10 @@ function doGenerate() {
         data: res.data,
       };
       const t = setTimeout(() => {
-        openModal();
+        openModal({
+          component: EModalComponent.CONFIRM_STORY_MODAL,
+          data: res.data,
+        });
         clearTimeout(t);
       }, 300);
     } else if (res.action === "confirm-role") {
@@ -1067,9 +1079,10 @@ function scrollToGeneratePanel(id: string) {
 }
 
 function closeModal() {
-  // modalVisible.value = false;
-  console.log(">>>>> closeModal");
-  return false;
+  const t = setTimeout(() => {
+    clearTimeout(t);
+    modalVisible.value = false;
+  }, 200);
 }
 
 function handleClickOverlay(e: any) {
@@ -1077,7 +1090,13 @@ function handleClickOverlay(e: any) {
   return false;
 }
 
-function openModal() {
+function openModal(params: { component?: EModalComponent; data?: any }) {
+  if (params.component) {
+    modalData.value = {
+      component: params.component,
+      data: params.data,
+    };
+  }
   modalVisible.value = true;
 }
 
@@ -1096,14 +1115,30 @@ async function handleRegenerateStory(e: any) {
 function handleCancelConfirmStory(e: any) {
   generateStep.value = GenerateStep.unstart;
 
-  const t = setTimeout(() => {
-    clearTimeout(t);
-    modalVisible.value = false;
-  }, 200);
+  closeModal();
 }
 
 function handleConfirmedStory(e: any) {
   console.log(">>>>> handleConfirmedStory: ", e);
+  if (e.action === EConfirmAction.CONFIRM_ROLES) {
+    closeModal();
+
+    const t = setTimeout(() => {
+      modalData.value = {
+        component: EModalComponent.CONFIRM_ROLES_MODAL,
+        data: e.data,
+      };
+
+      nextTick(() => {
+        generateStep.value = GenerateStep.confirmRole;
+        openModal({
+          component: EModalComponent.CONFIRM_ROLES_MODAL,
+          data: e.data,
+        });
+      });
+      clearTimeout(t);
+    }, 300);
+  }
 }
 </script>
 

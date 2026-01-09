@@ -709,7 +709,7 @@ const formData = ref({
   storyStyle: "李欧·李奥尼‌",
   pictureStyle: "李欧·李奥尼‌",
   length: 500,
-  language: "英文",
+  language: "中文",
   roleCount: -1,
   sceneCount: -1,
   ratio: "16:9",
@@ -971,6 +971,7 @@ function doGenerate() {
     //   autoConfirmedRole: formData.value.autoConfirmedRole,
     //   autoConfirmedScene: formData.value.autoConfirmedScene,
     // });
+
     const res = {
       code: 200,
       message: "请确认故事内容",

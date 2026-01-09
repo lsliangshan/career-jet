@@ -71,6 +71,6 @@
     },
     "vueVersion": "3",
     "networkTimeout": {
-        "request": "60 * 60 * 1000"
+        "request": 3600000
     }
 }

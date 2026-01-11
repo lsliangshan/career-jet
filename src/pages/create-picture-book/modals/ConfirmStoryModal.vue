@@ -296,84 +296,17 @@ async function doConfirmStory() {
   );
 
   // 确认故事
-  // const res = await requestCustomUrl({
-  //   url: confirmUrl,
-  //   method: "POST",
-  //   data: {
-  //     id: props.info.id,
-  //     title: renderStoryTitle.value,
-  //     content: renderStoryContent.value,
-  //   },
-  // });
-
-  const res = {
-    code: 200,
-    message: "请确认故事角色",
-    action: "confirm-roles",
+  const res = await requestCustomUrl({
+    url: confirmUrl,
+    method: "POST",
     data: {
-      id: "e07152ec76ee00d330ed3bb2",
-      confirmUrl:
-        "https://wf.qyflows.com/webhook-waiting/624335/pb-confirm-role",
-      roles: [
-        {
-          code: 200,
-          msg: "success",
-          data: {
-            taskId: "08d57184e98cf85806e7fbced03b9e61",
-            recordId: "08d57184e98cf85806e7fbced03b9e61",
-            id: "dandelion_shaggy",
-            name: "蒲公英小绒",
-            prompt:
-              "蒲公英小绒是一个拟人化的蒲公英，拥有绒球状的头部，看起来像一朵盛开的蒲公英。它有微笑的神情，穿着绿色小外套，站在风吹过的草地上，阳光洒在它的身上。",
-            prompt_en:
-              "Dandelion Shaggy is a personified dandelion with a fluffy head that resembles a blooming dandelion. It has a smiling expression, wears a small green jacket, and stands on a windy grassy field with sunlight shining upon it.",
-          },
-        },
-        {
-          code: 200,
-          msg: "success",
-          data: {
-            taskId: "58ed0e54410810208264218b2594aafa",
-            recordId: "58ed0e54410810208264218b2594aafa",
-            id: "snail_slow",
-            name: "小蜗牛慢悠悠",
-            prompt:
-              "小蜗牛慢悠悠是一只可爱的蜗牛，带着黄色的小壳，壳上有些斑点。它有温和的眼神，动慢的身姿，站在草地上，旁边是微风吹动的青草。",
-            prompt_en:
-              "Little Snail Slow is an adorable snail with a small yellow shell dotted with spots. It has a gentle gaze and moves slowly, standing on the grass field with blades of grass swaying in the breeze.",
-          },
-        },
-        {
-          code: 200,
-          msg: "success",
-          data: {
-            taskId: "48af989450b44bc5219d6d5521c3adfd",
-            recordId: "48af989450b44bc5219d6d5521c3adfd",
-            id: "sparrow_chirp",
-            name: "麻雀喳喳",
-            prompt:
-              "麻雀喳喳是一只活泼的小麻雀，羽毛呈褐色，眼睛闪烁着狡黠。它在空中俯冲，站在草地上，看着蒲公英小绒和小蜗牛慢悠悠，周围空气中充满阳光。",
-            prompt_en:
-              "Sparrow Chirp is an energetic small sparrow with brown feathers and twinkling mischievous eyes. It swoops in from the air, standing on the grass and looking at Dandelion Shaggy and Little Snail Slow, amidst sunlight-filled air.",
-          },
-        },
-        {
-          code: 200,
-          msg: "success",
-          data: {
-            taskId: "049e7478b1c4c07d073732a5b34365ed",
-            recordId: "049e7478b1c4c07d073732a5b34365ed",
-            id: "firefly_glow",
-            name: "萤火虫亮亮",
-            prompt:
-              "萤火虫亮亮是一只有着闪烁绿色光芒的萤火虫。它有温暖柔和的光环，背着一个透明小瓶，用来收集星光。它在夜空下飞行，与星星相映生辉。",
-            prompt_en:
-              "Firefly Glow is a firefly emitting shimmering green light. It has a warm, gentle halo, carries a transparent small bottle used for collecting starlight, and flies under the night sky, glowing alongside stars.",
-          },
-        },
-      ],
+      id: props.info.id,
+      title: renderStoryTitle.value,
+      content: renderStoryContent.value,
     },
-  };
+  });
+
+  // const res = {"code":200,"message":"请确认故事角色","action":"confirm-roles","data":{"id":"044822301617c9743c8fbb02","confirmUrl":"https://wf.qyflows.com/webhook-waiting/624814/pb-confirm-role","roles":[{"code":200,"msg":"success","data":{"taskId":"c597ecb66591fa64521b2f837786b881","recordId":"c597ecb66591fa64521b2f837786b881","id":"role1","name":"小蜗牛悠悠","prompt":"小蜗牛悠悠，拥有一个小巧的螺旋壳，壳内是潮湿润泽的环境。它随身携带一个蓝色小石头，石头在壳里熠熠生辉，显得格外珍贵。悠悠性格温和，有着淡绿色的身体和柔和的触角。","prompt_en":"Little snail Youyou, with a small spiral shell, where inside is humid and moist. It carries a blue small stone, which glistens brightly inside the shell, making it look particularly precious. Youyou has a gentle demeanor, with a pale green body and soft tentacles."}},{"code":200,"msg":"success","data":{"taskId":"d1a7266d1ee12e4795e9544938383be7","recordId":"d1a7266d1ee12e4795e9544938383be7","id":"role2","name":"小青蛙呱呱","prompt":"小青蛙呱呱，浑身翠绿色，皮肤湿润光滑。头上顶着一块蓝色小石头，宛若一顶小小的王冠。它有一双活泼的大眼睛，充满好奇和乐趣，时常在河边跳跃。","prompt_en":"Little frog Guagua, with a bright green body, featuring moist and smooth skin. It balances a blue small stone on its head, resembling a tiny crown. It has lively large eyes full of curiosity and joy, often seen leaping around the riverbank."}},{"code":200,"msg":"success","data":{"taskId":"0f72e415837674ee51375f9902092163","recordId":"0f72e415837674ee51375f9902092163","id":"role3","name":"小老鼠吱吱","prompt":"小老鼠吱吱，有着深棕色的皮毛和一双敏锐的小眼睛。它常把手揣在口袋里，心思细腻。在失去朋友的信任后显得忧心忡忡，但最终用诚实赢回了石头和友情。","prompt_en":"Little mouse Zhizhi, with dark brown fur and a pair of keen small eyes. It often keeps its hands in its pockets, thoughtful and meticulous. After losing the trust of its friends, it appears worried but eventually regains the stone and friendship through honesty."}}]}};
 
   if (res.code !== 200) {
     uni.showToast({

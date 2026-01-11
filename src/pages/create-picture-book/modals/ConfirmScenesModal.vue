@@ -16,7 +16,7 @@
           <view
             class="sticky top-0 left-0 z-[99] w-full h-[88rpx] bg-[#fff] border-b border-b-[1rpx] border-[#F0F0F0] flex flex-row items-center justify-center"
           >
-            <text class="text-[36rpx] font-bold text-[#333]">确认角色</text>
+            <text class="text-[36rpx] font-bold text-[#333]">确认场景</text>
 
             <view
               class="absolute right-[12rpx] top-0 z-[9] w-[88rpx] h-[88rpx] active:opacity-80 shrink-0 flex flex-row items-center justify-center transition-opacity duration-300"
@@ -30,36 +30,28 @@
           </view>
 
           <view
-            class="relative w-full px-[24rpx] py-[24rpx] box-border flex flex-row"
+            class="relative z-[1] w-full px-[24rpx] py-[24rpx] box-border flex flex-row"
             :style="{
               minHeight: `calc(100% - 88rpx - 100rpx - ${safeBottom}px)`,
             }"
           >
             <view class="w-full h-full flex flex-row flex-wrap gap-[24rpx]">
               <view
-                class="relative w-[339rpx] border border-[1rpx] border-[#f0f0f0] rounded-[24rpx] overflow-hidden"
+                class="relative w-[339rpx] border border-[1rpx] border-[#f0f0f0] rounded-[24rpx] overflow-hidden flex flex-col"
                 :style="{
-                  height: `${renderImageHeight + 64}rpx`,
+                  minHeight: `${renderImageHeight + 144}rpx`,
                 }"
-                v-for="(role, index) in info.roles"
+                v-for="(role, index) in info.scenes"
                 :key="role.data.id"
               >
                 <view
-                  class="absolute left-0 bottom-0 z-[9] bg-[rgba(0,0,0,0.05)] w-full flex flex-col"
-                >
-                  <view
-                    class="w-full h-[64rpx] px-[12rpx] py-[12rpx] box-border flex flex-row items-center"
-                  >
-                    <text
-                      class="text-[28rpx] font-bold text-[#666] line-clamp-1 overflow-hidden text-ellipsis break-all"
-                      >{{ role.data.name }}</text
-                    >
-                  </view>
-                </view>
-
-                <view
-                  class="w-full h-full flex flex-row items-start justify-center"
-                  v-if="imageUrls.has(role.data.id)"
+                  class="w-full flex flex-row items-start justify-center transition-all duration-300 bg-[rgba(0,0,0,0.05)]"
+                  :class="[
+                    imageUrls.has(role.data.id)
+                      ? 'opacity-100'
+                      : 'opacity-0 pointer-events-none',
+                  ]"
+                  :style="{ height: `${renderImageHeight}rpx` }"
                   @click="previewImage([imageUrls.get(role.data.id) || ''])"
                 >
                   <image
@@ -68,6 +60,26 @@
                     :style="{ height: `${renderImageHeight}rpx` }"
                     mode="aspectFit"
                   ></image>
+                </view>
+
+                <view
+                  class="z-[9] bg-[rgba(0,0,0,0.05)] w-full flex-1 flex flex-col"
+                >
+                  <view
+                    class="w-full min-h-[64rpx] px-[12rpx] py-[12rpx] box-border flex flex-row items-center"
+                  >
+                    <text class="text-[28rpx] text-[#666]">{{
+                      role.data.content
+                    }}</text>
+                  </view>
+                </view>
+
+                <view
+                  class="absolute left-[20rpx] top-[20rpx] z-[99] h-[56rpx] bg-[#f0f0f0] rounded-[12rpx] px-[12rpx] box-border flex flex-row items-center justify-center transition-all duration-300"
+                >
+                  <text class="text-[28rpx] text-[#666]"
+                    >场景: {{ role.data.index }}</text
+                  >
                 </view>
 
                 <view
@@ -87,7 +99,7 @@
                   >
                     <image
                       src="@static/icon_regenerate_white.png"
-                      class="w-[24rpx] h-[24rpx]"
+                      class="w-[32rpx] h-[32rpx]"
                     ></image>
                   </view>
                 </view>
@@ -163,7 +175,7 @@
                     class="w-full min-h-full text-[34rpx] text-[#666] px-[24rpx] py-[32rpx] box-border"
                     :maxlength="-1"
                     auto-height
-                    placeholder="请输入角色描述"
+                    placeholder="请输入场景描述"
                     v-if="regenerateModalRole"
                     v-model="regenerateModalRole.prompt"
                   />
@@ -232,9 +244,9 @@ import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import { EConfirmAction } from "../types";
 import type {
-  IConfirmRoleData,
-  IConfirmRoleInfo,
-  IConfirmRoleItem,
+  IConfirmSceneData,
+  IConfirmSceneItem,
+  IConfirmSceneInfo,
 } from "./types";
 import {
   requestCustomUrl,
@@ -246,19 +258,144 @@ import { previewImage } from "@/utils";
 import { mainColor } from "@/config/config";
 
 interface Props {
-  info: IConfirmRoleInfo;
+  info: IConfirmSceneInfo;
   ratio: string;
   pictureStyle: string;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  info: () =>
+    ({
+      id: "044822301617c9743c8fbb02",
+      confirmUrl:
+        "https://wf.qyflows.com/webhook-waiting/624814/pb-confirm-scene",
+      scenes: [
+        {
+          code: 200,
+          msg: "success",
+          data: {
+            taskId: "2be22498de264684989d8c5ee02aa890",
+            recordId: "2be22498de264684989d8c5ee02aa890",
+            index: 1,
+            id: "scene1",
+            script:
+              "在蓝蓝的小河边，三个好朋友快乐地生活着，他们是小蜗牛悠悠、小青蛙呱呱和小老鼠吱吱。",
+            content:
+              "三个动物朋友在河边的集体画面，背景是清澈的小河和翠绿的草地，阳光明媚。",
+            prompt:
+              "全景画面，三个动物朋友在小河边，背景是清澈的小河和翠绿的草地，阳光明媚，充满生机。",
+            prompt_en:
+              "Wide shot of three animal friends by the riverbank, with the background of a clear river and lush green grass under bright sunlight, full of vitality.",
+          },
+        },
+        {
+          code: 200,
+          msg: "success",
+          data: {
+            taskId: "dd3de57bdb11bfa179ee88779d34fb61",
+            recordId: "dd3de57bdb11bfa179ee88779d34fb61",
+            index: 2,
+            id: "scene2",
+            script: "他们在草丛里发现了一块亮闪闪、圆润润的蓝色小石头。",
+            content: "三位朋友在草丛中找到一块小蓝石头，石头在阳光下闪闪发光。",
+            prompt:
+              "特写画面，小蓝石头在草丛中被找到，蓝色在阳光下闪闪发光，引人注目。",
+            prompt_en:
+              "Close-up of the small blue stone found among the grass, glistening in the sunlight, drawing attention.",
+          },
+        },
+        {
+          code: 200,
+          msg: "success",
+          data: {
+            taskId: "3b28d50eacb694ca7577e23eb40c214d",
+            recordId: "3b28d50eacb694ca7577e23eb40c214d",
+            index: 3,
+            id: "scene3",
+            script: "悠悠把石头放在壳里，非常珍重地保护着它。",
+            content: "悠悠把小石头放在壳里，壳内光滑湿润，小心翼翼地照看。",
+            prompt:
+              "特写画面，悠悠将小石头放在它的小螺旋壳中，壳内呈现潮湿光滑的质感。",
+            prompt_en:
+              "Close-up of Youyou placing the small stone into its spiral shell, with the interior showing a moist and smooth texture.",
+          },
+        },
+        {
+          code: 200,
+          msg: "success",
+          data: {
+            taskId: "8f0c4118a1788bd6eef717eaf0effd48",
+            recordId: "8f0c4118a1788bd6eef717eaf0effd48",
+            index: 4,
+            id: "scene4",
+            script: "呱呱把石头顶在头上，如同王冠。",
+            content:
+              "呱呱把小石头稳稳地放在头上，仿佛戴上了一顶王冠，显得高贵。",
+            prompt:
+              "特写画面，小青蛙呱呱把小石头顶在头上，显得骄傲和喜悦，像是戴了一顶蓝色的王冠。",
+            prompt_en:
+              "Close-up of little frog Guagua balancing the small stone on its head, appearing proud and joyful, as if wearing a blue crown.",
+          },
+        },
+        {
+          code: 200,
+          msg: "success",
+          data: {
+            taskId: "586f9edde618435b37788330feab0db8",
+            recordId: "586f9edde618435b37788330feab0db8",
+            index: 5,
+            id: "scene5",
+            script: "当呱呱要传给吱吱时，石头不见了，朋友们都很伤心。",
+            content: "朋友们伤心地寻找丢失的小石头，四处张望却一无所获。",
+            prompt:
+              "中景画面，三个朋友在小河边伤心地寻找石头，神情落寞，画面有些阴郁。",
+            prompt_en:
+              "Medium shot of the three friends sadly searching for the lost stone by the riverbank, looking around with forlorn expressions, the scene slightly gloomy.",
+          },
+        },
+        {
+          code: 200,
+          msg: "success",
+          data: {
+            taskId: "608e101cb851e70689a82df2ff82cddf",
+            recordId: "608e101cb851e70689a82df2ff82cddf",
+            index: 6,
+            id: "scene6",
+            script: "吱吱承认石头在自己这里。",
+            content: "吱吱犹豫地将小石头从口袋里拿出，低着头。",
+            prompt: "特写画面，吱吱低着头，将小石头从口袋里拿出来，显得愧疚。",
+            prompt_en:
+              "Close-up of Zhizhi with its head down, taking the small stone out of its pocket, looking guilty.",
+          },
+        },
+        {
+          code: 200,
+          msg: "success",
+          data: {
+            taskId: "83f7a4b237f2c94a43f93b7cc8c6e735",
+            recordId: "83f7a4b237f2c94a43f93b7cc8c6e735",
+            index: 7,
+            id: "scene7",
+            script: "朋友们原谅了吱吱，三个好朋友重新团聚，沐浴在阳光下。",
+            content: "三位朋友在阳光下再次围成圈，看着中间的小石头，露出微笑。",
+            prompt:
+              "全景画面，三个朋友团聚在阳光下，围绕着中间的蓝色小石头，开心和解。",
+            prompt_en:
+              "Wide shot of the three friends reunited under the sun, circling around the small blue stone in the center, happily reconciled.",
+          },
+        },
+      ],
+    } as IConfirmSceneInfo),
+  ratio: "16:9",
+  pictureStyle: "李欧·李奥尼‌",
+});
 
 const emit = defineEmits<{
   (
     e: "on-confirm",
     params: {
       action: EConfirmAction;
-      data: IConfirmRoleInfo;
+      data: IConfirmSceneInfo;
     }
   ): void;
   (
@@ -283,11 +420,11 @@ const isConfirming = ref(false);
 
 const regenerateModalVisible = ref(false);
 const regenerateModalReady = ref(false);
-const regenerateModalRole = ref<IConfirmRoleData | null>(null);
+const regenerateModalRole = ref<IConfirmSceneData | null>(null);
 // 重新生成中
 const isRegeneratingRole = ref(false);
 
-const allRoles = ref<IConfirmRoleData[]>([]);
+const allScenes = ref<IConfirmSceneData[]>([]);
 
 const renderImageHeight = computed(() => {
   const ratio = props.ratio.split(":");
@@ -297,9 +434,12 @@ const renderImageHeight = computed(() => {
 });
 
 onMounted(() => {
-  allRoles.value = props.info.roles.map((role: IConfirmRoleItem) => role.data);
+  console.log(">>>>>>>> info: ", props.info);
+  allScenes.value = props.info.scenes.map(
+    (scene: IConfirmSceneItem) => scene.data
+  );
   listImageUrls(
-    props.info.roles.map((role: IConfirmRoleItem) => role.data.taskId)
+    props.info.scenes.map((scene: IConfirmSceneItem) => scene.data.taskId)
   );
 });
 
@@ -322,13 +462,14 @@ function closeModal() {
 }
 
 function getIdByTaskId(taskId: string) {
-  return allRoles.value.find((role: IConfirmRoleData) => role.taskId === taskId)
-    ?.id;
+  return allScenes.value.find(
+    (role: IConfirmSceneData) => role.taskId === taskId
+  )?.id;
 }
 
 async function listImageUrls(taskIds: string[]) {
   loadingImageIds.value.clear();
-  allRoles.value.forEach((role: IConfirmRoleData) => {
+  allScenes.value.forEach((role: IConfirmSceneData) => {
     loadingImageIds.value.add(role.id);
   });
   const images: Map<string, string> = await requestGetImageUrls({
@@ -353,7 +494,7 @@ function handleConfirmRoles() {
       return;
     }
 
-    let roles = allRoles.value.map((role: any) => {
+    let roles = allScenes.value.map((role: any) => {
       return {
         ...role,
         url: imageUrls.value.get(role.id),
@@ -542,7 +683,7 @@ function handleAllConfirmed(e: any) {
   }
 }
 
-function showRegenerateModal(role: IConfirmRoleData) {
+function showRegenerateModal(role: IConfirmSceneData) {
   regenerateModalRole.value = role;
   regenerateModalVisible.value = true;
   nextTick(() => {
@@ -558,8 +699,8 @@ function hideRegenerateModal() {
 }
 
 function openRegenerateModal(id: string) {
-  const role = props.info.roles.find(
-    (role: IConfirmRoleItem) => role.data.id === id
+  const role = props.info.scenes.find(
+    (role: IConfirmSceneItem) => role.data.id === id
   );
   if (!role) {
     return;
@@ -592,7 +733,7 @@ async function handleRegenerateRole() {
       taskId: res.data.taskId,
       url: res.data.url,
     };
-    allRoles.value = allRoles.value.map((role: IConfirmRoleData) => {
+    allScenes.value = allScenes.value.map((role: IConfirmSceneData) => {
       if (role.id === newRole.id) {
         return newRole;
       }

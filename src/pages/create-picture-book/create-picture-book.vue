@@ -18,7 +18,7 @@
                 ? 'pointer-events-auto opacity-100'
                 : 'pointer-events-none opacity-80',
             ]"
-            v-if="false"
+            v-if="true"
           >
             <view
               class="w-full h-[60rpx] flex flex-row items-center justify-start gap-[16rpx]"
@@ -553,13 +553,6 @@
                 >
               </template>
             </view>
-
-            <view
-              class="w-full h-[100rpx] bg-[red] rounded-[32rpx] flex flex-row items-center justify-center"
-              @click="test"
-            >
-              <text class="text-[32rpx] text-[#fff] font-bold">测试</text>
-            </view>
           </view>
 
           <transition name="fade">
@@ -605,6 +598,14 @@
             </view>
           </transition>
 
+          <!-- <ConfirmScenesModal
+            :info="modalData?.data"
+            :ratio="formData.ratio"
+            :picture-style="formData.pictureStyle"
+            @on-cancel="handleCancelConfirm"
+            @on-confirm="handleConfirmedRole"
+          /> -->
+
           <view class="w-full h-[4000rpx]"></view>
           <view class="w-full" :style="{ height: `${safeBottom}px` }"></view>
         </view>
@@ -634,6 +635,17 @@
         @on-cancel="handleCancelConfirm"
         @on-confirm="handleConfirmedRole"
       />
+
+      <ConfirmScenesModal
+        :info="modalData?.data"
+        :ratio="formData.ratio"
+        :picture-style="formData.pictureStyle"
+        v-else-if="
+          modalData?.component === EModalComponent.CONFIRM_SCENES_MODAL
+        "
+        @on-cancel="handleCancelConfirm"
+        @on-confirm="handleConfirmedRole"
+      />
     </page-container>
   </view>
 </template>
@@ -649,73 +661,12 @@ import {
   ratios,
   mainColor,
 } from "@/config/config";
-import { requestGeneratePictureBook, requestGetImageUrls } from "@/request";
-import {
-  EModalComponent,
-  type IConfirmRoleInfo,
-  type IConfirmStoryInfo,
-} from "./modals/types";
+import { requestGeneratePictureBook } from "@/request";
+import { EModalComponent } from "./modals/types";
 import ConfirmStoryModal from "./modals/ConfirmStoryModal.vue";
 import { EConfirmAction } from "./types";
 import ConfirmRolesModal from "./modals/ConfirmRolesModal.vue";
-
-async function test() {
-  const res = await requestGetImageUrls({
-    taskIds: [
-      "0c6d874f63e411c0fcd8d0f309a13603",
-      "1e22ef563d8cd918d60c5754edef57237",
-    ],
-  });
-  console.log(">>>>>>>> test: ", res);
-}
-
-const info = ref<IConfirmStoryInfo>({
-  id: "b0c90a919f8df86c2fe04550",
-  confirmUrl: "https://wf.qyflows.com/webhook-waiting/615820/pb-confirm-story",
-  story: {
-    title: "The Boy and the Shining Pebble, The Boy and the Shining Pebble",
-    content:
-      "In a quiet valley lived a boy named Finn, his friend Whisker the mouse, and two grumpy badgers. \n\nOne day, Finn found a pebble that shone like the moon. \n'It's magical!' cried Whisker. The badgers scoffed. \n'Just a rock,' they said. That evening, Finn saw the badgers sneak into an empty nest, taking twigs for their own home. \nThe pebble in his pocket grew warm. The next day, Finn stood before the badgers, holding the shining pebble. \n'It only shines,' he said softly, 'when I speak true words.' He looked at the twigs in their den. \n'The twigs are not yours.' The pebble glowed, pure and bright. \nThe badgers' faces fell. They hadn't known someone saw. Silently, they carried the twigs back. Finn smiled. The pebble's light wasn't magic for finding treasure, but for finding the truth inside. \nAnd that made the whole valley feel safe and warm.",
-    title_zh: "男孩与闪亮的石头",
-    content_zh:
-      "在一个宁静的山谷里，住着一个名叫芬恩的男孩，他的朋友小老鼠胡须，还有两只脾气暴躁的獾。一天，芬恩发现了一块像月亮一样闪亮的石头。'它是魔法石！'胡须叫道。獾们却不屑一顾。'就是块石头，'他们说。那天晚上，芬恩看到獾们溜进一个空鸟巢，偷走树枝用来搭建自己的家。他口袋里的石头变得温热。第二天，芬恩站在獾们面前，举着那块闪亮的石头。'它只会，'他轻声说，'在我讲真话的时候发光。'他看向獾洞里的树枝。'这些树枝不是你们的。'石头发出纯净、明亮的光。獾们耷拉下脸。他们不知道被人看见了。他们默默地把树枝搬了回去。芬恩笑了。石头的光不是寻找财宝的魔法，而是为了找到内心的真话。这让整个山谷感到安全又温暖。",
-  },
-});
-
-const roleInfo = ref<IConfirmRoleInfo>({
-  id: "d2d93fddb0fc112d201558d6",
-  confirmUrl: "https://wf.qyflows.com/webhook-waiting/617825/pb-confirm-role",
-  roles: [
-    {
-      code: 200,
-      msg: "success",
-      data: {
-        taskId: "531eff7686a816f084c1fc6a20a87b43",
-        recordId: "531eff7686a816f084c1fc6a20a87b43",
-        id: "rW9kP7q2sN4tA6jL1mX3bC5z8",
-        name: "Milo",
-        prompt:
-          "一只名叫Milo的灰色小老鼠，拥有柔软光滑的灰色皮毛，黑色的小圆眼睛充满好奇与温柔。他身形小巧，脸颊鼓鼓的，可能因为储存了食物。他可能站在绿色的草地上，纯白色背景，整体形象可爱、善良、乐于助人。",
-        prompt_en:
-          "A small gray mouse named Milo, with soft, sleek gray fur and small, round black eyes full of curiosity and gentleness. He has a small, cute build with slightly puffed cheeks, perhaps from storing food. Standing on green grass, pure white background, overall appearance is adorable, kind, and helpful.",
-      },
-    },
-    {
-      code: 200,
-      msg: "success",
-      data: {
-        taskId: "0f5c5478867a5e04a70f75dd4bc31636",
-        recordId: "0f5c5478867a5e04a70f75dd4bc31636",
-        id: "gH2vR8y5tB3nM9kF6dS1cQ7pL0",
-        name: "Bea",
-        prompt:
-          "一只名叫Bea的小蓝鸟，羽毛呈现出柔和的蓝色，翅膀上有一处明显的瘀伤或无力下垂。她体型娇小，眼神起初充满恐惧和悲伤，后来变得明亮而充满感激。她躺在地上或坐在柔软的苔藓巢中，纯白色背景，突出其脆弱和恢复的过程。",
-        prompt_en:
-          "A little bluebird named Bea, with feathers in a soft blue hue. One of her wings shows a visible bruise or is drooping weakly. She has a petite build, her eyes initially filled with fear and sadness, later becoming bright and grateful. She lies on the ground or sits in a soft moss nest, pure white background, highlighting her vulnerability and recovery process.",
-      },
-    },
-  ],
-});
+import ConfirmScenesModal from "./modals/ConfirmScenesModal.vue";
 
 enum GenerateStep {
   // 未开始
@@ -990,52 +941,32 @@ function doGenerate() {
   return new Promise(async (resolve) => {
     generateStep.value = GenerateStep.generating;
 
-    // const res = await requestGeneratePictureBook({
-    //   theme: formData.value.theme,
-    //   storyStyle: formData.value.storyStyle,
-    //   pictureStyle: formData.value.pictureStyle,
-    //   length: formData.value.length,
-    //   language: formData.value.language,
-    //   roleCount: formData.value.roleCount,
-    //   sceneCount: formData.value.sceneCount,
-    //   ratio: formData.value.ratio,
-    //   autoConfirmedStory: formData.value.autoConfirmedStory,
-    //   autoConfirmedRole: formData.value.autoConfirmedRole,
-    //   autoConfirmedScene: formData.value.autoConfirmedScene,
-    // });
-
-    const res = {
-      code: 200,
-      message: "请确认故事内容",
-      action: "confirm-story",
-      data: {
-        id: "e07152ec76ee00d330ed3bb2",
-        confirmUrl:
-          "https://wf.qyflows.com/webhook-waiting/624335/pb-confirm-story",
-        story: {
-          title: "蒲公英与玻璃心",
-          content:
-            "在微风吹拂的草地上，住着蒲公英小绒和小蜗牛慢悠悠。\n\n一天，慢悠悠发现一颗闪闪发光的玻璃心，它像水晶般透亮。\n\n“这真美啊，”小绒说，“但我们该找到它的主人。”\n\n这时，麻雀喳喳飞来：“多美的宝贝！说是你们捡到的，没人会知道。”\n\n小绒却摇摇头，把玻璃心举得更高，阳光透过它，折射出彩虹。\n\n“诚实就像这光，”小绒轻声说，“让心变得透明而温暖。”\n\n最后，玻璃心的主人——萤火虫亮亮找来了。原来这是它用来收集星光的小瓶。\n\n亮亮把一片星光送给小绒：“正直的心灵，比任何宝物都明亮。”\n\n每当夜晚降临，小绒的星光就温柔闪烁，提醒所有心灵：诚实是最美的光芒。",
-        },
-      },
-    };
+    const res = await requestGeneratePictureBook({
+      theme: formData.value.theme,
+      storyStyle: formData.value.storyStyle,
+      pictureStyle: formData.value.pictureStyle,
+      length: formData.value.length,
+      language: formData.value.language,
+      roleCount: formData.value.roleCount,
+      sceneCount: formData.value.sceneCount,
+      ratio: formData.value.ratio,
+      autoConfirmedStory: formData.value.autoConfirmedStory,
+      autoConfirmedRole: formData.value.autoConfirmedRole,
+      autoConfirmedScene: formData.value.autoConfirmedScene,
+    });
 
     // const res = {
     //   code: 200,
     //   message: "请确认故事内容",
     //   action: "confirm-story",
     //   data: {
-    //     id: "b0c90a919f8df86c2fe04550",
+    //     id: "044822301617c9743c8fbb02",
     //     confirmUrl:
-    //       "https://wf.qyflows.com/webhook-waiting/615820/pb-confirm-story",
+    //       "https://wf.qyflows.com/webhook-waiting/624814/pb-confirm-story",
     //     story: {
-    //       title:
-    //         "The Boy and the Shining Pebble" + Math.floor(Math.random() * 10000),
+    //       title: "亮闪闪的小石头",
     //       content:
-    //         "In a quiet valley lived a boy named Finn, his friend Whisker the mouse, and two grumpy badgers. \n\nOne day, Finn found a pebble that shone like the moon. \n'It's magical!' cried Whisker. The badgers scoffed. \n'Just a rock,' they said. That evening, Finn saw the badgers sneak into an empty nest, taking twigs for their own home. \nThe pebble in his pocket grew warm. The next day, Finn stood before the badgers, holding the shining pebble. \n'It only shines,' he said softly, 'when I speak true words.' He looked at the twigs in their den. \n'The twigs are not yours.' The pebble glowed, pure and bright. \nThe badgers' faces fell. They hadn't known someone saw. Silently, they carried the twigs back. Finn smiled. The pebble's light wasn't magic for finding treasure, but for finding the truth inside. \nAnd that made the whole valley feel safe and warm.",
-    //       title_zh: "男孩与闪亮的石头",
-    //       content_zh:
-    //         "在一个宁静的山谷里，住着一个名叫芬恩的男孩，他的朋友小老鼠胡须，还有两只脾气暴躁的獾。一天，芬恩发现了一块像月亮一样闪亮的石头。'它是魔法石！'胡须叫道。獾们却不屑一顾。'就是块石头，'他们说。那天晚上，芬恩看到獾们溜进一个空鸟巢，偷走树枝用来搭建自己的家。他口袋里的石头变得温热。第二天，芬恩站在獾们面前，举着那块闪亮的石头。'它只会，'他轻声说，'在我讲真话的时候发光。'他看向獾洞里的树枝。'这些树枝不是你们的。'石头发出纯净、明亮的光。獾们耷拉下脸。他们不知道被人看见了。他们默默地把树枝搬了回去。芬恩笑了。石头的光不是寻找财宝的魔法，而是为了找到内心的真话。这让整个山谷感到安全又温暖。",
+    //         "在蓝蓝的小河边，住着三个好朋友：小蜗牛悠悠、小青蛙呱呱和小老鼠吱吱。\n一天，他们在草丛里发现了一块亮闪闪、圆润润的蓝色小石头，像一块小小的天空。\n“多美啊！”悠悠说。“我们轮流保管它吧，每人一天。”\n第一天，石头在悠悠那里，他小心地把它放在壳里。\n第二天，石头传给呱呱，他把它顶在头上，像一顶小王冠。\n可是，当呱呱想把石头传给吱吱时，石头不见了！\n“一定是掉进河里了！”呱呱急得快哭了。悠悠也很难过。\n吱吱看着朋友们伤心的样子，心里沉甸甸的。他的手一直揣在口袋里，紧紧握着那块凉凉的、光滑的小石头。他太喜欢它了。\n最后，吱吱低着头走过来，慢慢摊开手掌。\n“对不起……石头在我这里。昨天我就偷偷留下了它。”\n呱呱和悠悠惊讶地看着他，又看看那块石头。\n吱吱觉得手里的石头变得好烫，一点也不美了。\n“谢谢你说真话。”悠悠轻轻说，“现在，它又是那块亮闪闪的石头了。”\n吱吱把石头轻轻放回草丛中央。三个朋友看着它，阳光下的石头，比任何时候都明亮。因为他们知道，最亮闪闪的，是诚实的心。",
     //     },
     //   },
     // };
@@ -1105,11 +1036,6 @@ function closeModal() {
   }, 200);
 }
 
-function handleClickOverlay(e: any) {
-  console.log(">>>>> handleClickOverlay: ", e);
-  return false;
-}
-
 function openModal(params: { component?: EModalComponent; data?: any }) {
   if (params.component) {
     modalData.value = {
@@ -1140,6 +1066,24 @@ function handleCancelConfirm(e: any) {
 
 function handleConfirmedRole(e: any) {
   console.log(">>>>> handleConfirmedRole: ", e);
+  if (e.action === EConfirmAction.CONFIRM_SCENES) {
+    closeModal();
+
+    const t = setTimeout(() => {
+      modalData.value = {
+        component: EModalComponent.CONFIRM_SCENES_MODAL,
+        data: e.data,
+      };
+      nextTick(() => {
+        generateStep.value = GenerateStep.confirmScene;
+        openModal({
+          component: EModalComponent.CONFIRM_SCENES_MODAL,
+          data: e.data,
+        });
+      });
+      clearTimeout(t);
+    }, 300);
+  }
 }
 
 function handleConfirmedStory(e: any) {

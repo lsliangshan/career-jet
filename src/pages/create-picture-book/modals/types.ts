@@ -30,8 +30,34 @@ export interface IConfirmRoleInfo {
   roles: IConfirmRoleItem[];
 }
 
+export interface IConfirmSceneData {
+  id: string;
+  index: number;
+  taskId: string;
+  name: string;
+  // 分镜脚本描述。简洁说明画面构图、角色动作和情绪。
+  script: string;
+  // 当前分镜对应的故事原文
+  content: string;
+  prompt: string;
+  prompt_en: string;
+  recordId: string;
+}
+
+export interface IConfirmSceneItem {
+  code: number;
+  msg: string;
+  data: IConfirmSceneData;
+}
+
+export interface IConfirmSceneInfo {
+  id: string;
+  confirmUrl: string;
+  scenes: IConfirmSceneItem[];
+}
+
 export enum EModalComponent {
   CONFIRM_STORY_MODAL = "ConfirmStoryModal",
   CONFIRM_ROLES_MODAL = "ConfirmRolesModal",
-  CONFIRM_SCENE_MODAL = "ConfirmScenesModal",
+  CONFIRM_SCENES_MODAL = "ConfirmScenesModal",
 }

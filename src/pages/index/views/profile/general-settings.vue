@@ -52,6 +52,40 @@
         </view>
       </view>
 
+      <view
+        class="flex flex-row items-center border-t border-t-[1rpx] border-t-[#f8f8f8]"
+      >
+        <view
+          class="h-[100rpx] w-full pl-[24rpx] pr-[24rpx] box-border active:bg-[#fafafa] flex flex-row items-center justify-between"
+          :style="{
+            backgroundColor: ThemeColors.bgCard,
+          }"
+          @click="handleCreatePictureBook"
+        >
+          <view class="flex flex-row items-center">
+            <image
+              class="w-[30rpx] h-[30rpx] mr-[12rpx]"
+              src="@static/icon_keyword.png"
+            ></image>
+            <text
+              class="text-[28rpx]"
+              :style="{
+                color: ThemeColors.text.title,
+              }"
+              >制作绘本</text
+            >
+          </view>
+          <view
+            class="h-full shrink-0 flex flex-row items-center justify-center"
+          >
+            <image
+              class="w-[30rpx] h-[30rpx]"
+              src="@static/icon_arraw_right.png"
+            ></image>
+          </view>
+        </view>
+      </view>
+
       <!-- <view
         class="w-full h-[1rpx] flex flex-row items-center justify-center"
         :style="{
@@ -66,7 +100,6 @@
           }"
         ></view>
       </view> -->
-
     </view>
   </view>
 </template>
@@ -92,8 +125,12 @@ function handleEditGameLevel() {
     component: EModalComponent.CHOOSE_GAME_LEVEL_MODAL,
   });
 }
+
+function handleCreatePictureBook() {
+  uni.navigateTo({
+    url: "/pages/create-picture-book/create-picture-book",
+  });
+}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

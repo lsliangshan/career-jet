@@ -296,60 +296,63 @@ async function doConfirmStory() {
   );
 
   // 确认故事
-  // const res = await requestCustomUrl({
-  //   url: confirmUrl,
-  //   method: "POST",
-  //   data: {
-  //     id: props.info.id,
-  //     title: renderStoryTitle.value,
-  //     content: renderStoryContent.value,
-  //   },
-  // });
-
-  const res = {
-    code: 200,
-    message: "请确认故事角色",
-    action: "confirm-roles",
+  const res = await requestCustomUrl({
+    url: confirmUrl,
+    method: "POST",
     data: {
-      id: "7d21b8c5013c34cccfe917cf",
-      confirmUrl:
-        "https://wf.qyflows.com/webhook-waiting/618789/pb-confirm-role",
-      roles: [
-        {
-          code: 200,
-          msg: "success",
-          data: {
-            taskId: "ce285fda77da69e4a7fd48f8ee8db59a",
-            recordId: "ce285fda77da69e4a7fd48f8ee8db59a",
-            id: "r2BvP6S8jKd3Lz9Nq1WmX4cR7",
-            name: "示例精灵工匠",
-            prompt:
-              "一位身穿沾满机油棕色皮围裙的老年精灵工匠，戴着单眼放大镜，眼神敏锐，胡须微翘，背景为纯白色。",
-            prompt_en:
-              "An elderly elf craftsman wearing a brown leather apron stained with engine oil, wearing a monocular magnifying glass, with a keen gaze and slightly curled beard, on a pure white background.",
-          },
-        },
-        {
-          code: 200,
-          msg: "success",
-          data: {
-            taskId: "a9fff88e6cd5cd61a3e128041ede15ae",
-            recordId: "a9fff88e6cd5cd61a3e128041ede15ae",
-            id: "1234P6S8jKd3Lz9Nq1WmX4323",
-            name: "米洛",
-            prompt: "一位身穿沾满机油棕色皮围裙的小老鼠。",
-            prompt_en:
-              "A small gray mouse named Milo, with soft, sleek gray fur and small, round black eyes full of curiosity and gentleness. He has a small, cute build with slightly puffed cheeks, perhaps from storing food. Standing on green grass, pure white background, overall appearance is adorable, kind, and helpful.",
-          },
-        },
-      ],
+      id: props.info.id,
+      title: renderStoryTitle.value,
+      content: renderStoryContent.value,
     },
-  };
+  });
+
+  // const res = {
+  //   code: 200,
+  //   message: "请确认故事角色",
+  //   action: "confirm-roles",
+  //   data: {
+  //     id: "7d21b8c5013c34cccfe917cf",
+  //     confirmUrl:
+  //       "https://wf.qyflows.com/webhook-waiting/618789/pb-confirm-role",
+  //     roles: [
+  //       {
+  //         code: 200,
+  //         msg: "success",
+  //         data: {
+  //           taskId: "ce285fda77da69e4a7fd48f8ee8db59a",
+  //           recordId: "ce285fda77da69e4a7fd48f8ee8db59a",
+  //           id: "r2BvP6S8jKd3Lz9Nq1WmX4cR7",
+  //           name: "示例精灵工匠",
+  //           prompt:
+  //             "一位身穿沾满机油棕色皮围裙的老年精灵工匠，戴着单眼放大镜，眼神敏锐，胡须微翘，背景为纯白色。",
+  //           prompt_en:
+  //             "An elderly elf craftsman wearing a brown leather apron stained with engine oil, wearing a monocular magnifying glass, with a keen gaze and slightly curled beard, on a pure white background.",
+  //         },
+  //       },
+  //       {
+  //         code: 200,
+  //         msg: "success",
+  //         data: {
+  //           taskId: "a9fff88e6cd5cd61a3e128041ede15ae",
+  //           recordId: "a9fff88e6cd5cd61a3e128041ede15ae",
+  //           id: "1234P6S8jKd3Lz9Nq1WmX4323",
+  //           name: "米洛",
+  //           prompt: "一位身穿沾满机油棕色皮围裙的小老鼠。",
+  //           prompt_en:
+  //             "A small gray mouse named Milo, with soft, sleek gray fur and small, round black eyes full of curiosity and gentleness. He has a small, cute build with slightly puffed cheeks, perhaps from storing food. Standing on green grass, pure white background, overall appearance is adorable, kind, and helpful.",
+  //         },
+  //       },
+  //     ],
+  //   },
+  // };
 
   if (res.code !== 200) {
     uni.showToast({
       title: "故事确认失败，请重新确认",
       icon: "none",
+    });
+    emit("on-cancel", {
+      id: props.info.id,
     });
     return;
   }

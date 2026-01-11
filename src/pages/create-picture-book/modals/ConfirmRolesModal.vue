@@ -66,11 +66,11 @@
 
               <view
                 class="w-full h-full flex flex-row items-start justify-center"
-                v-if="imageUrls.has(role.data.taskId)"
-                @click="previewImage([imageUrls.get(role.data.taskId) || ''])"
+                v-if="imageUrls.has(role.data.id)"
+                @click="previewImage([imageUrls.get(role.data.id) || ''])"
               >
                 <image
-                  :src="imageUrls.get(role.data.taskId)"
+                  :src="imageUrls.get(role.data.id)"
                   class="w-full"
                   :style="{ height: `${renderImageHeight}rpx` }"
                   mode="aspectFit"
@@ -79,20 +79,35 @@
 
               <view
                 class="absolute right-0 top-0 z-[99] w-[64rpx] h-[64rpx] flex flex-row items-center justify-center"
+                v-if="confirmedRoleIds.has(role.data.id)"
+              >
+                <image
+                  src="@static/icon_tag_confirmed.png"
+                  class="w-[48rpx] h-[48rpx]"
+                ></image>
+              </view>
+
+              <view
+                class="absolute right-0 top-0 z-[99] w-[64rpx] h-[64rpx] flex flex-row items-center justify-center"
+                v-else
               >
                 <checkbox-group
-                  @change="handleChangeRole($event, role.data.taskId)"
+                  @change="handleChangeRole($event, role.data.id)"
                 >
                   <checkbox
-                    :value="role.data.taskId"
-                    :checked="selectedRoleIds.includes(role.data.taskId)"
+                    :value="role.data.id"
+                    :disabled="
+                      !imageUrls.has(role.data.id) ||
+                      loadingImageIds.has(role.data.id)
+                    "
+                    :checked="selectedRoleIds.includes(role.data.id)"
                   />
                 </checkbox-group>
               </view>
 
               <view
                 class="absolute left-0 top-0 w-full h-full flex flex-row items-center justify-center"
-                v-if="!imageUrls.has(role.data.taskId)"
+                v-if="loadingImageIds.has(role.data.id)"
               >
                 <div class="spinner mb-[60rpx]">
                   <div class="spinner-inner"></div>
@@ -112,14 +127,14 @@
             <view
               class="h-[80rpx] px-[64rpx] rounded-[24rpx] bg-[#FF7BAC] box-border flex flex-row items-center justify-center transition-all duration-300"
               :class="[
-                selectedRoleIds.length > 0
+                selectedRoleIds.length > 0 && !isConfirming
                   ? 'opacity-100 active:scale-95'
                   : 'opacity-50',
               ]"
               @click="handleConfirmRoles"
             >
               <text class="text-[32rpx] text-[#fff]"
-                >确认
+                >{{ isConfirming ? "正在确认" : "确认" }}
                 {{
                   selectedRoleIds.length > 0
                     ? " · " + selectedRoleIds.length
@@ -137,14 +152,18 @@
 <script setup lang="ts">
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
-import type { EConfirmAction } from "../types";
-import type { IConfirmRoleInfo, IConfirmRoleItem } from "./types";
-import { requestGetImageUrls } from "@/request";
-import { computed, onMounted, ref } from "vue";
+import { EConfirmAction } from "../types";
+import type {
+  IConfirmRoleData,
+  IConfirmRoleInfo,
+  IConfirmRoleItem,
+} from "./types";
+import { requestCustomUrl, requestGetImageUrls } from "@/request";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { previewImage } from "@/utils";
 
 interface Props {
-  info: any;
+  info: IConfirmRoleInfo;
   ratio: string;
 }
 
@@ -172,6 +191,20 @@ const imageUrls = ref<Map<string, string>>(new Map());
 
 const selectedRoleIds = ref<string[]>([]);
 
+// 已经确认的角色
+const confirmedRoleIds = ref<Set<string>>(new Set());
+
+// 已确认的角色列表
+const confirmedRoles = ref<IConfirmRoleData[]>([]);
+// 未确认的角色列表
+const unconfirmedRoles = ref<IConfirmRoleData[]>([]);
+
+// 正在加载图片的id列表
+const loadingImageIds = ref<Set<string>>(new Set());
+
+// 是否确认中
+const isConfirming = ref(false);
+
 const renderImageHeight = computed(() => {
   const ratio = props.ratio.split(":");
   const width = Number(ratio[0]);
@@ -179,8 +212,27 @@ const renderImageHeight = computed(() => {
   return (339 * height) / width;
 });
 
+watch(
+  () => unconfirmedRoles.value,
+  (newVal) => {
+    console.log("【unconfirmedRoles】", newVal);
+    if (newVal && newVal.length > 0) {
+      listImageUrls(newVal.map((role: IConfirmRoleData) => role.taskId));
+    }
+  },
+  {
+    deep: true,
+    immediate: true,
+  }
+);
+
 onMounted(() => {
-  listImageUrls();
+  unconfirmedRoles.value = props.info.roles.map(
+    (role: IConfirmRoleItem) => role.data
+  );
+  // listImageUrls(
+  //   props.info.roles.map((role: IConfirmRoleItem) => role.data.taskId)
+  // );
 });
 
 function closeModal() {
@@ -201,15 +253,29 @@ function closeModal() {
   });
 }
 
-async function listImageUrls() {
-  const res = await requestGetImageUrls({
-    taskIds: props.info.roles.map((role: IConfirmRoleItem) => role.data.taskId),
-  }).then((res: any) => {
-    console.log(">>> 获取图片: ", res);
-    if (res.code === 200 && res.data && res.data.list) {
-      res.data.list.forEach((item: any) => {
-        imageUrls.value.set(item.taskId, item.url);
-      });
+function getIdByTaskId(taskId: string) {
+  return [...confirmedRoles.value, ...unconfirmedRoles.value].find(
+    (role: IConfirmRoleData) => role.taskId === taskId
+  )?.id;
+}
+
+async function listImageUrls(taskIds: string[]) {
+  loadingImageIds.value.clear();
+  unconfirmedRoles.value.forEach((role: IConfirmRoleData) => {
+    loadingImageIds.value.add(role.id);
+  });
+  const images: Map<string, string> = await requestGetImageUrls({
+    taskIds,
+  });
+
+  images.forEach((url, taskId) => {
+    const id = getIdByTaskId(taskId);
+
+    if (id) {
+      if (loadingImageIds.value.has(id)) {
+        loadingImageIds.value.delete(id);
+      }
+      imageUrls.value.set(id, url);
     }
   });
 }
@@ -234,24 +300,86 @@ function handleChangeRole(e: any, taskId: string) {
 }
 
 function handleConfirmRoles() {
-  let roles = props.info.roles.map((role: IConfirmRoleItem) => role.data);
+  return new Promise(async (resolve) => {
+    if (isConfirming.value) {
+      return;
+    }
 
-  roles = roles.map((role: any) => {
-    return {
-      ...role,
-      url: imageUrls.value.get(role.taskId),
-    };
+    let roles = unconfirmedRoles.value.map((role: any) => {
+      return {
+        ...role,
+        url: imageUrls.value.get(role.id),
+      };
+    });
+
+    let confirmed = roles.filter((role: any) =>
+      selectedRoleIds.value.includes(role.id)
+    );
+    let unconfirmed = roles.filter(
+      (role: any) => !selectedRoleIds.value.includes(role.id)
+    );
+
+    if (unconfirmed.length > 0) {
+      isConfirming.value = true;
+
+      const res = await requestCustomUrl({
+        url: props.info.confirmUrl,
+        method: "POST",
+        data: {
+          id: props.info.id,
+          confirmed: confirmed,
+          unconfirmed: unconfirmed,
+        },
+      });
+
+      if (res.code === 409) {
+        uni.showToast({
+          title: "角色确认失败，请稍后再试",
+          icon: "none",
+        });
+        emit("on-cancel", {
+          id: props.info.id,
+        });
+        return;
+      }
+      if (res.code !== 200) {
+        uni.showToast({
+          title: "角色确认失败，请重新确认",
+          icon: "none",
+        });
+        return;
+      }
+
+      confirmed.forEach((role: any) => {
+        confirmedRoleIds.value.add(role.id);
+      });
+      selectedRoleIds.value = [];
+
+      if (
+        res.action === EConfirmAction.CONFIRM_ROLES &&
+        res.data.roles &&
+        res.data.roles.length > 0
+      ) {
+        console.log("【确认其他角色】", res.data.roles);
+        // 有待确认的角色
+        unconfirmedRoles.value = res.data.roles.map(
+          (role: IConfirmRoleItem) => role.data
+        );
+      } else {
+        handleAllConfirmed(res);
+        resolve(true);
+      }
+      nextTick(() => {
+        isConfirming.value = false;
+      });
+    }
+
+    resolve(true);
   });
+}
 
-  let confirmedRoles = roles.filter((role: any) =>
-    selectedRoleIds.value.includes(role.taskId)
-  );
-  let unconfirmedRoles = roles.filter(
-    (role: any) => !selectedRoleIds.value.includes(role.taskId)
-  );
-
-  console.log("【已确认角色】", confirmedRoles);
-  console.log("【未确认角色】", unconfirmedRoles);
+function handleAllConfirmed(e: any) {
+  console.log("【所有角色已确认】", e);
 }
 </script>
 

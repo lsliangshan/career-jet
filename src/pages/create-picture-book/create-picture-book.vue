@@ -553,6 +553,13 @@
                 >
               </template>
             </view>
+
+            <view
+              class="w-full h-[100rpx] bg-[red] rounded-[32rpx] flex flex-row items-center justify-center"
+              @click="test"
+            >
+              <text class="text-[32rpx] text-[#fff] font-bold">测试</text>
+            </view>
           </view>
 
           <transition name="fade">
@@ -616,14 +623,15 @@
         v-if="modalData?.component === EModalComponent.CONFIRM_STORY_MODAL"
         @on-confirm="handleConfirmedStory"
         @on-regenerate="handleRegenerateStory"
-        @on-cancel="handleCancelConfirmStory"
+        @on-cancel="handleCancelConfirm"
       />
 
       <ConfirmRolesModal
         :info="modalData?.data"
         :ratio="formData.ratio"
         v-else-if="modalData?.component === EModalComponent.CONFIRM_ROLES_MODAL"
-        @on-cancel="handleCancelConfirmStory"
+        @on-cancel="handleCancelConfirm"
+        @on-confirm="handleConfirmedRole"
       />
     </page-container>
   </view>
@@ -634,7 +642,7 @@ import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import { computed, nextTick, onMounted, ref } from "vue";
 import { moralities, authors, languages, ratios } from "@/config/config";
-import { requestGeneratePictureBook } from "@/request";
+import { requestGeneratePictureBook, requestGetImageUrls } from "@/request";
 import {
   EModalComponent,
   type IConfirmRoleInfo,
@@ -643,6 +651,16 @@ import {
 import ConfirmStoryModal from "./modals/ConfirmStoryModal.vue";
 import { EConfirmAction } from "./types";
 import ConfirmRolesModal from "./modals/ConfirmRolesModal.vue";
+
+async function test() {
+  const res = await requestGetImageUrls({
+    taskIds: [
+      "0c6d874f63e411c0fcd8d0f309a13603",
+      "1e22ef563d8cd918d60c5754edef57237",
+    ],
+  });
+  console.log(">>>>>>>> test: ", res);
+}
 
 const info = ref<IConfirmStoryInfo>({
   id: "b0c90a919f8df86c2fe04550",
@@ -967,38 +985,21 @@ function doGenerate() {
   return new Promise(async (resolve) => {
     generateStep.value = GenerateStep.generating;
 
-    // const res = await requestGeneratePictureBook({
-    //   theme: formData.value.theme,
-    //   storyStyle: formData.value.storyStyle,
-    //   pictureStyle: formData.value.pictureStyle,
-    //   length: formData.value.length,
-    //   language: formData.value.language,
-    //   roleCount: formData.value.roleCount,
-    //   sceneCount: formData.value.sceneCount,
-    //   ratio: formData.value.ratio,
-    //   autoConfirmedStory: formData.value.autoConfirmedStory,
-    //   autoConfirmedRole: formData.value.autoConfirmedRole,
-    //   autoConfirmedScene: formData.value.autoConfirmedScene,
-    // });
+    const res = await requestGeneratePictureBook({
+      theme: formData.value.theme,
+      storyStyle: formData.value.storyStyle,
+      pictureStyle: formData.value.pictureStyle,
+      length: formData.value.length,
+      language: formData.value.language,
+      roleCount: formData.value.roleCount,
+      sceneCount: formData.value.sceneCount,
+      ratio: formData.value.ratio,
+      autoConfirmedStory: formData.value.autoConfirmedStory,
+      autoConfirmedRole: formData.value.autoConfirmedRole,
+      autoConfirmedScene: formData.value.autoConfirmedScene,
+    });
 
-    const res = {
-      code: 200,
-      message: "请确认故事内容",
-      action: "confirm-story",
-      data: {
-        id: "9d5c498b85d50229a1ad84b4",
-        confirmUrl:
-          "https://wf.qyflows.com/webhook-waiting/618196/pb-confirm-story",
-        story: {
-          title: "The Pebble That Shone",
-          content:
-            'In a quiet meadow lived three friends: Sam the Squirrel, Benny the Bird, and Wally the Worm. They spent their days gathering food under the warm sun.\nOne afternoon, Sam found a most unusual pebble. It wasn\'t brown or gray like the others. It shimmered with a soft, inner light, like captured sunshine.\n"Wow!" chirped Benny. "That\'s amazing! It must be magic!" Wally wriggled closer to see.\nSam held the glowing pebble tightly. A thought crept into his mind: "If I keep this for myself, I\'ll be special. No one needs to know."\nThat night, Sam couldn\'t sleep. The pebble, hidden under his leaf-bed, seemed to pulse. Its light felt cold in his paws. The meadow, once friendly, now felt lonely.\nAt dawn, Sam scurried to his friends. His heart felt heavy like a stone. "I found something yesterday," he whispered, opening his paw. The pebble\'s gentle glow lit their faces.\n"It\'s beautiful," said Benny softly.\n"It belongs to all of us," said Sam, his voice growing stronger. "It belongs to the meadow." He placed it on a flat stone where everyone could see its light.\nThe pebble didn\'t shine brighter, but Sam did. A warm, clear feeling filled his chest, brighter than any hidden treasure. The three friends sat together, watching the shared light dance on the grass, knowing that true warmth comes from a heart that is open and honest.',
-          title_zh: "闪光的鹅卵石",
-          content_zh:
-            "在一片宁静的草地上，住着三个朋友：松鼠萨姆、小鸟本尼和蠕虫沃利。他们在温暖的阳光下度过收集食物的日子。\n一天下午，萨姆发现了一颗非常不寻常的鹅卵石。它不像其他石头那样是棕色或灰色的。它闪烁着柔和的内在光芒，仿佛捕捉了阳光。\n“哇！”本尼啾啾叫道。“太神奇了！它一定是魔法的！”沃利扭动着身子凑近来看。\n萨姆紧紧抓着发光的鹅卵石。一个想法爬进他的脑海：“如果我留着它自己用，我就会变得特别。没人需要知道。”\n那天晚上，萨姆睡不着觉。那颗藏在他树叶床下的鹅卵石似乎在脉动。它在他爪子里感觉冰冷。曾经友好的草地，现在感觉孤独。\n黎明时分，萨姆匆匆跑到朋友们身边。他的心沉重得像块石头。“我昨天发现了点东西，”他低声说，张开爪子。鹅卵石柔和的光芒照亮了他们的脸庞。\n“真美，”本尼轻声说。\n“它属于我们大家，”萨姆说，他的声音变得更坚定。“它属于这片草地。”他把它放在一块平坦的石头上，让每个人都能看到它的光芒。\n鹅卵石并没有变得更亮，但萨姆却更亮了。一种温暖、清澈的感觉充满了他的胸膛，比任何隐藏的宝藏都要明亮。三个朋友坐在一起，看着共享的光芒在草地上舞动，他们知道真正的温暖来自一颗开放而诚实的心。",
-        },
-      },
-    };
+    // const res = {"code":200,"message":"请确认故事内容","action":"confirm-story","data":{"id":"0a8076ac18a64ee2797b1951","confirmUrl":"https://wf.qyflows.com/webhook-waiting/620535/pb-confirm-story","story":{"title":"彩纸小兔与真心话花","content":"小兔米洛用彩纸和朋友们做了三朵美丽的花。\n他把花送给小猪波波、小鸭迪迪，还悄悄给自己留了一朵。\n\n第二天，森林举办手工花比赛。\n波波和迪迪都带着米洛送的花参加。\n\n米洛犹豫了：自己的花和别人一样，能算自己做的吗？\n他的心像被小石子硌着，彩花在手里变得沉甸甸。\n\n“这花是朋友帮我一起做的。”米洛走上展示台轻声说。\n他放下花，心里的小石子消失了，全身轻松得像片羽毛。\n\n河狸评委爷爷笑了：“诚实是最美的颜色。”\n他把特别奖颁给了三朵彩纸花，因为它们开出了真心。\n\n从此，森林里流传着一句话：\n真正的手工花，是用诚实浇灌的。"}}}
 
     // const res = {
     //   code: 200,
@@ -1112,10 +1113,14 @@ async function handleRegenerateStory(e: any) {
   uni.$emit("regenerate-story-response");
 }
 
-function handleCancelConfirmStory(e: any) {
+function handleCancelConfirm(e: any) {
   generateStep.value = GenerateStep.unstart;
 
   closeModal();
+}
+
+function handleConfirmedRole(e: any) {
+  console.log(">>>>> handleConfirmedRole: ", e);
 }
 
 function handleConfirmedStory(e: any) {

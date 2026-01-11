@@ -9,17 +9,19 @@ export interface IConfirmStoryInfo {
   };
 }
 
+export interface IConfirmRoleData {
+  id: string;
+  taskId: string;
+  name: string;
+  prompt: string;
+  prompt_en: string;
+  recordId: string;
+}
+
 export interface IConfirmRoleItem {
   code: number;
   msg: string;
-  data: {
-    id: string;
-    name: string;
-    prompt: string;
-    prompt_en: string;
-    recordId: string;
-    taskId: string;
-  };
+  data: IConfirmRoleData;
 }
 
 export interface IConfirmRoleInfo {

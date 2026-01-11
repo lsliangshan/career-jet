@@ -322,7 +322,8 @@ export function requestGeneratePictureBook(params?: {
 }): Promise<any> {
   return new Promise<any>((resolve) => {
     uni.request({
-      url: `${baseUrl}/pb/generate`,
+      url: `https://wf.qyflows.com/webhook-test/pb/generate`,
+      // url: `${baseUrl}/pb/generate`,
       method: "POST",
       data: { ...params },
       success: (res) => {
@@ -348,8 +349,11 @@ export function requestCustomUrl(params: {
       success: (res) => {
         resolve(res.data);
       },
-      fail: (_) => {
-        resolve({});
+      fail: (e) => {
+        console.log('>>>> requestCustomUrl: ', e);
+        resolve({
+          code: 1001,
+        });
       },
       complete: () => {
         resolve({});
@@ -358,23 +362,36 @@ export function requestCustomUrl(params: {
   });
 }
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export function requestGetImageUrls(params: {
   taskIds: string[];
-}): Promise<any> {
-  return new Promise<any>((resolve) => {
-    uni.request({
-      url: `${baseUrl}/pb/get-image-urls`,
-      method: "POST",
-      data: { ...params },
-      success: (res) => {
-        resolve(res.data);
-      },
-      fail: (_) => {
-        resolve({});
-      },
-      complete: () => {
-        resolve({});
-      },
-    });
+}): Promise<Map<string, string>> {
+  return new Promise<Map<string, string>>(async (resolve) => {
+    let remainingTaskIds = params.taskIds;
+    const urlMap = new Map<string, string>();
+
+    while (remainingTaskIds.length > 0) {
+      const result: any = await uni.request({
+        url: `${baseUrl}/pb/get-image-urls`,
+        method: "POST",
+        data: { taskIds: remainingTaskIds },
+        timeout: 60 * 60 * 1000,
+      });
+      
+      if (result.data && result.data.code === 200 && result.data.data && result.data.data.list) {
+        result.data.data.list.forEach((item: any) => {
+          if (item.data.url) {
+            urlMap.set(item.data.taskId, item.data.url);
+          }
+        });
+        remainingTaskIds = result.data.data.list.filter((item: any) => item.code === 201).map((item: any) => item.data.taskId);
+      }
+      await sleep(5000);
+    }
+
+    resolve(urlMap);
   });
 }

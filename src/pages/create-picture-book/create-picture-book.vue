@@ -629,6 +629,7 @@
       <ConfirmRolesModal
         :info="modalData?.data"
         :ratio="formData.ratio"
+        :picture-style="formData.pictureStyle"
         v-else-if="modalData?.component === EModalComponent.CONFIRM_ROLES_MODAL"
         @on-cancel="handleCancelConfirm"
         @on-confirm="handleConfirmedRole"
@@ -641,7 +642,13 @@
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import { computed, nextTick, onMounted, ref } from "vue";
-import { moralities, authors, languages, ratios } from "@/config/config";
+import {
+  moralities,
+  authors,
+  languages,
+  ratios,
+  mainColor,
+} from "@/config/config";
 import { requestGeneratePictureBook, requestGetImageUrls } from "@/request";
 import {
   EModalComponent,
@@ -728,8 +735,6 @@ enum GenerateStep {
 }
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
-
-const mainColor = ref("#FF7BAC");
 
 const formData = ref({
   theme: "诚实与正直",
@@ -985,21 +990,35 @@ function doGenerate() {
   return new Promise(async (resolve) => {
     generateStep.value = GenerateStep.generating;
 
-    const res = await requestGeneratePictureBook({
-      theme: formData.value.theme,
-      storyStyle: formData.value.storyStyle,
-      pictureStyle: formData.value.pictureStyle,
-      length: formData.value.length,
-      language: formData.value.language,
-      roleCount: formData.value.roleCount,
-      sceneCount: formData.value.sceneCount,
-      ratio: formData.value.ratio,
-      autoConfirmedStory: formData.value.autoConfirmedStory,
-      autoConfirmedRole: formData.value.autoConfirmedRole,
-      autoConfirmedScene: formData.value.autoConfirmedScene,
-    });
+    // const res = await requestGeneratePictureBook({
+    //   theme: formData.value.theme,
+    //   storyStyle: formData.value.storyStyle,
+    //   pictureStyle: formData.value.pictureStyle,
+    //   length: formData.value.length,
+    //   language: formData.value.language,
+    //   roleCount: formData.value.roleCount,
+    //   sceneCount: formData.value.sceneCount,
+    //   ratio: formData.value.ratio,
+    //   autoConfirmedStory: formData.value.autoConfirmedStory,
+    //   autoConfirmedRole: formData.value.autoConfirmedRole,
+    //   autoConfirmedScene: formData.value.autoConfirmedScene,
+    // });
 
-    // const res = {"code":200,"message":"请确认故事内容","action":"confirm-story","data":{"id":"0a8076ac18a64ee2797b1951","confirmUrl":"https://wf.qyflows.com/webhook-waiting/620535/pb-confirm-story","story":{"title":"彩纸小兔与真心话花","content":"小兔米洛用彩纸和朋友们做了三朵美丽的花。\n他把花送给小猪波波、小鸭迪迪，还悄悄给自己留了一朵。\n\n第二天，森林举办手工花比赛。\n波波和迪迪都带着米洛送的花参加。\n\n米洛犹豫了：自己的花和别人一样，能算自己做的吗？\n他的心像被小石子硌着，彩花在手里变得沉甸甸。\n\n“这花是朋友帮我一起做的。”米洛走上展示台轻声说。\n他放下花，心里的小石子消失了，全身轻松得像片羽毛。\n\n河狸评委爷爷笑了：“诚实是最美的颜色。”\n他把特别奖颁给了三朵彩纸花，因为它们开出了真心。\n\n从此，森林里流传着一句话：\n真正的手工花，是用诚实浇灌的。"}}}
+    const res = {
+      code: 200,
+      message: "请确认故事内容",
+      action: "confirm-story",
+      data: {
+        id: "e07152ec76ee00d330ed3bb2",
+        confirmUrl:
+          "https://wf.qyflows.com/webhook-waiting/624335/pb-confirm-story",
+        story: {
+          title: "蒲公英与玻璃心",
+          content:
+            "在微风吹拂的草地上，住着蒲公英小绒和小蜗牛慢悠悠。\n\n一天，慢悠悠发现一颗闪闪发光的玻璃心，它像水晶般透亮。\n\n“这真美啊，”小绒说，“但我们该找到它的主人。”\n\n这时，麻雀喳喳飞来：“多美的宝贝！说是你们捡到的，没人会知道。”\n\n小绒却摇摇头，把玻璃心举得更高，阳光透过它，折射出彩虹。\n\n“诚实就像这光，”小绒轻声说，“让心变得透明而温暖。”\n\n最后，玻璃心的主人——萤火虫亮亮找来了。原来这是它用来收集星光的小瓶。\n\n亮亮把一片星光送给小绒：“正直的心灵，比任何宝物都明亮。”\n\n每当夜晚降临，小绒的星光就温柔闪烁，提醒所有心灵：诚实是最美的光芒。",
+        },
+      },
+    };
 
     // const res = {
     //   code: 200,

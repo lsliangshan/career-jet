@@ -322,8 +322,36 @@ export function requestGeneratePictureBook(params?: {
 }): Promise<any> {
   return new Promise<any>((resolve) => {
     uni.request({
-      url: `https://wf.qyflows.com/webhook-test/pb/generate`,
+      url: `https://wf.qyflows.com/webhook/pb/generate`,
       // url: `${baseUrl}/pb/generate`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 重新生成角色或场景
+ * @param params
+ * @param {string} params.id 角色或场景ID
+ * @param {string} params.prompt 角色或场景 提示词
+ * @param {string} [params.ratio=16:9] 绘本比例
+ */
+export function requestGenerateRoleOrScene(params?: {
+  id: string;
+  prompt: string;
+  ratio?: string;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `https://wf.qyflows.com/webhook/pb/generate-role-or-scene`,
+      // url: `${baseUrl}/pb/generate-role-or-scene`,
       method: "POST",
       data: { ...params },
       success: (res) => {

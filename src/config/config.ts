@@ -62,6 +62,8 @@ export const supportedLevels = [
   },
 ];
 
+export const mainColor = '#FF7BAC';
+
 export const ThemeColors = {
   primary: "#FF9A3C",
   primary100: "rgba(255, 154, 60, 0.1)",

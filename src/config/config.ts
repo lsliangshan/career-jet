@@ -62,7 +62,7 @@ export const supportedLevels = [
   },
 ];
 
-export const mainColor = '#FF7BAC';
+export const mainColor = "#FF7BAC";
 
 export const ThemeColors = {
   primary: "#FF9A3C",
@@ -339,16 +339,16 @@ export const authors = [
 ];
 
 export const ratios = [
-  "2:3",
-  "3:4",
-  "4:5",
-  "9:16",
-  "1:1",
-  "3:2",
-  "4:3",
-  "5:4",
   "16:9",
+  "9:16",
+  "4:3",
+  "3:4",
   "21:9",
+  "3:2",
+  "2:3",
+  "5:4",
+  "4:5",
+  "1:1",
 ];
 
 export const languages = [

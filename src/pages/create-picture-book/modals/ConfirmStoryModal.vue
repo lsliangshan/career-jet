@@ -219,6 +219,7 @@ watch(
 );
 
 onMounted(() => {
+  resetData();
   uni.$on("regenerate-story-response", (e: any) => {
     regeneratingVisible.value = false;
     nextTick(() => {
@@ -226,6 +227,14 @@ onMounted(() => {
     });
   });
 });
+
+function resetData() {
+  isRegenerating.value = false;
+  regeneratingVisible.value = false;
+  isConfirming.value = false;
+  renderStoryTitle.value = props.info.story.title;
+  renderStoryContent.value = props.info.story.content;
+}
 
 function editStoryTitle() {
   storyTitleEditMode.value = true;
@@ -321,7 +330,7 @@ async function doConfirmStory() {
 
   emit("on-confirm", {
     action: res.action as EConfirmAction,
-    data: res.data as IConfirmRoleInfo,
+    data: res.data as any,
   });
 }
 </script>

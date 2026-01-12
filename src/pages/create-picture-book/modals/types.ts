@@ -42,6 +42,8 @@ export interface IConfirmSceneData {
   prompt: string;
   prompt_en: string;
   recordId: string;
+  roleIds: string[];
+  roleUrls: string[];
 }
 
 export interface IConfirmSceneItem {

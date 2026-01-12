@@ -258,7 +258,7 @@ const emit = defineEmits<{
     e: "on-confirm",
     params: {
       action: EConfirmAction;
-      data: IConfirmRoleInfo;
+      data: any;
     }
   ): void;
   (
@@ -533,13 +533,10 @@ function handleConfirmRoles() {
 }
 
 function handleAllConfirmed(e: any) {
-  console.log("【所有角色已确认】", e);
-  if (e.action === EConfirmAction.CONFIRM_SCENES) {
-    emit("on-confirm", {
-      action: EConfirmAction.CONFIRM_SCENES,
-      data: e.data,
-    });
-  }
+  emit("on-confirm", {
+    action: e.action as EConfirmAction,
+    data: e.data as any,
+  });
 }
 
 function showRegenerateModal(role: IConfirmRoleData) {

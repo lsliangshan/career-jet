@@ -322,7 +322,7 @@ export function requestGeneratePictureBook(params?: {
 }): Promise<any> {
   return new Promise<any>((resolve) => {
     uni.request({
-      url: `https://wf.qyflows.com/webhook/pb/generate`,
+      url: `https://wf.qyflows.com/webhook-test/pb/generate`,
       // url: `${baseUrl}/pb/generate`,
       method: "POST",
       data: { ...params },
@@ -347,6 +347,7 @@ export function requestGenerateRoleOrScene(params?: {
   id: string;
   prompt: string;
   ratio?: string;
+  imageUrls?: string[];
 }): Promise<any> {
   return new Promise<any>((resolve) => {
     uni.request({
@@ -378,7 +379,7 @@ export function requestCustomUrl(params: {
         resolve(res.data);
       },
       fail: (e) => {
-        console.log('>>>> requestCustomUrl: ', e);
+        console.log(">>>> requestCustomUrl: ", e);
         resolve({
           code: 1001,
         });
@@ -408,16 +409,23 @@ export function requestGetImageUrls(params: {
         data: { taskIds: remainingTaskIds },
         timeout: 60 * 60 * 1000,
       });
-      
-      if (result.data && result.data.code === 200 && result.data.data && result.data.data.list) {
+
+      if (
+        result.data &&
+        result.data.code === 200 &&
+        result.data.data &&
+        result.data.data.list
+      ) {
         result.data.data.list.forEach((item: any) => {
           if (item.data.url) {
             urlMap.set(item.data.taskId, item.data.url);
           }
         });
-        remainingTaskIds = result.data.data.list.filter((item: any) => item.code === 201).map((item: any) => item.data.taskId);
+        remainingTaskIds = result.data.data.list
+          .filter((item: any) => item.code === 201)
+          .map((item: any) => item.data.taskId);
       }
-      await sleep(5000);
+      await sleep(10000);
     }
 
     resolve(urlMap);

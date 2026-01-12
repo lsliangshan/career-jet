@@ -644,7 +644,7 @@
           modalData?.component === EModalComponent.CONFIRM_SCENES_MODAL
         "
         @on-cancel="handleCancelConfirm"
-        @on-confirm="handleConfirmedRole"
+        @on-confirm="handleConfirmedScene"
       />
     </page-container>
   </view>
@@ -1044,6 +1044,8 @@ function openModal(params: { component?: EModalComponent; data?: any }) {
     };
   }
   modalVisible.value = true;
+
+  scrollToGeneratePanel("picture-book-generate-panel");
 }
 
 function sleep(ms: number) {
@@ -1064,32 +1066,8 @@ function handleCancelConfirm(e: any) {
   closeModal();
 }
 
-function handleConfirmedRole(e: any) {
-  console.log(">>>>> handleConfirmedRole: ", e);
-  if (e.action === EConfirmAction.CONFIRM_SCENES) {
-    closeModal();
-
-    const t = setTimeout(() => {
-      modalData.value = {
-        component: EModalComponent.CONFIRM_SCENES_MODAL,
-        data: e.data,
-      };
-      nextTick(() => {
-        generateStep.value = GenerateStep.confirmScene;
-        openModal({
-          component: EModalComponent.CONFIRM_SCENES_MODAL,
-          data: e.data,
-        });
-      });
-      clearTimeout(t);
-    }, 300);
-  }
-}
-
-function handleConfirmedStory(e: any) {
-  console.log(">>>>> handleConfirmedStory: ", e);
-  if (e.action === EConfirmAction.CONFIRM_ROLES) {
-    closeModal();
+function doConfirmRole(e: any) {
+  closeModal();
 
     const t = setTimeout(() => {
       modalData.value = {
@@ -1106,6 +1084,59 @@ function handleConfirmedStory(e: any) {
       });
       clearTimeout(t);
     }, 300);
+}
+
+function doConfirmScene(e: any) {
+  closeModal();
+
+    const t = setTimeout(() => {
+      modalData.value = {
+        component: EModalComponent.CONFIRM_SCENES_MODAL,
+        data: e.data,
+      };
+      nextTick(() => {
+        generateStep.value = GenerateStep.confirmScene;
+        openModal({
+          component: EModalComponent.CONFIRM_SCENES_MODAL,
+          data: e.data,
+        });
+      });
+      clearTimeout(t);
+    }, 300);
+}
+
+function doConfirmFinished(e: any) {
+  generateStep.value = GenerateStep.finished;
+    closeModal();
+    uni.showToast({
+      title: "绘本生成成功",
+      icon: "none",
+    });
+}
+
+function handleConfirmedRole(e: any) {
+  console.log(">>>>> handleConfirmedRole: ", e);
+  if (e.action === EConfirmAction.CONFIRM_SCENES) {
+    doConfirmScene(e);
+  } else if (e.action === EConfirmAction.FINISHED) {
+    doConfirmFinished(e);
+  }
+}
+
+function handleConfirmedScene(e: any) {
+  if (e.action === EConfirmAction.FINISHED) {
+    doConfirmFinished(e);
+  }
+}
+
+function handleConfirmedStory(e: any) {
+  console.log(">>>>> handleConfirmedStory: ", e);
+  if (e.action === EConfirmAction.CONFIRM_ROLES) {
+    doConfirmRole(e);
+  } else if (e.action === EConfirmAction.CONFIRM_SCENES) {
+    doConfirmScene(e);
+  } else if (e.action === EConfirmAction.FINISHED) {
+    doConfirmFinished(e);
   }
 }
 </script>

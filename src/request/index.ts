@@ -322,7 +322,7 @@ export function requestGeneratePictureBook(params?: {
 }): Promise<any> {
   return new Promise<any>((resolve) => {
     uni.request({
-      url: `https://wf.qyflows.com/webhook-test/pb/generate`,
+      url: `https://wf.qyflows.com/webhook/pb/generate`,
       // url: `${baseUrl}/pb/generate`,
       method: "POST",
       data: { ...params },
@@ -402,7 +402,10 @@ export function requestGetImageUrls(params: {
     let remainingTaskIds = params.taskIds;
     const urlMap = new Map<string, string>();
 
+    let attemptCount = 0;
+
     while (remainingTaskIds.length > 0) {
+      attemptCount++;
       const result: any = await uni.request({
         url: `${baseUrl}/pb/get-image-urls`,
         method: "POST",
@@ -425,7 +428,7 @@ export function requestGetImageUrls(params: {
           .filter((item: any) => item.code === 201)
           .map((item: any) => item.data.taskId);
       }
-      await sleep(10000);
+      await sleep(5000 + (attemptCount - 1) * 2000);
     }
 
     resolve(urlMap);

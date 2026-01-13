@@ -60,6 +60,12 @@
 					}
 				}
 			}
+		},
+		{
+			"path": "pages/picture-book-detail/picture-book-detail",
+			"style": {
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {

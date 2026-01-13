@@ -417,6 +417,29 @@ export function requestGetMyPictureBooks(params?: {
   });
 }
 
+/**
+ * 获取绘本详情
+ * @param params
+ * @param {string} params.id 绘本ID
+ */
+export function requestGetPictureBookDetail(params?: {
+  id: string;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/pb/detail`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
 export function requestCustomUrl(params: {
   url: string;
   method: "POST" | "GET" | "PUT" | "DELETE";

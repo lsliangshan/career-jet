@@ -3,7 +3,10 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useUserStore } from "./user";
 import { storeToRefs } from "pinia";
-import { requestGetMyPictureBooks } from "@/request";
+import {
+  requestGetMyPictureBooks,
+  requestGetPictureBookDetail,
+} from "@/request";
 
 export const usePictureBookStore = defineStore("picture_book", () => {
   const userStore = useUserStore();
@@ -31,7 +34,7 @@ export const usePictureBookStore = defineStore("picture_book", () => {
         pageIndex,
         pageSize,
       });
-      console.log(">>>>>> getMyPictureBooks: ", res);
+
       if (res.code === 200) {
         myPictureBooks.value = res.data.list;
       }
@@ -39,8 +42,18 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     });
   }
 
+  function getPictureBookDetail(params: { id: string }) {
+    return new Promise(async (resolve) => {
+      const res = await requestGetPictureBookDetail({
+        id: params.id,
+      });
+      resolve(res);
+    });
+  }
+
   return {
     myPictureBooks,
     getMyPictureBooks,
+    getPictureBookDetail,
   };
 });

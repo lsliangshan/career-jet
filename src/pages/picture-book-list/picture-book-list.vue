@@ -45,7 +45,7 @@
             :cross-axis-count="2"
             :main-axis-gap="12"
             :cross-axis-gap="12"
-            :padding="[0, 12, 16, 12]"
+            :padding="[0, 12, 0, 12]"
             ref="waterfallRef"
           >
             <view
@@ -58,6 +58,7 @@
                   (isHorizontalRatio(pb.config?.ratio) ? 154 : 0)
                 }rpx`,
               }"
+              @click="handleViewPictureBook(pb)"
             >
               <view
                 class="relative w-full rounded-tl-[24rpx] rounded-tr-[24rpx] overflow-hidden flex flex-row items-center justify-center"
@@ -71,10 +72,12 @@
                 }"
               >
                 <view
-                  class="absolute left-0 top-0 w-full h-full bg-[#f8f8f8] flex flex-row items-center justify-center"
+                  class="absolute left-0 top-0 w-full h-full bg-[#e8e8e8] flex flex-row items-center justify-center"
                   v-if="!pb.cover?.url || errorImageIds.has(pb.id)"
                 >
-                  <text class="text-[28rpx] text-[#888]">{{ pb.title }}</text>
+                  <text class="text-[24rpx] text-[#c8c8c8]">{{
+                    !pb.cover?.url ? "暂无封面" : "封面加载失败"
+                  }}</text>
                 </view>
                 <image
                   class="w-full h-full z-[9]"
@@ -88,7 +91,7 @@
                 class="absolute z-[9] bottom-0 left-0 rounded-bl-[24rpx] rounded-br-[24rpx] p-[16rpx] box-border w-full flex flex-col gap-[8rpx]"
                 :class="[
                   isHorizontalRatio(pb.config.ratio)
-                    ? 'translate-y-0 bg-[#fff]'
+                    ? 'bg-[#fff]'
                     : 'bg-[rgba(0,0,0,0.2)]',
                 ]"
               >
@@ -105,10 +108,10 @@
                   </view>
                 </view>
                 <view
-                  class="w-full h-[36rpx] mt-[8rpx] flex flex-row items-center"
+                  class="w-full h-[36rpx] mt-[16rpx] flex flex-row items-center"
                 >
                   <text
-                    class="text-[30rpx] font-bold"
+                    class="text-[30rpx] font-bold line-clamp-1 overflow-hidden text-ellipsis break-all"
                     :class="[
                       isHorizontalRatio(pb.config.ratio)
                         ? 'text-[#181818]'
@@ -201,7 +204,6 @@ const errorImageIds = ref<Set<string>>(new Set());
 
 const isHorizontalRatio = computed(() => {
   return (ratio: string) => {
-    console.log(">>>... ratio: ", ratio);
     return Number(ratio.split(":")[0]) > Number(ratio.split(":")[1]);
   };
 });
@@ -212,7 +214,7 @@ const renderImageHeight = computed(() => {
     const width = Number(r[0]);
     const height = Number(r[1]);
 
-    return (339 * height) / width;
+    return (378 * height) / width;
   };
 });
 
@@ -283,12 +285,12 @@ async function getMyPictureBooks() {
 
 function handleViewPictureBook(pb: IPictureBook) {
   console.log(">>> 跳转：", pb);
-  // uni.navigateTo({
-  //   url: `/pages/answer-history/answer-history?questionId=${answer.question.id}&canContinue=1`,
-  //   complete: () => {
-  //     refresherSuccessVisible.value = false;
-  //   },
-  // });
+  uni.navigateTo({
+    url: `/pages/picture-book-detail/picture-book-detail?id=${pb.id}`,
+    complete: () => {
+      refresherSuccessVisible.value = false;
+    },
+  });
 }
 
 function handleImageError(id: string) {
@@ -299,6 +301,6 @@ function handleImageError(id: string) {
 
 <style scoped>
 .picture-book-list {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, #ffe6ee 0%, #e6f0ff 100%);
 }
 </style>

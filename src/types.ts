@@ -111,6 +111,16 @@ export interface ICoverItem {
   prompt_en: string;
 }
 
+export interface IAuthorItem {
+  id: string;
+  username: string;
+  phonenum: string;
+  nickname: string;
+  avatar: string;
+  gender: string;
+  email: string;
+}
+
 export interface IPictureBook {
   id: string;
   title: string;
@@ -124,4 +134,5 @@ export interface IPictureBook {
   cover?: ICoverItem;
   title_zh?: string;
   content_zh?: string;
+  author?: IAuthorItem;
 }

@@ -40,97 +40,48 @@
 
           <view class="w-full h-[24rpx]"></view>
 
-          <grid-view
-            type="masonry"
-            :cross-axis-count="2"
-            :main-axis-gap="12"
-            :cross-axis-gap="12"
-            :padding="[0, 12, 16, 12]"
-            ref="waterfallRef"
-          >
+          <view class="w-full flex flex-col gap-[24rpx]">
             <view
-              class="w-full"
-              v-for="(pb, index) in pictureBooks"
+              class="w-full px-[32rpx] box-border flex flex-row items-center"
+              v-for="pb in pictureBooks"
               :key="pb.id"
-              :style="{
-                height: `${
-                  renderImageHeight(pb.config?.ratio) +
-                  (isHorizontalRatio(pb.config?.ratio) ? 154 : 0)
-                }rpx`,
-              }"
+              @click="handleViewPictureBook(pb)"
             >
               <view
-                class="relative w-full rounded-tl-[24rpx] rounded-tr-[24rpx] overflow-hidden flex flex-row items-center justify-center"
-                :class="[
-                  isHorizontalRatio(pb.config.ratio)
-                    ? ''
-                    : 'rounded-bl-[24rpx] rounded-br-[24rpx]',
-                ]"
-                :style="{
-                  height: `${renderImageHeight(pb.config?.ratio)}rpx`,
-                }"
+                class="w-full h-full px-[32rpx] py-[24rpx] box-border rounded-[24rpx] overflow-hidden shadow-[0_0rpx_4rpx_rgba(0,0,0,0.15)] bg-[#fff] active:bg-[#f8f8f8] active:scale-95 transition-all duration-300 flex flex-row items-center gap-[24rpx]"
               >
                 <view
-                  class="absolute left-0 top-0 w-full h-full bg-[#f8f8f8] flex flex-row items-center justify-center"
-                  v-if="!pb.cover?.url || errorImageIds.has(pb.id)"
+                  class="h-[120rpx] w-[214rpx] bg-[#f8f8f8] rounded-[12rpx] overflow-hidden border border-[1rpx] border-[#f8f8f8] box-border"
+                  @click.stop="
+                    previewImage(pb.cover?.url ? [pb.cover?.url] : [])
+                  "
                 >
-                  <text class="text-[28rpx] text-[#888]">{{ pb.title }}</text>
+                  <image
+                    class="max-w-full max-h-full"
+                    :src="pb.cover?.url"
+                    mode="aspectFit"
+                  />
                 </view>
-                <image
-                  class="w-full h-full z-[9]"
-                  :src="pb.cover?.url"
-                  mode="aspectFill"
-                  @error="handleImageError(pb.id)"
-                />
-              </view>
-
-              <view
-                class="absolute z-[9] bottom-0 left-0 rounded-bl-[24rpx] rounded-br-[24rpx] p-[16rpx] box-border w-full flex flex-col gap-[8rpx]"
-                :class="[
-                  isHorizontalRatio(pb.config.ratio)
-                    ? 'translate-y-0 bg-[#fff]'
-                    : 'bg-[rgba(0,0,0,0.2)]',
-                ]"
-              >
-                <view class="w-full h-[32rpx] flex flex-row items-center">
-                  <view
-                    class="h-full px-[12rpx] box-border rounded-[12rpx] flex flex-row items-center justify-center"
-                    :style="{
-                      backgroundColor: mainColor,
-                    }"
-                  >
-                    <text class="text-[20rpx] text-[#fff]">{{
-                      pb.config.theme
-                    }}</text>
-                  </view>
+                <view class="w-full flex flex-col gap-[12rpx]">
+                  <text class="text-[36rpx] text-[#222] font-[500]">{{
+                    pb.title
+                  }}</text>
+                  <text class="text-[28rpx] text-[#888]">{{
+                    pb.createAt
+                  }}</text>
                 </view>
                 <view
-                  class="w-full h-[36rpx] mt-[8rpx] flex flex-row items-center"
+                  class="h-[120rpx] w-[80rpx] flex flex-row items-center justify-center"
                 >
-                  <text
-                    class="text-[30rpx] font-bold"
-                    :class="[
-                      isHorizontalRatio(pb.config.ratio)
-                        ? 'text-[#181818]'
-                        : 'text-[#fff]',
-                    ]"
-                    >{{ pb.title }}</text
-                  >
-                </view>
-                <view class="w-full h-[30rpx] flex flex-row items-center">
-                  <text
-                    class="text-[24rpx]"
-                    :class="[
-                      isHorizontalRatio(pb.config.ratio)
-                        ? 'text-[#666]'
-                        : 'text-[rgba(255,255,255,0.7)]',
-                    ]"
-                    >{{ pb.createAt }}</text
-                  >
+                  <image
+                    class="w-[32rpx] h-[32rpx]"
+                    src="@static/icon_arraw_right.png"
+                    mode="aspectFit"
+                  />
                 </view>
               </view>
             </view>
-          </grid-view>
+          </view>
 
           <view
             class="w-full h-[112rpx] flex flex-row items-center justify-center"
@@ -171,11 +122,10 @@
 <script setup lang="ts">
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
-import { computed, nextTick, onMounted, ref } from "vue";
+import { nextTick, onMounted, ref } from "vue";
 import { IPictureBook } from "@/types";
 import { previewImage } from "@/utils";
 import { usePictureBookStore } from "@/stores/picture_book";
-import { mainColor } from "@/config/config";
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
@@ -195,26 +145,6 @@ const totalCount = ref(0);
 const totalPage = ref(1);
 
 const pictureBooks = ref<IPictureBook[]>([]);
-
-// 加载失败的图片id列表
-const errorImageIds = ref<Set<string>>(new Set());
-
-const isHorizontalRatio = computed(() => {
-  return (ratio: string) => {
-    console.log(">>>... ratio: ", ratio);
-    return Number(ratio.split(":")[0]) > Number(ratio.split(":")[1]);
-  };
-});
-
-const renderImageHeight = computed(() => {
-  return function (ratio: string) {
-    const r = ratio ? ratio.split(":") : ["16", "9"];
-    const width = Number(r[0]);
-    const height = Number(r[1]);
-
-    return (339 * height) / width;
-  };
-});
 
 onMounted(() => {
   nextTick(async () => {
@@ -289,11 +219,6 @@ function handleViewPictureBook(pb: IPictureBook) {
   //     refresherSuccessVisible.value = false;
   //   },
   // });
-}
-
-function handleImageError(id: string) {
-  console.log(">>>>>> handleImageError: ", id);
-  errorImageIds.value.add(id);
 }
 </script>
 

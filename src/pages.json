@@ -47,7 +47,18 @@
 		{
 			"path": "pages/picture-book-list/picture-book-list",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom",
+				"disableScroll": true,
+				"renderer": "skyline",
+				"componentFramework": "glass-easel",
+				"rendererOptions": {
+					"skyline": {
+						"defaultDisplayBlock": true,
+						"enableScrollViewAutoSize": true,
+						"tagNameStyleIsolation": "legacy"
+					}
+				}
 			}
 		}
 	],

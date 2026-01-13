@@ -58,8 +58,29 @@ export interface IConfirmSceneInfo {
   scenes: IConfirmSceneItem[];
 }
 
+export interface IConfirmCoverData {
+  id: string;
+  taskId: string;
+  prompt: string;
+  prompt_en: string;
+  recordId: string;
+  url?: string;
+}
+
+export interface IConfirmCoverItem {
+  code: number;
+  msg: string;
+  data: IConfirmCoverData;
+}
+export interface IConfirmCoverInfo {
+  id: string;
+  confirmUrl: string;
+  cover: IConfirmCoverItem;
+}
+
 export enum EModalComponent {
   CONFIRM_STORY_MODAL = "ConfirmStoryModal",
   CONFIRM_ROLES_MODAL = "ConfirmRolesModal",
   CONFIRM_SCENES_MODAL = "ConfirmScenesModal",
+  CONFIRM_COVER_MODAL = "ConfirmCoverModal",
 }

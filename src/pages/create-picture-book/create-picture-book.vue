@@ -320,6 +320,7 @@
                   step="1"
                   :value="formData.length"
                   @changing="handleLengthChange"
+                  @change="handleLengthChange"
                 ></slider>
               </view>
             </view>
@@ -509,6 +510,22 @@
                 />
               </view>
             </view>
+
+            <view
+              class="w-full h-[112rpx] flex flex-row items-center justify-center bg-[#F8F9FF] border border-[#E6E9F0] rounded-[16rpx]"
+            >
+              <view
+                class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between"
+              >
+                <text class="text-[32rpx] text-[#666]">自动确认故事封面</text>
+                <switch
+                  :checked="formData.autoConfirmedCover"
+                  :color="mainColor"
+                  style="transform: scale(0.6); transform-origin: right"
+                  @change="changeAutoConfirmedCover"
+                />
+              </view>
+            </view>
           </view>
           <view
             class="w-full h-[160rpx] mt-[12rpx] flex flex-row items-center justify-center"
@@ -569,7 +586,9 @@
                   <div class="spinner-inner"></div>
                   <div class="spinner-inner"></div>
                 </div>
-                <h3 class="text-[36rpx] text-[#333]">正在创作您的绘本...</h3>
+                <h3 class="text-[36rpx] text-[#333]">
+                  正在创作【{{ formData.theme }}】的绘本...
+                </h3>
                 <p
                   class="text-[32rpx] text-[#666]"
                   v-if="generateStep === GenerateStep.generating"
@@ -584,15 +603,21 @@
                 </p>
                 <p
                   class="text-[32rpx] text-[#666]"
-                  v-else-if="generateStep === GenerateStep.confirmRole"
+                  v-else-if="generateStep === GenerateStep.confirmRoles"
                 >
                   请确认角色
                 </p>
                 <p
                   class="text-[32rpx] text-[#666]"
-                  v-else-if="generateStep === GenerateStep.confirmScene"
+                  v-else-if="generateStep === GenerateStep.confirmScenes"
                 >
                   请确认场景
+                </p>
+                <p
+                  class="text-[32rpx] text-[#666]"
+                  v-else-if="generateStep === GenerateStep.confirmCover"
+                >
+                  请确认封面
                 </p>
               </view>
             </view>
@@ -604,6 +629,15 @@
             :picture-style="formData.pictureStyle"
             @on-cancel="handleCancelConfirm"
             @on-confirm="handleConfirmedRole"
+          /> -->
+
+          <!-- <ConfirmCoverModal
+            v-if="modalData?.data"
+            :info="modalData?.data"
+            :ratio="formData.ratio"
+            :picture-style="formData.pictureStyle"
+            @on-cancel="handleCancelConfirm"
+            @on-confirm="handleConfirmedCover"
           /> -->
 
           <view class="w-full h-[4000rpx]"></view>
@@ -646,6 +680,15 @@
         @on-cancel="handleCancelConfirm"
         @on-confirm="handleConfirmedScene"
       />
+
+      <ConfirmCoverModal
+        :info="modalData?.data"
+        :ratio="formData.ratio"
+        :picture-style="formData.pictureStyle"
+        v-else-if="modalData?.component === EModalComponent.CONFIRM_COVER_MODAL"
+        @on-cancel="handleCancelConfirm"
+        @on-confirm="handleConfirmedCover"
+      />
     </page-container>
   </view>
 </template>
@@ -667,6 +710,7 @@ import ConfirmStoryModal from "./modals/ConfirmStoryModal.vue";
 import { EConfirmAction } from "./types";
 import ConfirmRolesModal from "./modals/ConfirmRolesModal.vue";
 import ConfirmScenesModal from "./modals/ConfirmScenesModal.vue";
+import ConfirmCoverModal from "./modals/ConfirmCoverModal.vue";
 
 enum GenerateStep {
   // 未开始
@@ -674,11 +718,13 @@ enum GenerateStep {
   // 生成中
   generating = "generating",
   // 确认故事
-  confirmStory = "confirmStory",
+  confirmStory = "confirm-story",
   // 确认角色
-  confirmRole = "confirmRole",
+  confirmRoles = "confirm-roles",
   // 确认场景
-  confirmScene = "confirmScene",
+  confirmScenes = "confirm-scenes",
+  // 确认封面
+  confirmCover = "confirm-cover",
   // 失败
   failed = "failed",
   // 完成
@@ -699,6 +745,7 @@ const formData = ref({
   autoConfirmedStory: false,
   autoConfirmedRole: false,
   autoConfirmedScene: false,
+  autoConfirmedCover: false,
 });
 
 const selectedThemeIndexes = ref<number[]>([0, 0]);
@@ -898,6 +945,10 @@ function changeAutoConfirmedScene(e: any) {
   formData.value.autoConfirmedScene = e.detail.value;
 }
 
+function changeAutoConfirmedCover(e: any) {
+  formData.value.autoConfirmedCover = e.detail.value;
+}
+
 function validateForm() {
   focusedNode.value = "";
   if (!formData.value.theme) {
@@ -957,16 +1008,23 @@ function doGenerate() {
 
     // const res = {
     //   code: 200,
-    //   message: "请确认故事内容",
-    //   action: "confirm-story",
+    //   message: "请确认故事封面",
+    //   action: "confirm-cover",
     //   data: {
-    //     id: "044822301617c9743c8fbb02",
+    //     id: "fb0a7d88d91fbe2fc1b8d27d",
     //     confirmUrl:
-    //       "https://wf.qyflows.com/webhook-waiting/624814/pb-confirm-story",
-    //     story: {
-    //       title: "亮闪闪的小石头",
-    //       content:
-    //         "在蓝蓝的小河边，住着三个好朋友：小蜗牛悠悠、小青蛙呱呱和小老鼠吱吱。\n一天，他们在草丛里发现了一块亮闪闪、圆润润的蓝色小石头，像一块小小的天空。\n“多美啊！”悠悠说。“我们轮流保管它吧，每人一天。”\n第一天，石头在悠悠那里，他小心地把它放在壳里。\n第二天，石头传给呱呱，他把它顶在头上，像一顶小王冠。\n可是，当呱呱想把石头传给吱吱时，石头不见了！\n“一定是掉进河里了！”呱呱急得快哭了。悠悠也很难过。\n吱吱看着朋友们伤心的样子，心里沉甸甸的。他的手一直揣在口袋里，紧紧握着那块凉凉的、光滑的小石头。他太喜欢它了。\n最后，吱吱低着头走过来，慢慢摊开手掌。\n“对不起……石头在我这里。昨天我就偷偷留下了它。”\n呱呱和悠悠惊讶地看着他，又看看那块石头。\n吱吱觉得手里的石头变得好烫，一点也不美了。\n“谢谢你说真话。”悠悠轻轻说，“现在，它又是那块亮闪闪的石头了。”\n吱吱把石头轻轻放回草丛中央。三个朋友看着它，阳光下的石头，比任何时候都明亮。因为他们知道，最亮闪闪的，是诚实的心。",
+    //       "https://wf.qyflows.com/webhook-waiting/630395/pb-confirm-cover",
+    //     cover: {
+    //       code: 200,
+    //       msg: "success",
+    //       data: {
+    //         taskId: "f6453259e44ed9f9504a0d02ffea574f",
+    //         recordId: "f6453259e44ed9f9504a0d02ffea574f",
+    //         prompt:
+    //           "小熊咕咚和兔子蹦蹦在森林中，蜂蜜四溢，体现温暖诚实和友谊的场景，画面充满生气和童趣。",
+    //         prompt_en:
+    //           "The bear Gudong and rabbit Bengbeng in the forest, honey flowing, a scene filled with warmth, honesty, and friendship, lively and playful imagery.",
+    //       },
     //     },
     //   },
     // };
@@ -981,24 +1039,54 @@ function doGenerate() {
       return;
     }
 
-    if (res.action === "confirm-story") {
+    if (res.action === EConfirmAction.CONFIRM_STORY) {
       generateStep.value = GenerateStep.confirmStory;
       modalData.value = {
         component: EModalComponent.CONFIRM_STORY_MODAL,
         data: res.data,
       };
-      const t = setTimeout(() => {
+      // const t = setTimeout(() => {
+      //   openModal({
+      //     component: EModalComponent.CONFIRM_STORY_MODAL,
+      //     data: res.data,
+      //   });
+      //   clearTimeout(t);
+      // }, 300);
+      nextTick(() => {
         openModal({
           component: EModalComponent.CONFIRM_STORY_MODAL,
           data: res.data,
         });
-        clearTimeout(t);
-      }, 300);
-    } else if (res.action === "confirm-role") {
-      generateStep.value = GenerateStep.confirmRole;
-    } else if (res.action === "confirm-scene") {
-      generateStep.value = GenerateStep.confirmScene;
-    } else if (res.action === "finished") {
+      });
+    } else if (res.action === EConfirmAction.CONFIRM_ROLES) {
+      generateStep.value = GenerateStep.confirmRoles;
+      nextTick(() => {
+        openModal({
+          component: EModalComponent.CONFIRM_ROLES_MODAL,
+          data: res.data,
+        });
+      });
+    } else if (res.action === EConfirmAction.CONFIRM_SCENES) {
+      generateStep.value = GenerateStep.confirmScenes;
+      nextTick(() => {
+        openModal({
+          component: EModalComponent.CONFIRM_SCENES_MODAL,
+          data: res.data,
+        });
+      });
+    } else if (res.action === EConfirmAction.CONFIRM_COVER) {
+      generateStep.value = GenerateStep.confirmCover;
+      modalData.value = {
+        component: EModalComponent.CONFIRM_COVER_MODAL,
+        data: res.data,
+      };
+      nextTick(() => {
+        openModal({
+          component: EModalComponent.CONFIRM_COVER_MODAL,
+          data: res.data,
+        });
+      });
+    } else if (res.action === EConfirmAction.FINISHED) {
       generateStep.value = GenerateStep.finished;
     }
 
@@ -1069,61 +1157,90 @@ function handleCancelConfirm(e: any) {
 function doConfirmRole(e: any) {
   closeModal();
 
-    const t = setTimeout(() => {
-      modalData.value = {
+  const t = setTimeout(() => {
+    modalData.value = {
+      component: EModalComponent.CONFIRM_ROLES_MODAL,
+      data: e.data,
+    };
+
+    nextTick(() => {
+      generateStep.value = GenerateStep.confirmRoles;
+      openModal({
         component: EModalComponent.CONFIRM_ROLES_MODAL,
         data: e.data,
-      };
-
-      nextTick(() => {
-        generateStep.value = GenerateStep.confirmRole;
-        openModal({
-          component: EModalComponent.CONFIRM_ROLES_MODAL,
-          data: e.data,
-        });
       });
-      clearTimeout(t);
-    }, 300);
+    });
+    clearTimeout(t);
+  }, 300);
 }
 
 function doConfirmScene(e: any) {
   closeModal();
 
-    const t = setTimeout(() => {
-      modalData.value = {
+  const t = setTimeout(() => {
+    modalData.value = {
+      component: EModalComponent.CONFIRM_SCENES_MODAL,
+      data: e.data,
+    };
+    nextTick(() => {
+      generateStep.value = GenerateStep.confirmScenes;
+      openModal({
         component: EModalComponent.CONFIRM_SCENES_MODAL,
         data: e.data,
-      };
-      nextTick(() => {
-        generateStep.value = GenerateStep.confirmScene;
-        openModal({
-          component: EModalComponent.CONFIRM_SCENES_MODAL,
-          data: e.data,
-        });
       });
-      clearTimeout(t);
-    }, 300);
+    });
+    clearTimeout(t);
+  }, 300);
+}
+
+function doConfirmCover(e: any) {
+  closeModal();
+
+  const t = setTimeout(() => {
+    modalData.value = {
+      component: EModalComponent.CONFIRM_COVER_MODAL,
+      data: e.data,
+    };
+    nextTick(() => {
+      generateStep.value = GenerateStep.confirmCover;
+      openModal({
+        component: EModalComponent.CONFIRM_COVER_MODAL,
+        data: e.data,
+      });
+    });
+    clearTimeout(t);
+  }, 300);
 }
 
 function doConfirmFinished(e: any) {
   generateStep.value = GenerateStep.finished;
-    closeModal();
-    uni.showToast({
-      title: "绘本生成成功",
-      icon: "none",
-    });
+  closeModal();
+  uni.showToast({
+    title: "绘本生成成功",
+    icon: "none",
+  });
 }
 
 function handleConfirmedRole(e: any) {
   console.log(">>>>> handleConfirmedRole: ", e);
   if (e.action === EConfirmAction.CONFIRM_SCENES) {
     doConfirmScene(e);
+  } else if (e.action === EConfirmAction.CONFIRM_COVER) {
+    doConfirmCover(e);
   } else if (e.action === EConfirmAction.FINISHED) {
     doConfirmFinished(e);
   }
 }
 
 function handleConfirmedScene(e: any) {
+  if (e.action === EConfirmAction.CONFIRM_COVER) {
+    doConfirmCover(e);
+  } else if (e.action === EConfirmAction.FINISHED) {
+    doConfirmFinished(e);
+  }
+}
+
+function handleConfirmedCover(e: any) {
   if (e.action === EConfirmAction.FINISHED) {
     doConfirmFinished(e);
   }
@@ -1135,6 +1252,8 @@ function handleConfirmedStory(e: any) {
     doConfirmRole(e);
   } else if (e.action === EConfirmAction.CONFIRM_SCENES) {
     doConfirmScene(e);
+  } else if (e.action === EConfirmAction.CONFIRM_COVER) {
+    doConfirmCover(e);
   } else if (e.action === EConfirmAction.FINISHED) {
     doConfirmFinished(e);
   }

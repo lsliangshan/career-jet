@@ -142,7 +142,7 @@
           </view>
 
           <view
-            class="absolute left-0 top-0 z-[99] w-full h-full flex flex-row items-end justify-center"
+            class="sticky left-0 bottom-0 z-[99] w-full h-full flex flex-row items-end justify-center"
             v-if="regenerateModalVisible"
           >
             <view

@@ -1,33 +1,46 @@
-import { supportedLevels } from "@/config/config";
-import type { ILevel } from "@/types";
+import type { IPictureBook } from "@/types";
 import { defineStore } from "pinia";
 import { ref } from "vue";
-
-const LocalGameLevelKey = "localGameLevel";
+import { useUserStore } from "./user";
+import { storeToRefs } from "pinia";
+import { requestGetMyPictureBooks } from "@/request";
 
 export const usePictureBookStore = defineStore("picture_book", () => {
-  // 游戏难度级别
-  const level = ref<ILevel>();
+  const userStore = useUserStore();
+  const { loginInfo, isLoggedIn } = storeToRefs(userStore);
 
-  function init() {
-    const localGameLevel = uni.getStorageSync(LocalGameLevelKey);
-    try {
-      const localData = JSON.parse(localGameLevel);
-      level.value = localData;
-    } catch (error) {
-      level.value = supportedLevels[0];
-    }
-  }
+  const myPictureBooks = ref<IPictureBook[]>([]);
 
-  init();
-
-  function setGameLevel(levelData: ILevel) {
-    level.value = levelData;
-    uni.setStorageSync(LocalGameLevelKey, JSON.stringify(levelData));
+  function getMyPictureBooks(params?: {
+    pageIndex?: number;
+    pageSize?: number;
+  }) {
+    return new Promise(async (resolve) => {
+      if (!isLoggedIn.value || !loginInfo.value.id) {
+        uni.showToast({
+          title: "请先登录",
+          icon: "none",
+        });
+        resolve(false);
+        return;
+      }
+      const pageIndex = params?.pageIndex || 1;
+      const pageSize = params?.pageSize || 20;
+      const res = await requestGetMyPictureBooks({
+        userId: loginInfo.value.id,
+        pageIndex,
+        pageSize,
+      });
+      console.log(">>>>>> getMyPictureBooks: ", res);
+      if (res.code === 200) {
+        myPictureBooks.value = res.data.list;
+      }
+      resolve(res);
+    });
   }
 
   return {
-    level,
-    setGameLevel,
+    myPictureBooks,
+    getMyPictureBooks,
   };
 });

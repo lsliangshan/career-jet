@@ -63,3 +63,65 @@ export interface IAnswer {
 export interface IAnswerHistory extends IAnswer {
   question: IQuestion;
 }
+
+export interface IRoleItem {
+  id: string;
+  taskId: string;
+  name: string;
+  prompt: string;
+  prompt_en: string;
+  recordId: string;
+}
+
+export interface ISceneItem {
+  id: string;
+  index: number;
+  taskId: string;
+  name: string;
+  // 当前分镜对应的故事原文
+  content: string;
+  prompt: string;
+  prompt_en: string;
+  recordId: string;
+  roleIds: string[];
+  roleUrls: string[];
+}
+
+export interface IConfigItem {
+  ratio: string;
+  theme: string;
+  length: number;
+  storyId: string;
+  language: string;
+  roleCount: number;
+  sceneCount: number;
+  storyStyle: string;
+  pictureStyle: string;
+  redisExpiredTime: number;
+  autoConfirmedRole: boolean;
+  autoConfirmedScene: boolean;
+  autoConfirmedStory: boolean;
+}
+
+export interface ICoverItem {
+  url: string;
+  prompt: string;
+  taskId: string;
+  recordId: string;
+  prompt_en: string;
+}
+
+export interface IPictureBook {
+  id: string;
+  title: string;
+  content: string;
+  authorId: string;
+  status: number;
+  config: IConfigItem;
+  createAt: string;
+  roles?: IRoleItem[];
+  scenes?: ISceneItem[];
+  cover?: ICoverItem;
+  title_zh?: string;
+  content_zh?: string;
+}

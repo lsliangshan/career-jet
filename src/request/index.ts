@@ -337,7 +337,7 @@ export function requestGeneratePictureBook(params?: {
 }
 
 /**
- * 重新生成角色或场景
+ * 重新生成角色或场景图片
  * @param params
  * @param {string} params.id 角色或场景ID
  * @param {string} params.prompt 角色或场景 提示词
@@ -353,6 +353,58 @@ export function requestGenerateRoleOrScene(params?: {
     uni.request({
       url: `https://wf.qyflows.com/webhook/pb/generate-role-or-scene`,
       // url: `${baseUrl}/pb/generate-role-or-scene`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 重新生成封面图片
+ * @param params
+ * @param {string} params.id 绘本id
+ * @param {string} params.prompt 封面 提示词
+ */
+export function requestGenerateCover(params?: {
+  id: string;
+  prompt: string;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/pb/generate-cover`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 获取我的绘本列表
+ * @param params
+ * @param {string} params.userId 用户ID
+ * @param {number} [params.pageIndex=1] 页码
+ * @param {number} [params.pageSize=20] 每页条数
+ */
+export function requestGetMyPictureBooks(params?: {
+  userId: string;
+  pageIndex?: number;
+  pageSize?: number;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/pb/list-my-picture-books`,
       method: "POST",
       data: { ...params },
       success: (res) => {

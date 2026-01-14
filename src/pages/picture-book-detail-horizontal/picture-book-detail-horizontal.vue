@@ -11,13 +11,15 @@
     <page-container
       :show="modalVisible"
       z-index="999"
-      position="right"
+      position="center"
       overlay-style="background-color: rgba(0,0,0,0.05);"
       custom-style="background-color: transparent;"
       @leave="handleLeave"
     >
       <view
         class="relative w-[100vw] h-[100vh] flex flex-row items-center justify-center"
+        @longpress="handleLongPress"
+        @touchend="handleTouchEnd"
       >
         <swiper
           class="swiper w-full h-full"
@@ -31,6 +33,7 @@
 
         <view
           class="absolute w-[50vw] bg-[rgba(0,0,0,0.2)] backdrop-blur-[24rpx] box-border flex flex-col items-center justify-end pointer-events-none transition-all duration-300"
+          :class="[cleanScreen ? 'opacity-0' : 'opacity-100']"
           :style="{
             padding: `${calcSize(32)}rpx`,
             borderRadius: `${calcSize(24)}rpx`,
@@ -87,6 +90,7 @@
 
         <view
           class="absolute flex flex-row items-center justify-end transition-all duration-300"
+          :class="[cleanScreen ? 'opacity-0' : 'opacity-100']"
           :style="{
             bottom: `${calcSize(32)}rpx`,
             right: `${calcSize(32)}rpx`,
@@ -162,7 +166,11 @@
           </view>
         </view>
 
-        <PbHeader @on-back="handleLeave" />
+        <PbHeader
+          class="transition-all duration-300"
+          :class="[cleanScreen ? 'opacity-0' : 'opacity-100']"
+          @on-back="handleLeave"
+        />
       </view>
     </page-container>
   </view>
@@ -196,6 +204,8 @@ const pbDetail = ref<IPictureBook | null>(null);
 const currentIndex = ref(-1);
 
 const pageReady = ref(false);
+
+const cleanScreen = ref(false);
 
 const calcSize = computed(() => {
   const dpr = Number(
@@ -281,6 +291,14 @@ function handlePrevious() {
 function handleLeave() {
   currentIndex.value = -1;
   modalVisible.value = false;
+}
+
+function handleLongPress(e: any) {
+  cleanScreen.value = true;
+}
+
+function handleTouchEnd(e: any) {
+  cleanScreen.value = false;
 }
 </script>
 

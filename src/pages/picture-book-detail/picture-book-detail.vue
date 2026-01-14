@@ -11,13 +11,15 @@
     <page-container
       :show="modalVisible"
       z-index="999"
-      position="right"
+      position="center"
       overlay-style="background-color: rgba(0,0,0,0.05);"
       custom-style="background-color: transparent;"
       @leave="handleLeave"
     >
       <view
         class="relative w-[100vw] h-[100vh] flex flex-row items-center justify-center"
+        @longpress="handleLongPress"
+        @touchend="handleTouchEnd"
       >
         <swiper
           class="swiper w-full h-full"
@@ -30,7 +32,8 @@
         </swiper>
 
         <view
-          class="absolute left-0 w-full px-[32rpx] box-border bg-[rgba(255,255,255,0.2)] shadow-[0_0_20rpx_20rpx_rgba(255,255,255,0.2)] flex flex-col items-center justify-center pointer-events-none"
+          class="absolute left-0 w-full px-[32rpx] box-border bg-[rgba(255,255,255,0.2)] shadow-[0_0_20rpx_20rpx_rgba(255,255,255,0.2)] flex flex-col items-center justify-center pointer-events-none transition-all duration-300"
+          :class="[cleanScreen ? 'opacity-0' : 'opacity-100']"
           :style="{ bottom: `calc(${safeBottom}px + 88rpx + 32rpx + 24rpx)` }"
         >
           <view
@@ -72,6 +75,7 @@
 
         <view
           class="absolute left-0 w-full h-[88rpx] px-[32rpx] box-border flex flex-row items-center justify-end transition-all duration-300 gap-[12rpx]"
+          :class="[cleanScreen ? 'opacity-0' : 'opacity-100']"
           :style="{ bottom: `calc(${safeBottom}px + 32rpx)` }"
           v-if="pbDetail?.scenes?.length"
         >
@@ -114,7 +118,11 @@
           </view>
         </view>
 
-        <PbHeader @on-back="handleLeave" />
+        <PbHeader
+          @on-back="handleLeave"
+          class="transition-all duration-300"
+          :class="[cleanScreen ? 'opacity-0' : 'opacity-100']"
+        />
       </view>
     </page-container>
   </view>
@@ -148,6 +156,8 @@ const pbDetail = ref<IPictureBook | null>(null);
 const currentIndex = ref(-1);
 
 const pageReady = ref(false);
+
+const cleanScreen = ref(false);
 
 const isHorizontal = computed(() => {
   return (
@@ -229,6 +239,14 @@ function handlePrevious() {
 function handleLeave() {
   currentIndex.value = -1;
   modalVisible.value = false;
+}
+
+function handleLongPress(e: any) {
+  cleanScreen.value = true;
+}
+
+function handleTouchEnd(e: any) {
+  cleanScreen.value = false;
 }
 </script>
 

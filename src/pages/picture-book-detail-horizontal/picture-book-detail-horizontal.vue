@@ -3,91 +3,21 @@
     <PageLoading v-if="!pageReady" />
 
     <template v-else-if="!!pbDetail">
+      <PbHeader @on-back="handleBack" />
+
+      <PbCover :pbDetail="pbDetail" @on-start-reading="handleStartReading" />
+    </template>
+
+    <page-container
+      :show="modalVisible"
+      z-index="999"
+      position="right"
+      overlay-style="background-color: rgba(0,0,0,0.05);"
+      custom-style="background-color: transparent;"
+      @leave="handleLeave"
+    >
       <view
-        class="absolute left-0 top-0 z-[99] box-border flex flex-row items-center justify-between"
-        :style="{
-          width: `calc(${safeTitleWidth}px)`,
-          height: `${calcSize(80)}rpx`,
-          padding: `${calcSize(24)}rpx`,
-          top: `${calcSize(12)}rpx`,
-        }"
-      >
-        <view
-          class="rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
-          :style="{
-            width: `${calcSize(80)}rpx`,
-            height: `${calcSize(80)}rpx`,
-          }"
-          @click="handleBack"
-        >
-          <image
-            class="mr-[8rpx]"
-            :style="{
-              width: `${calcSize(36)}rpx`,
-              height: `${calcSize(36)}rpx`,
-            }"
-            src="@static/icon_back_white.png"
-          ></image>
-        </view>
-
-        <view
-          class="flex flex-row items-center justify-center"
-          :style="{
-            height: `${calcSize(80)}rpx`,
-            gap: `${calcSize(16)}rpx`,
-          }"
-        >
-          <view
-            class="rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
-            :style="{
-              width: `${calcSize(80)}rpx`,
-              height: `${calcSize(80)}rpx`,
-            }"
-          >
-            <image
-              :style="{
-                width: `${calcSize(38)}rpx`,
-                height: `${calcSize(38)}rpx`,
-              }"
-              src="@static/icon_like.png"
-            ></image>
-          </view>
-          <view
-            class="rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
-            :style="{
-              width: `${calcSize(80)}rpx`,
-              height: `${calcSize(80)}rpx`,
-            }"
-          >
-            <image
-              :style="{
-                width: `${calcSize(40)}rpx`,
-                height: `${calcSize(40)}rpx`,
-                marginRight: `${calcSize(8)}rpx`,
-              }"
-              src="@static/icon_share.png"
-            ></image>
-          </view>
-        </view>
-      </view>
-
-      <PbCover
-        :class="[
-          currentIndex === -1
-            ? 'opacity-100 pointer-events-auto'
-            : 'opacity-0 pointer-events-none',
-        ]"
-        :pbDetail="pbDetail"
-        @on-start-reading="handleStartReading"
-      />
-
-      <view
-        class="absolute left-0 top-0 w-full h-full flex flex-row items-center justify-center"
-        :class="[
-          currentIndex >= 0 && currentIndex < pbDetail?.content.length
-            ? 'opacity-100 pointer-events-auto'
-            : 'opacity-0 pointer-events-none',
-        ]"
+        class="relative w-[100vw] h-[100vh] flex flex-row items-center justify-center"
       >
         <swiper
           class="swiper w-full h-full"
@@ -168,8 +98,8 @@
           <view
             class="rounded-full backdrop-blur-md border border-white/20 active:scale-95 transition-all shadow-lg flex items-center justify-center"
             :style="{
-              height: `${calcSize(64)}rpx`,
-              padding: `0 ${calcSize(24)}rpx`,
+              height: `${calcSize(80)}rpx`,
+              padding: `0 ${calcSize(32)}rpx`,
               gap: `${calcSize(12)}rpx`,
               backgroundColor: 'rgba(0,0,0,0.3)',
             }"
@@ -191,7 +121,7 @@
             <text
               class="text-white/95 font-medium"
               :style="{
-                fontSize: `${calcSize(24)}rpx`,
+                fontSize: `${calcSize(30)}rpx`,
               }"
               >{{
                 pbDetail.config.language === "中文" ? "上一页" : "Previous"
@@ -201,8 +131,8 @@
           <view
             class="rounded-full backdrop-blur-md border border-white/20 active:scale-95 transition-all shadow-lg flex items-center justify-center"
             :style="{
-              height: `${calcSize(64)}rpx`,
-              padding: `0 ${calcSize(24)}rpx`,
+              height: `${calcSize(80)}rpx`,
+              padding: `0 ${calcSize(32)}rpx`,
               gap: `${calcSize(12)}rpx`,
               backgroundColor: mainColor,
             }"
@@ -216,7 +146,7 @@
             <text
               class="text-white/95 font-medium"
               :style="{
-                fontSize: `${calcSize(24)}rpx`,
+                fontSize: `${calcSize(30)}rpx`,
               }"
               >{{
                 pbDetail.config.language === "中文" ? "下一页" : "Next"
@@ -231,8 +161,10 @@
             ></image>
           </view>
         </view>
+
+        <PbHeader @on-back="handleLeave" />
       </view>
-    </template>
+    </page-container>
   </view>
 </template>
 
@@ -245,6 +177,7 @@ import PageLoading from "@/components/page-loading/page-loading.vue";
 import PbCover from "./PbCover.vue";
 import PbContent from "./PbContent.vue";
 import { mainColor } from "@/config/config";
+import PbHeader from "./PbHeader.vue";
 
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 88;
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
@@ -254,6 +187,8 @@ const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
 const pictureBookStore = usePictureBookStore();
 
 const id = ref("");
+
+const modalVisible = ref(false);
 
 const pbDetail = ref<IPictureBook | null>(null);
 
@@ -310,6 +245,7 @@ function initPbDetail() {
 
 function handleStartReading() {
   currentIndex.value = 0;
+  modalVisible.value = true;
 }
 
 function handleBack() {
@@ -340,6 +276,11 @@ function handlePrevious() {
   if (currentIndex.value > 0) {
     currentIndex.value--;
   }
+}
+
+function handleLeave() {
+  currentIndex.value = -1;
+  modalVisible.value = false;
 }
 </script>
 

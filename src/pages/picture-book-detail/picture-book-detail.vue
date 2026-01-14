@@ -3,62 +3,21 @@
     <PageLoading v-if="!pageReady" />
 
     <template v-else-if="!!pbDetail">
+      <PbHeader @on-back="handleBack" />
+
+      <PbCover :pbDetail="pbDetail" @on-start-reading="handleStartReading" />
+    </template>
+
+    <page-container
+      :show="modalVisible"
+      z-index="999"
+      position="right"
+      overlay-style="background-color: rgba(0,0,0,0.05);"
+      custom-style="background-color: transparent;"
+      @leave="handleLeave"
+    >
       <view
-        class="absolute left-0 z-[99] h-[80rpx] px-[24rpx] box-border flex flex-row items-center justify-between"
-        :style="{
-          top: `calc(${safeTop}px)`,
-          width: `calc(${safeTitleWidth}px)`,
-        }"
-      >
-        <view
-          class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
-          @click="handleBack"
-        >
-          <image
-            class="w-[36rpx] h-[36rpx] mr-[8rpx]"
-            src="@static/icon_back_white.png"
-          ></image>
-        </view>
-
-        <view
-          class="h-[80rpx] flex flex-row items-center justify-center gap-[16rpx]"
-        >
-          <view
-            class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
-          >
-            <image
-              class="w-[38rpx] h-[38rpx]"
-              src="@static/icon_like.png"
-            ></image>
-          </view>
-          <view
-            class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
-          >
-            <image
-              class="w-[40rpx] h-[40rpx] mr-[8rpx]"
-              src="@static/icon_share.png"
-            ></image>
-          </view>
-        </view>
-      </view>
-
-      <PbCover
-        :class="[
-          currentIndex === -1
-            ? 'opacity-100 pointer-events-auto'
-            : 'opacity-0 pointer-events-none',
-        ]"
-        :pbDetail="pbDetail"
-        @on-start-reading="handleStartReading"
-      />
-
-      <view
-        class="absolute left-0 top-0 w-full h-full flex flex-row items-center justify-center"
-        :class="[
-          currentIndex >= 0 && currentIndex < pbDetail?.content.length
-            ? 'opacity-100 pointer-events-auto'
-            : 'opacity-0 pointer-events-none',
-        ]"
+        class="relative w-[100vw] h-[100vh] flex flex-row items-center justify-center"
       >
         <swiper
           class="swiper w-full h-full"
@@ -74,38 +33,40 @@
           class="absolute left-0 w-full px-[32rpx] box-border bg-[rgba(255,255,255,0.2)] shadow-[0_0_20rpx_20rpx_rgba(255,255,255,0.2)] flex flex-col items-center justify-center pointer-events-none"
           :style="{ bottom: `calc(${safeBottom}px + 88rpx + 32rpx + 24rpx)` }"
         >
-          <view class="w-full py-[32rpx] box-border flex flex-col">
-            <view class="w-full flex flex-row items-center">
-              <text
-                class="text-white/95 text-lg font-medium leading-[1.6] text-shadow-[0_4rpx_20rpx_rgba(0,0,0,0.8),_0_2rpx_6rpx_rgba(0,0,0,0.9)]"
-                >{{ pbDetail?.scenes?.[currentIndex]?.content }}</text
-              >
-            </view>
-          </view>
-
           <view
-            class="w-full flex flex-col items-center justify-center gap-[10rpx]"
+            class="w-full rounded-[24rpx] px-[24rpx] pb-[24rpx] box-border flex flex-col bg-[rgba(0,0,0,0.2)] backdrop-blur-[12rpx]"
           >
-            <view
-              class="w-full h-[32rpx] flex flex-row items-center justify-end"
-            >
-              <text
-                class="text-white/95 text-sm font-medium leading-[1.6] text-shadow-[0_4rpx_20rpx_rgba(0,0,0,0.8),_0_2rpx_6rpx_rgba(0,0,0,0.9)]"
-                >{{ currentIndex + 1 }} /
-                {{ pbDetail?.scenes?.length || 0 }}</text
-              >
+            <view class="w-full py-[32rpx] box-border flex flex-col">
+              <view class="w-full flex flex-row items-center">
+                <text class="text-[#fff] text-[36rpx] leading-[1.2]">{{
+                  pbDetail?.scenes?.[currentIndex]?.content
+                }}</text>
+              </view>
             </view>
-            <progress
-              class="w-full"
-              :percent="
-                Math.round(
-                  ((currentIndex + 1) / (pbDetail?.scenes?.length || 1)) * 100
-                )
-              "
-              stroke-width="1"
-              :activeColor="mainColor"
-              active-mode="forwards"
-            />
+
+            <view
+              class="w-full flex flex-col items-center justify-center gap-[10rpx]"
+            >
+              <view
+                class="w-full h-[32rpx] flex flex-row items-center justify-end"
+              >
+                <text class="text-[#fff] text-sm leading-[1.6]"
+                  >{{ currentIndex + 1 }} /
+                  {{ pbDetail?.scenes?.length || 0 }}</text
+                >
+              </view>
+              <progress
+                class="w-full"
+                :percent="
+                  Math.round(
+                    ((currentIndex + 1) / (pbDetail?.scenes?.length || 1)) * 100
+                  )
+                "
+                stroke-width="1"
+                :activeColor="mainColor"
+                active-mode="forwards"
+              />
+            </view>
           </view>
         </view>
 
@@ -115,7 +76,7 @@
           v-if="pbDetail?.scenes?.length"
         >
           <view
-            class="h-[64rpx] bg-[rgba(0,0,0,0.3)] px-[24rpx] rounded-full backdrop-blur-md border border-white/20 active:scale-95 transition-all shadow-lg flex items-center justify-center gap-[12rpx]"
+            class="h-[80rpx] bg-[rgba(0,0,0,0.3)] px-[32rpx] rounded-full backdrop-blur-md border border-white/20 active:scale-95 transition-all shadow-lg flex items-center justify-center gap-[12rpx]"
             :class="[
               currentIndex > 0
                 ? 'opacity-100 pointer-events-auto'
@@ -132,7 +93,7 @@
             }}</text>
           </view>
           <view
-            class="h-[64rpx] px-[24rpx] rounded-full backdrop-blur-md border border-white/20 active:scale-95 transition-all shadow-lg flex items-center justify-center gap-[12rpx]"
+            class="h-[80rpx] px-[32rpx] rounded-full backdrop-blur-md border border-white/20 active:scale-95 transition-all shadow-lg flex items-center justify-center gap-[12rpx]"
             :class="[
               currentIndex < pbDetail?.scenes?.length - 1
                 ? 'opacity-100 pointer-events-auto'
@@ -152,8 +113,10 @@
             ></image>
           </view>
         </view>
+
+        <PbHeader @on-back="handleLeave" />
       </view>
-    </template>
+    </page-container>
   </view>
 </template>
 
@@ -166,6 +129,7 @@ import PageLoading from "@/components/page-loading/page-loading.vue";
 import PbCover from "./PbCover.vue";
 import PbContent from "./PbContent.vue";
 import { mainColor } from "@/config/config";
+import PbHeader from "./PbHeader.vue";
 
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 88;
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
@@ -175,6 +139,8 @@ const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
 const pictureBookStore = usePictureBookStore();
 
 const id = ref("");
+
+const modalVisible = ref(false);
 
 const pbDetail = ref<IPictureBook | null>(null);
 
@@ -227,6 +193,7 @@ function initPbDetail() {
 
 function handleStartReading() {
   currentIndex.value = 0;
+  modalVisible.value = true;
 }
 
 function handleBack() {
@@ -257,6 +224,11 @@ function handlePrevious() {
   if (currentIndex.value > 0) {
     currentIndex.value--;
   }
+}
+
+function handleLeave() {
+  currentIndex.value = -1;
+  modalVisible.value = false;
 }
 </script>
 

@@ -66,6 +66,13 @@
 			"style": {
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/picture-book-detail-horizontal/picture-book-detail-horizontal",
+			"style": {
+				"navigationStyle": "custom",
+				"pageOrientation": "landscape"
+			}
 		}
 	],
 	"globalStyle": {

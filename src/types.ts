@@ -71,6 +71,7 @@ export interface IRoleItem {
   prompt: string;
   prompt_en: string;
   recordId: string;
+  url: string;
 }
 
 export interface ISceneItem {
@@ -85,6 +86,7 @@ export interface ISceneItem {
   recordId: string;
   roleIds: string[];
   roleUrls: string[];
+  url: string;
 }
 
 export interface IConfigItem {

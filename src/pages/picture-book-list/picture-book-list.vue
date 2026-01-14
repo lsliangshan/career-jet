@@ -175,7 +175,7 @@
 import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import { computed, nextTick, onMounted, ref } from "vue";
-import { IPictureBook } from "@/types";
+import type { IPictureBook } from "@/types";
 import { previewImage } from "@/utils";
 import { usePictureBookStore } from "@/stores/picture_book";
 import { mainColor } from "@/config/config";
@@ -285,12 +285,24 @@ async function getMyPictureBooks() {
 
 function handleViewPictureBook(pb: IPictureBook) {
   console.log(">>> 跳转：", pb);
-  uni.navigateTo({
-    url: `/pages/picture-book-detail/picture-book-detail?id=${pb.id}`,
-    complete: () => {
-      refresherSuccessVisible.value = false;
-    },
-  });
+  if (
+    Number(pb.config.ratio.split(":")[0]) >
+    Number(pb.config.ratio.split(":")[1])
+  ) {
+    uni.navigateTo({
+      url: `/pages/picture-book-detail-horizontal/picture-book-detail-horizontal?id=${pb.id}`,
+      complete: () => {
+        refresherSuccessVisible.value = false;
+      },
+    });
+  } else {
+    uni.navigateTo({
+      url: `/pages/picture-book-detail/picture-book-detail?id=${pb.id}`,
+      complete: () => {
+        refresherSuccessVisible.value = false;
+      },
+    });
+  }
 }
 
 function handleImageError(id: string) {

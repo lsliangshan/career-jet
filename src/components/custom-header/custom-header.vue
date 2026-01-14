@@ -57,14 +57,14 @@ withDefaults(defineProps<Props>(), {
   bgColor: "#fff",
 });
 
-const safeTop = ref(uni.getWindowInfo().safeArea?.top || 88);
+const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
 
 const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
 
 onMounted(() => {
-  nextTick(() => {
-    safeTop.value = uni.getWindowInfo().safeArea?.top || 88;
-  });
+  // nextTick(() => {
+  //   safeTop.value = uni.getWindowInfo().safeArea?.top || 88;
+  // });
 });
 
 function handleBack() {

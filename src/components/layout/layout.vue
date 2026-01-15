@@ -1,6 +1,16 @@
 <template>
   <view
-    class="absolute left-0 w-full"
+    class="fixed left-0 top-0 w-full h-full box-border"
+    :style="{
+      paddingTop: hasHeader
+        ? `calc(88rpx + ${safeTop}px + ${gap || 0}rpx)`
+        : '0',
+    }"
+  >
+    <slot />
+  </view>
+  <!-- <view
+    class="fixed left-0 top-0 w-full h-full"
     :style="{
       top: hasHeader ? `calc(88rpx + ${safeTop}px + ${gap || 0}rpx)` : '0',
       height: hasHeader
@@ -9,7 +19,7 @@
     }"
   >
     <slot />
-  </view>
+  </view> -->
 </template>
 
 <script setup lang="ts">

@@ -52,6 +52,7 @@
                     class="w-full"
                     :style="{ height: `${renderImageHeight}rpx` }"
                     mode="aspectFit"
+                    @load="handleCoverLoaded"
                   ></image>
                 </view>
 
@@ -78,7 +79,7 @@
                 </view>
                 <view
                   class="absolute left-0 top-0 w-full h-full flex flex-row items-center justify-center"
-                  v-if="isRegeneratingCover"
+                  v-if="isRegeneratingCover || isLoadingCover"
                 >
                   <div class="spinner mb-[60rpx]">
                     <div class="spinner-inner"></div>
@@ -260,6 +261,8 @@ const loadingImageIds = ref<Set<string>>(new Set());
 // 是否确认中
 const isConfirming = ref(false);
 
+const isLoadingCover = ref(true);
+
 const regenerateModalVisible = ref(false);
 const regenerateModalReady = ref(false);
 const regenerateModalCover = ref<IConfirmCoverData | null>(null);
@@ -274,9 +277,13 @@ const renderImageHeight = computed(() => {
 });
 
 onMounted(() => {
-  console.log(">>>>>>> props.info: ", props.info);
+  resetData();
   listImageUrls([props.info?.cover.data.taskId]);
 });
+
+function handleCoverLoaded() {
+  isLoadingCover.value = false;
+}
 
 function closeModal() {
   uni.showModal({
@@ -304,6 +311,16 @@ async function listImageUrls(taskIds: string[]) {
   coverImageUrl.value = images.get(props.info.cover.data.taskId);
 }
 
+function resetData() {
+  isConfirming.value = false;
+  regenerateModalVisible.value = false;
+  regenerateModalReady.value = false;
+  regenerateModalCover.value = null;
+  isRegeneratingCover.value = false;
+  coverImageUrl.value = undefined;
+  loadingImageIds.value.clear();
+}
+
 function handleConfirmCover() {
   return new Promise(async (resolve) => {
     if (isConfirming.value || !coverImageUrl.value) {
@@ -327,6 +344,8 @@ function handleConfirmCover() {
         },
       },
     });
+
+    resetData();
 
     if (res.code === 409) {
       uni.showToast({
@@ -358,7 +377,7 @@ function handleConfirmCover() {
 
 function handleAllConfirmed(e: any) {
   emit("on-confirm", {
-    action: e.action as EConfirmAction,
+    action: EConfirmAction.FINISHED,
     data: e.data as any,
   });
 }

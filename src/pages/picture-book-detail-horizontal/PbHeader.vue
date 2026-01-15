@@ -48,6 +48,7 @@
           src="@static/icon_like.png"
         ></image>
       </view>
+
       <view
         class="rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
         :style="{
@@ -55,14 +56,19 @@
           height: `${calcSize(80)}rpx`,
         }"
       >
-        <image
-          :style="{
-            width: `${calcSize(40)}rpx`,
-            height: `${calcSize(40)}rpx`,
-            marginRight: `${calcSize(8)}rpx`,
-          }"
-          src="@static/icon_share.png"
-        ></image>
+        <button
+          open-type="share"
+          class="w-full h-full border-none after:border-none bg-transparent p-0 flex flex-row items-center justify-center"
+        >
+          <image
+            :style="{
+              width: `${calcSize(40)}rpx`,
+              height: `${calcSize(40)}rpx`,
+              marginRight: `${calcSize(8)}rpx`,
+            }"
+            src="@static/icon_share.png"
+          ></image>
+        </button>
       </view>
     </view>
   </view>
@@ -73,6 +79,7 @@ import { computed } from "vue";
 
 const $emit = defineEmits<{
   (e: "on-back"): void;
+  (e: "on-share"): void;
 }>();
 
 const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
@@ -90,6 +97,10 @@ const calcSize = computed(() => {
 
 function handleBack() {
   $emit("on-back");
+}
+
+function handleShare() {
+  $emit("on-share");
 }
 </script>
 

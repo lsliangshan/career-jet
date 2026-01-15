@@ -273,8 +273,6 @@ const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
 const imageUrls = ref<Map<string, string>>(new Map());
 
-const selectedRoleIds = ref<string[]>([]);
-
 // 正在加载图片的id列表
 const loadingImageIds = ref<Set<string>>(new Set());
 
@@ -297,6 +295,7 @@ const renderImageHeight = computed(() => {
 });
 
 onMounted(() => {
+  resetData();
   allRoles.value = props.info.roles.map((role: IConfirmRoleItem) => role.data);
   listImageUrls(
     props.info.roles.map((role: IConfirmRoleItem) => role.data.taskId)
@@ -345,6 +344,16 @@ async function listImageUrls(taskIds: string[]) {
       imageUrls.value.set(id, url);
     }
   });
+}
+
+function resetData() {
+  isConfirming.value = false;
+  regenerateModalVisible.value = false;
+  regenerateModalReady.value = false;
+  regenerateModalRole.value = null;
+  isRegeneratingRole.value = false;
+  imageUrls.value.clear();
+  loadingImageIds.value.clear();
 }
 
 function handleConfirmRoles() {
@@ -502,6 +511,8 @@ function handleConfirmRoles() {
       //     ],
       //   },
       // };
+
+      resetData();
 
       if (res.code === 409) {
         uni.showToast({

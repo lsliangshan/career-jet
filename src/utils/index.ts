@@ -29,3 +29,13 @@ export function uuid(): string {
   const uuidstr = s.join("");
   return uuidstr;
 }
+
+export function navigateBack() {
+  uni.navigateBack({
+    fail: () => {
+      uni.reLaunch({
+        url: "/pages/index/index",
+      });
+    },
+  });
+}

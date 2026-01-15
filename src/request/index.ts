@@ -295,6 +295,7 @@ export function requestGetUserAnswerHistory(params: {
 /**
  * 生成绘本
  * @param params
+ * @param {string} params.userId 用户ID
  * @param {string} params.theme 主题
  * @param {string} params.storyStyle 故事风格
  * @param {string} params.pictureStyle 图画风格
@@ -308,6 +309,7 @@ export function requestGetUserAnswerHistory(params: {
  * @param {boolean} params.autoConfirmedScene 自动确认场景
  */
 export function requestGeneratePictureBook(params?: {
+  userId: string;
   theme: string;
   storyStyle: string;
   pictureStyle: string;
@@ -322,7 +324,7 @@ export function requestGeneratePictureBook(params?: {
 }): Promise<any> {
   return new Promise<any>((resolve) => {
     uni.request({
-      url: `https://wf.qyflows.com/webhook/pb/generate`,
+      url: `https://wf.qyflows.com/webhook-test/pb/generate`,
       // url: `${baseUrl}/pb/generate`,
       method: "POST",
       data: { ...params },

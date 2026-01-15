@@ -711,6 +711,8 @@ import { EConfirmAction } from "./types";
 import ConfirmRolesModal from "./modals/ConfirmRolesModal.vue";
 import ConfirmScenesModal from "./modals/ConfirmScenesModal.vue";
 import ConfirmCoverModal from "./modals/ConfirmCoverModal.vue";
+import { useUserStore } from "@/stores/user";
+import { storeToRefs } from "pinia";
 
 enum GenerateStep {
   // 未开始
@@ -732,6 +734,9 @@ enum GenerateStep {
 }
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
+
+const userStore = useUserStore();
+const { loginInfo, isLoggedIn } = storeToRefs(userStore);
 
 const formData = ref({
   theme: "诚实与正直",
@@ -990,9 +995,18 @@ function validateForm() {
 
 function doGenerate() {
   return new Promise(async (resolve) => {
+    if (!isLoggedIn.value || !loginInfo.value?.id) {
+      uni.showToast({
+        title: "请先登录",
+        icon: "none",
+      });
+      resolve(false);
+      return;
+    }
     generateStep.value = GenerateStep.generating;
 
     const res = await requestGeneratePictureBook({
+      userId: loginInfo.value?.id || "",
       theme: formData.value.theme,
       storyStyle: formData.value.storyStyle,
       pictureStyle: formData.value.pictureStyle,

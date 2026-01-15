@@ -24,13 +24,19 @@
       >
         <image class="w-[38rpx] h-[38rpx]" src="@static/icon_like.png"></image>
       </view>
+
       <view
         class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
       >
-        <image
-          class="w-[40rpx] h-[40rpx] mr-[8rpx]"
-          src="@static/icon_share.png"
-        ></image>
+        <button
+          open-type="share"
+          class="w-full h-full border-none after:border-none bg-transparent p-0 flex flex-row items-center justify-center"
+        >
+          <image
+            class="w-[40rpx] h-[40rpx] mr-[8rpx]"
+            src="@static/icon_share.png"
+          ></image>
+        </button>
       </view>
     </view>
   </view>

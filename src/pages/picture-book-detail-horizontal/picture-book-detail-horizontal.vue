@@ -179,18 +179,16 @@
 <script setup lang="ts">
 import { usePictureBookStore } from "@/stores/picture_book";
 import type { IPictureBook } from "@/types";
-import { onLoad } from "@dcloudio/uni-app";
+import { onLoad, onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
 import { computed, ref } from "vue";
 import PageLoading from "@/components/page-loading/page-loading.vue";
 import PbCover from "./PbCover.vue";
 import PbContent from "./PbContent.vue";
 import { mainColor } from "@/config/config";
 import PbHeader from "./PbHeader.vue";
+import { navigateBack } from "@/utils";
 
-const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 88;
-const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
-
-const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
+// const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
 
 const pictureBookStore = usePictureBookStore();
 
@@ -229,7 +227,6 @@ function initPbDetail() {
       id: id.value,
     })
     .then((res: any) => {
-      console.log(">>>>>> res: ", res);
       if (res.code !== 200) {
         uni.navigateBack({
           fail: () => {
@@ -260,13 +257,7 @@ function handleStartReading() {
 
 function handleBack() {
   if (currentIndex.value === -1) {
-    uni.navigateBack({
-      fail: () => {
-        uni.reLaunch({
-          url: "/pages/index/index",
-        });
-      },
-    });
+    navigateBack();
   } else {
     currentIndex.value = -1;
   }
@@ -300,6 +291,23 @@ function handleLongPress(e: any) {
 function handleTouchEnd(e: any) {
   cleanScreen.value = false;
 }
+
+onShareAppMessage(() => {
+  return {
+    title: pbDetail.value?.title,
+    path:
+      "/pages/picture-book-detail-horizontal/picture-book-detail-horizontal?id=" +
+      id.value,
+    imageUrl: pbDetail.value?.cover?.url || "",
+  };
+});
+
+onShareTimeline(() => {
+  return {
+    title: pbDetail.value?.title,
+    imageUrl: pbDetail.value?.cover?.url || "",
+  };
+});
 </script>
 
 <style scoped>
@@ -308,6 +316,6 @@ function handleTouchEnd(e: any) {
 }
 
 .swiper {
-  background-image: url("https://ww4.sinaimg.cn/mw690/005UJ76vgy1hx8iycyzdyj30rp1o00xt.jpg");
+  background-image: url("https://img.liangqy.com/crawlerjet/picture_book/img/pb_bg.jpg");
 }
 </style>

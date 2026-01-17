@@ -39,6 +39,39 @@
           width: `${calcSize(80)}rpx`,
           height: `${calcSize(80)}rpx`,
         }"
+        v-if="sceneId"
+        @click="handlePlayAudio"
+      >
+        <image
+          v-if="playingSceneId === sceneId"
+          :style="{
+            width: `${calcSize(42)}rpx`,
+            height: `${calcSize(42)}rpx`,
+          }"
+          class="animate-pulse"
+          src="
+            @static/icon_volume_red.png
+          "
+        ></image>
+        <image
+          v-else
+          :style="{
+            width: `${calcSize(42)}rpx`,
+            height: `${calcSize(42)}rpx`,
+          }"
+          src="
+            @static/icon_volume.png
+          "
+        ></image>
+      </view>
+
+      <view
+        class="rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
+        :style="{
+          width: `${calcSize(80)}rpx`,
+          height: `${calcSize(80)}rpx`,
+        }"
+        v-if="sceneId"
       >
         <image
           :style="{
@@ -77,9 +110,17 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
+interface Props {
+  sceneId: string;
+  // 正在播放的场景ID
+  playingSceneId?: string;
+}
+
+const props = defineProps<Props>();
+
 const $emit = defineEmits<{
   (e: "on-back"): void;
-  (e: "on-share"): void;
+  (e: "on-play-audio", sceneId: string): void;
 }>();
 
 const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
@@ -99,8 +140,8 @@ function handleBack() {
   $emit("on-back");
 }
 
-function handleShare() {
-  $emit("on-share");
+function handlePlayAudio() {
+  $emit("on-play-audio", props.sceneId);
 }
 </script>
 

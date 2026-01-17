@@ -4,6 +4,7 @@ import { ref } from "vue";
 import { useUserStore } from "./user";
 import { storeToRefs } from "pinia";
 import {
+  requestGetAudiosByPbIdAndVoiceType,
   requestGetMyPictureBooks,
   requestGetPictureBookDetail,
 } from "@/request";
@@ -51,9 +52,20 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     });
   }
 
+  function getAudiosByPbIdAndVoiceType(params: { pbId: string; voiceType?: number }) {
+    return new Promise(async (resolve) => {
+      const res = await requestGetAudiosByPbIdAndVoiceType({
+        pbId: params.pbId,
+        voiceType: params.voiceType || 502001,
+      });
+      resolve(res);
+    });
+  }
+
   return {
     myPictureBooks,
     getMyPictureBooks,
     getPictureBookDetail,
+    getAudiosByPbIdAndVoiceType,
   };
 });

@@ -373,7 +373,7 @@ export function requestGenerateRoleOrScene(params?: {
  * @param {string} params.id 绘本id
  * @param {string} params.prompt 封面 提示词
  */
-export function requestGenerateCover(params?: {
+export function requestGenerateCover(params: {
   id: string;
   prompt: string;
 }): Promise<any> {
@@ -382,6 +382,34 @@ export function requestGenerateCover(params?: {
       url: `${baseUrl}/pb/generate-cover`,
       method: "POST",
       data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 根据绘本ID和音色ID获取绘本的语音
+ * @param params
+ * @param {string} params.pbId 绘本id
+ * @param {number} [params.voiceType=502001] 音色id
+ */
+export function requestGetAudiosByPbIdAndVoiceType(params: {
+  pbId: string;
+  voiceType?: number;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/pb/get-audios`,
+      method: "POST",
+      data: {
+        ...params,
+        voiceType: params.voiceType || 502001,
+       },
       success: (res) => {
         resolve(res.data);
       },

@@ -3,7 +3,12 @@
     <PageLoading v-if="!pageReady" />
 
     <template v-else-if="!!pbDetail">
-      <PbHeader @on-back="handleBack" />
+      <PbHeader
+        :scene-id="currentIndex > -1 ? pbDetail.scenes?.[currentIndex]?.id : ''"
+        :playing-scene-id="isPlayingAudioSceneId"
+        v-if="pbDetail && pbDetail.scenes"
+        @on-back="handleBack"
+      />
 
       <PbCover :pbDetail="pbDetail" @on-start-reading="handleStartReading" />
     </template>
@@ -169,7 +174,13 @@
         <PbHeader
           class="transition-all duration-300"
           :class="[cleanScreen ? 'opacity-0' : 'opacity-100']"
+          :scene-id="
+            currentIndex > -1 ? pbDetail.scenes?.[currentIndex]?.id : ''
+          "
+          :playing-scene-id="isPlayingAudioSceneId"
           @on-back="handleLeave"
+          @on-play-audio="handlePlayAudio"
+          v-if="pbDetail && pbDetail.scenes && currentIndex !== -1"
         />
       </view>
     </page-container>
@@ -180,7 +191,7 @@
 import { usePictureBookStore } from "@/stores/picture_book";
 import type { IPictureBook } from "@/types";
 import { onLoad, onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
-import { computed, ref } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import PageLoading from "@/components/page-loading/page-loading.vue";
 import PbCover from "./PbCover.vue";
 import PbContent from "./PbContent.vue";
@@ -205,6 +216,16 @@ const pageReady = ref(false);
 
 const cleanScreen = ref(false);
 
+const audioContext = ref<any>(null);
+const isPlayingAudioSceneId = ref<string | undefined>();
+
+const audios = ref<
+  {
+    sceneId: string;
+    url: string;
+  }[]
+>([]);
+
 const calcSize = computed(() => {
   const dpr = Number(
     (
@@ -216,9 +237,35 @@ const calcSize = computed(() => {
   };
 });
 
+watch(
+  () => currentIndex.value,
+  (val) => {
+    handleStopAudio();
+  }
+);
+
 onLoad((options: any) => {
   id.value = options.id;
   initPbDetail();
+
+  nextTick(() => {
+    audioContext.value = uni.createInnerAudioContext();
+    audioContext.value.autoplay = true;
+    audioContext.value.onEnded(() => {
+      isPlayingAudioSceneId.value = undefined;
+    });
+  });
+
+  pictureBookStore
+    .getAudiosByPbIdAndVoiceType({
+      pbId: id.value,
+      voiceType: 502001,
+    })
+    .then((res: any) => {
+      if (res.code === 200 && res.data && res.data.audios) {
+        audios.value = res.data.audios;
+      }
+    });
 });
 
 function initPbDetail() {
@@ -290,6 +337,31 @@ function handleLongPress(e: any) {
 
 function handleTouchEnd(e: any) {
   cleanScreen.value = false;
+}
+
+function handlePlayAudio(sceneId: string) {
+  if (isPlayingAudioSceneId.value && isPlayingAudioSceneId.value === sceneId) {
+    // 暂停播放音频
+    audioContext.value.pause();
+    isPlayingAudioSceneId.value = undefined;
+    return;
+  }
+  if (isPlayingAudioSceneId.value) {
+    handleStopAudio();
+  }
+  isPlayingAudioSceneId.value = sceneId;
+  const audio = audios.value.find((ad) => ad.sceneId === sceneId);
+  if (audio) {
+    audioContext.value.src = audio.url;
+  }
+
+  // 播放音频
+  audioContext.value.play();
+}
+
+function handleStopAudio() {
+  audioContext.value.stop();
+  isPlayingAudioSceneId.value = undefined;
 }
 
 onShareAppMessage(() => {

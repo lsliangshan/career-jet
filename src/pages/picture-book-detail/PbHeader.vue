@@ -21,6 +21,24 @@
     >
       <view
         class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
+        v-if="sceneId"
+        @click="handlePlayAudio"
+      >
+        <image
+          v-if="playingSceneId === sceneId"
+          class="w-[38rpx] h-[38rpx] animate-pulse"
+          src="@static/icon_volume_red.png"
+        ></image>
+        <image
+          v-else
+          class="w-[38rpx] h-[38rpx]"
+          src="@static/icon_volume.png"
+        ></image>
+      </view>
+
+      <view
+        class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
+        v-if="sceneId"
       >
         <image class="w-[38rpx] h-[38rpx]" src="@static/icon_like.png"></image>
       </view>
@@ -43,8 +61,17 @@
 </template>
 
 <script setup lang="ts">
+interface Props {
+  sceneId: string;
+  // 正在播放的场景ID
+  playingSceneId?: string;
+}
+
+const props = defineProps<Props>();
+
 const $emit = defineEmits<{
   (e: "on-back"): void;
+  (e: "on-play-audio", sceneId: string): void;
 }>();
 
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 88;
@@ -54,6 +81,10 @@ const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
 
 function handleBack() {
   $emit("on-back");
+}
+
+function handlePlayAudio() {
+  $emit("on-play-audio", props.sceneId);
 }
 </script>
 

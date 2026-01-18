@@ -21,6 +21,16 @@
     >
       <view
         class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
+        v-if="isMyPictureBook"
+      >
+        <image
+          class="w-[42rpx] h-[42rpx]"
+          src="@static/icon_settings.png"
+        ></image>
+      </view>
+
+      <view
+        class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
         v-if="sceneId"
         @click="handlePlayAudio"
       >
@@ -61,10 +71,15 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useUserStore } from "@/stores/user";
+import { storeToRefs } from "pinia";
+
 interface Props {
   sceneId: string;
   // 正在播放的场景ID
   playingSceneId?: string;
+  authorId?: string;
 }
 
 const props = defineProps<Props>();
@@ -74,10 +89,19 @@ const $emit = defineEmits<{
   (e: "on-play-audio", sceneId: string): void;
 }>();
 
+const userStore = useUserStore();
+
+const {loginInfo} = storeToRefs(userStore);
+
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 88;
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
 const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
+
+const isMyPictureBook = computed(() => {
+  return props.authorId === loginInfo.value?.id;
+});
+
 
 function handleBack() {
   $emit("on-back");

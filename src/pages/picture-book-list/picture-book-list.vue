@@ -75,9 +75,15 @@
                   class="absolute left-0 top-0 w-full h-full bg-[#e8e8e8] flex flex-row items-center justify-center"
                   v-if="!pb.cover?.url || errorImageIds.has(pb.id)"
                 >
-                  <text class="text-[24rpx] text-[#c8c8c8]">{{
+                  <!-- <text class="text-[24rpx] text-[#c8c8c8]">{{
                     !pb.cover?.url ? "暂无封面" : "封面加载失败"
-                  }}</text>
+                  }}</text> -->
+                  <image
+                  class="w-full h-full z-[9]"
+                  :src="isHorizontalRatio(pb.config.ratio) ? 'https://img.liangqy.com/crawlerjet/picture_book/img/pb_default_horizontal.png' : 'https://img.liangqy.com/crawlerjet/picture_book/img/pb_default_vertical.png'"
+                  mode="aspectFill"
+                  @error="handleImageError(pb.id)"
+                />
                 </view>
                 <image
                   class="w-full h-full z-[9]"

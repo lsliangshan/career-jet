@@ -54,7 +54,6 @@ watch(() => props.activeIndex, (newVal) => {
   selectedLanguageIndex.value = newVal;
 }, {
   immediate: true,
-  deep: true,
 });
 
 function handleItemClick(index: number) {

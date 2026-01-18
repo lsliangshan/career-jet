@@ -65,18 +65,17 @@
               <view
                 class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center border border-[#E6E9F0] rounded-[16rpx]"
                 :class="[focusElement === 'ratio' ? 'custom-input' : '']">
-                <view
-                    class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between"
-                    @click="showSelectRatioModal">
-                    <text class="text-[32rpx] text-[#333]">{{
-                      formData.ratio
-                    }}</text>
+                <view class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between"
+                  @click="showSelectRatioModal">
+                  <text class="text-[32rpx] text-[#333]">{{
+                    formData.ratio
+                  }}</text>
 
-                    <view class="w-[24rpx] h-[24rpx] flex flex-row items-center justify-center">
-                      <image src="@static/icon_arraw_right.png" mode="aspectFill" class="w-full h-full rotate-90">
-                      </image>
-                    </view>
+                  <view class="w-[24rpx] h-[24rpx] flex flex-row items-center justify-center">
+                    <image src="@static/icon_arraw_right.png" mode="aspectFill" class="w-full h-full rotate-90">
+                    </image>
                   </view>
+                </view>
               </view>
             </view>
 
@@ -98,7 +97,7 @@
                       : 'text-[32rpx]',
                   ]">{{
                     !formData.storyStyle ? '自定义输入' : formData.storyStyle
-                    }}</text>
+                  }}</text>
 
                   <view class="w-[24rpx] h-[24rpx] flex flex-row items-center justify-center">
                     <image src="@static/icon_arraw_right.png" mode="aspectFill" class="w-full h-full rotate-90">
@@ -136,7 +135,7 @@
                       : 'text-[32rpx]',
                   ]">{{
                     !formData.pictureStyle ? '自定义输入' : formData.pictureStyle
-                    }}</text>
+                  }}</text>
 
                   <view class="w-[24rpx] h-[24rpx] flex flex-row items-center justify-center">
                     <image src="@static/icon_arraw_right.png" mode="aspectFill" class="w-full h-full rotate-90">
@@ -164,24 +163,23 @@
                 <view
                   class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center border border-[#E6E9F0] rounded-[16rpx]"
                   :class="[focusElement === 'language' ? 'custom-input' : '']">
-                  <view
-                      class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between"
-                      @click="showSelectLanguageModal">
-                      <text class="text-[32rpx] text-[#333]">{{
-                        formData.language
-                      }}</text>
+                  <view class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between"
+                    @click="showSelectLanguageModal">
+                    <text class="text-[32rpx] text-[#333]">{{
+                      formData.language
+                    }}</text>
 
-                      <view class="w-[24rpx] h-[24rpx] flex flex-row items-center justify-center">
-                        <image src="@static/icon_arraw_right.png" mode="aspectFill" class="w-full h-full rotate-90">
-                        </image>
-                      </view>
+                    <view class="w-[24rpx] h-[24rpx] flex flex-row items-center justify-center">
+                      <image src="@static/icon_arraw_right.png" mode="aspectFill" class="w-full h-full rotate-90">
+                      </image>
                     </view>
+                  </view>
                 </view>
               </view>
 
               <view class="w-full h-[168rpx] flex flex-col gap-[16rpx]" id="picture-book-length">
                 <view class="w-full h-[64rpx] flex flex-row items-center">
-                  <text class="text-[32rpx] text-[#666]">故事字数（{{ formData.length }}字）</text>
+                  <text class="text-[32rpx] text-[#666]">故事字数<text class="text-[#958a50]">（{{ formData.length }}字）</text></text>
                 </view>
                 <view
                   class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center justify-center border border-[#E6E9F0] rounded-[16rpx]">
@@ -194,72 +192,95 @@
             <view class="w-full h-[168rpx] flex flex-row items-center justify-between gap-[24rpx]">
               <view class="w-full h-[168rpx] flex flex-col gap-[16rpx]" id="picture-book-role-count">
                 <view class="w-full h-[64rpx] flex flex-row items-center justify-between">
-                  <text class="text-[32rpx] text-[#666]">角色个数（{{
+                  <text class="text-[32rpx] text-[#666]">角色个数<text class="text-[#958a50]">（{{
                     formData.roleCount === 0
                       ? "不限制"
                       : formData.roleCount + "个"
-                    }}）</text>
-                  
+                  }}）</text></text>
+
                 </view>
-                <view class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center justify-center border border-[#E6E9F0] rounded-[16rpx]">
-                  <slider class="w-full"
-                     block-size="20" :activeColor="mainColor" :min="0" :max="5"
-                    step="1" :value="formData.roleCount" @changing="handleRoleCountChange"
-                    @change="handleRoleCountChange"></slider>
+                <view
+                  class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center justify-center border border-[#E6E9F0] rounded-[16rpx]">
+                  <slider class="w-full" block-size="20" :activeColor="mainColor" :min="0" :max="5" step="1"
+                    :value="formData.roleCount" @changing="handleRoleCountChange" @change="handleRoleCountChange">
+                  </slider>
                 </view>
               </view>
 
               <view class="w-full h-[168rpx] flex flex-col gap-[16rpx]" id="picture-book-scene-count">
                 <view class="w-full h-[64rpx] flex flex-row items-center justify-between">
-                  <text class="text-[32rpx] text-[#666]">场景个数（{{
+                  <text class="text-[32rpx] text-[#666]">场景个数<text class="text-[#958a50]">（{{
                     formData.sceneCount === 0
                       ? "不限制"
                       : formData.sceneCount + "个"
-                    }}）</text>
+                  }}）</text></text>
                 </view>
-                <view class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center justify-center border border-[#E6E9F0] rounded-[16rpx]">
-                  <slider class="w-full" block-size="20" :activeColor="mainColor" :min="0" :max="20"
-                    step="1" :value="formData.sceneCount" @changing="handleSceneCountChange"
-                    @change="handleSceneCountChange"></slider>
+                <view
+                  class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center justify-center border border-[#E6E9F0] rounded-[16rpx]">
+                  <slider class="w-full" block-size="20" :activeColor="mainColor" :min="0" :max="20" step="1"
+                    :value="formData.sceneCount" @changing="handleSceneCountChange" @change="handleSceneCountChange">
+                  </slider>
                 </view>
               </view>
             </view>
 
-            <view
-              class="w-full h-[112rpx] flex flex-row items-center justify-center bg-[#F8F9FF] border border-[#E6E9F0] rounded-[16rpx]">
-              <view class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between">
-                <text class="text-[32rpx] text-[#666]">自动确认故事内容</text>
-                <switch :checked="formData.autoConfirmedStory" :color="mainColor"
-                  style="transform: scale(0.6); transform-origin: right" @change="changeAutoConfirmedStory" />
+            <view class="w-full flex flex-col gap-[16rpx]">
+              <view class="w-full h-[64rpx] flex flex-row items-center">
+                <text class="text-[32rpx] text-[#666]">自动化设置</text>
+              </view>
+              <view
+                class="w-full bg-[rgba(255,123,172,0.1)] py-[12rpx] px-[24rpx] box-border flex flex-col items-center gap-[24rpx] border border-[rgba(255,123,172,0.3)] rounded-[16rpx]">
+                <view
+                  class="w-full flex flex-row items-center justify-center">
+                  <view class="w-full h-full pt-[12rpx] pb-[24rpx] box-border flex flex-row items-center justify-between border-b border-b-[rgba(255,123,172,0.1)] border-b-[1rpx]">
+                    <view class="w-full flex flex-col">
+                      <text class="leading-[48rpx] text-[30rpx] font-[500] text-[#666]">自动确认故事内容</text>
+                      <text class="leading-[32rpx] text-[24rpx] text-[#958a50]">自动确认故事内容，跳过人工审核故事内容</text>
+                    </view>
+                    <switch :checked="formData.autoConfirmedStory" :color="mainColor"
+                      style="transform: scale(0.6); transform-origin: right" @change="changeAutoConfirmedStory" />
+                  </view>
+                </view>
+
+                <view
+                  class="w-full flex flex-row items-center justify-center">
+                  <view class="w-full h-full pt-[12rpx] pb-[24rpx] box-border flex flex-row items-center justify-between border-b border-b-[rgba(255,123,172,0.1)] border-b-[1rpx]">
+                    <view class="w-full flex flex-col">
+                      <text class="leading-[48rpx] text-[30rpx] font-[500] text-[#666]">自动确认故事角色</text>
+                      <text class="leading-[32rpx] text-[24rpx] text-[#958a50]">让系统自动生成故事角色，跳过人工审核角色</text>
+                    </view>
+                    <switch :checked="formData.autoConfirmedRole" :color="mainColor"
+                      style="transform: scale(0.6); transform-origin: right" @change="changeAutoConfirmedRole" />
+                  </view>
+                </view>
+
+                <view
+                  class="w-full flex flex-row items-center justify-center">
+                  <view class="w-full h-full pt-[12rpx] pb-[24rpx] box-border flex flex-row items-center justify-between border-b border-b-[rgba(255,123,172,0.1)] border-b-[1rpx]">
+                    <view class="w-full flex flex-col">
+                      <text class="leading-[48rpx] text-[30rpx] font-[500] text-[#666]">自动确认故事场景</text>
+                      <text class="leading-[32rpx] text-[24rpx] text-[#958a50]">自动生成所有场景，跳过人工审核场景</text>
+                    </view>
+                    <switch :checked="formData.autoConfirmedScene" :color="mainColor"
+                      style="transform: scale(0.6); transform-origin: right" @change="changeAutoConfirmedScene" />
+                  </view>
+                </view>
+
+                <view
+                  class="w-full flex flex-row items-center justify-center">
+                  <view class="w-full h-full pt-[12rpx] pb-[24rpx] box-border flex flex-row items-center justify-between">
+                    <view class="w-full flex flex-col">
+                      <text class="leading-[48rpx] text-[30rpx] font-[500] text-[#666]">自动确认故事封面</text>
+                      <text class="leading-[32rpx] text-[24rpx] text-[#958a50]">自动生成封面，跳过人工审核封面</text>
+                    </view>
+                    <switch :checked="formData.autoConfirmedCover" :color="mainColor"
+                      style="transform: scale(0.6); transform-origin: right" @change="changeAutoConfirmedCover" />
+                  </view>
+                </view>
               </view>
             </view>
 
-            <view
-              class="w-full h-[112rpx] flex flex-row items-center justify-center bg-[#F8F9FF] border border-[#E6E9F0] rounded-[16rpx]">
-              <view class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between">
-                <text class="text-[32rpx] text-[#666]">自动确认故事角色</text>
-                <switch :checked="formData.autoConfirmedRole" :color="mainColor"
-                  style="transform: scale(0.6); transform-origin: right" @change="changeAutoConfirmedRole" />
-              </view>
-            </view>
 
-            <view
-              class="w-full h-[112rpx] flex flex-row items-center justify-center bg-[#F8F9FF] border border-[#E6E9F0] rounded-[16rpx]">
-              <view class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between">
-                <text class="text-[32rpx] text-[#666]">自动确认故事场景</text>
-                <switch :checked="formData.autoConfirmedScene" :color="mainColor"
-                  style="transform: scale(0.6); transform-origin: right" @change="changeAutoConfirmedScene" />
-              </view>
-            </view>
-
-            <view
-              class="w-full h-[112rpx] flex flex-row items-center justify-center bg-[#F8F9FF] border border-[#E6E9F0] rounded-[16rpx]">
-              <view class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between">
-                <text class="text-[32rpx] text-[#666]">自动确认故事封面</text>
-                <switch :checked="formData.autoConfirmedCover" :color="mainColor"
-                  style="transform: scale(0.6); transform-origin: right" @change="changeAutoConfirmedCover" />
-              </view>
-            </view>
           </view>
           <view class="w-full h-[160rpx] mt-[12rpx] flex flex-row items-center justify-center">
             <view
@@ -277,16 +298,6 @@
                 <text class="text-[32rpx] text-[#fff] font-bold">开始创作绘本</text>
               </template>
               <template v-else>
-                <!-- <view
-                  class="w-[40rpx] h-[40rpx] flex flex-row items-center justify-center"
-                >
-                  <image
-                    src="@static/icon_loading_white.png"
-                    mode="aspectFill"
-                    class="w-full h-full animate-spin"
-                  ></image>
-                </view> -->
-
                 <text class="text-[32rpx] text-[#fff] font-bold">绘本生成中</text>
               </template>
             </view>
@@ -323,23 +334,6 @@
               </view>
             </view>
           </transition>
-
-          <!-- <ConfirmScenesModal
-            :info="modalData?.data"
-            :ratio="formData.ratio"
-            :picture-style="formData.pictureStyle"
-            @on-cancel="handleCancelConfirm"
-            @on-confirm="handleConfirmedRole"
-          /> -->
-
-          <!-- <ConfirmCoverModal
-            v-if="modalData?.data"
-            :info="modalData?.data"
-            :ratio="formData.ratio"
-            :picture-style="formData.pictureStyle"
-            @on-cancel="handleCancelConfirm"
-            @on-confirm="handleConfirmedCover"
-          /> -->
 
           <view class="w-full h-[4000rpx]"></view>
           <view class="w-full" :style="{ height: `${safeBottom}px` }"></view>
@@ -442,7 +436,7 @@ const formData = ref({
   language: "中文",
   roleCount: 0,
   sceneCount: 0,
-  ratio: "16:9",
+  ratio: "9:16",
   autoConfirmedStory: false,
   autoConfirmedRole: false,
   autoConfirmedScene: false,
@@ -468,15 +462,6 @@ const modalData = ref<{
 const generateStep = ref<GenerateStep>(GenerateStep.unstart);
 
 const scrollToElementId = ref<string>("");
-
-const renderMoralityChild = computed(() => {
-  if (selectedThemeIndexes.value[0] === moralities.length) {
-    return ["自定义输入"];
-  }
-  return moralities[selectedThemeIndexes.value[0]].children.map(
-    (item) => item.name
-  );
-});
 
 const renderStoryStyles = computed(() => {
   return [
@@ -604,7 +589,7 @@ function showSelectLanguageModal() {
   modalData.value = {
     component: EModalComponent.SELECT_LANGUAGE_MODAL,
     data: {
-      selectedLanguageIndex: 0,
+      selectedLanguageIndex: -1,
     },
   };
   nextTick(() => {
@@ -622,7 +607,7 @@ function showSelectRatioModal() {
   modalData.value = {
     component: EModalComponent.SELECT_RATIO_MODAL,
     data: {
-      selectedRatioIndex: 0,
+      selectedRatioIndex: -1,
     },
   };
   nextTick(() => {
@@ -689,56 +674,12 @@ function changeCustomPictureStyle(e: any) {
   }
 }
 
-function handleThemeColumnChange(e: any) {
-  selectedThemeIndexes.value[e.detail.column] = e.detail.value;
-  if (e.detail.column === 0) {
-    selectedThemeIndexes.value[1] = 0;
-  }
-}
-
-function handleStoryStylesChange(e: any) {
-  selectedStoryStyleIndex.value = Number(e.detail.value);
-  if (selectedStoryStyleIndex.value === 0) {
-    formData.value.storyStyle = "";
-  } else {
-    formData.value.storyStyle = authors[selectedStoryStyleIndex.value - 1].name;
-  }
-}
-
-function handlePictureStylesChange(e: any) {
-  selectedPictureStyleIndex.value = Number(e.detail.value);
-  if (
-    selectedPictureStyleIndex.value ===
-    renderPictureStyles.value.length - 1
-  ) {
-    formData.value.pictureStyle = "";
-  } else {
-    formData.value.pictureStyle = authors[selectedPictureStyleIndex.value].name;
-  }
-}
-
 function handleLengthChange(e: any) {
   formData.value.length = Number(e.detail.value);
 }
 
-function handleRoleUnlimitedChange(e: any) {
-  if (e.detail.value.includes("role-count")) {
-    formData.value.roleCount = -1;
-  } else {
-    formData.value.roleCount = 3;
-  }
-}
-
 function handleRoleCountChange(e: any) {
   formData.value.roleCount = Number(e.detail.value);
-}
-
-function handleSceneUnlimitedChange(e: any) {
-  if (e.detail.value.includes("scene-count")) {
-    formData.value.sceneCount = -1;
-  } else {
-    formData.value.sceneCount = 8;
-  }
 }
 
 function handleSceneCountChange(e: any) {
@@ -866,13 +807,6 @@ function doGenerate() {
         component: EModalComponent.CONFIRM_STORY_MODAL,
         data: res.data,
       };
-      // const t = setTimeout(() => {
-      //   openModal({
-      //     component: EModalComponent.CONFIRM_STORY_MODAL,
-      //     data: res.data,
-      //   });
-      //   clearTimeout(t);
-      // }, 300);
       nextTick(() => {
         openModal({
           component: EModalComponent.CONFIRM_STORY_MODAL,

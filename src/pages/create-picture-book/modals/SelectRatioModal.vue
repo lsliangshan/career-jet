@@ -9,10 +9,10 @@
       </view>
     </view>
     <view class="w-full flex-1 flex flex-row items-start">
-      <scroll-view class="w-full" scroll-y>
-        <view class="w-full py-[24rpx] px-[24rpx] box-border flex flex-col gap-[24rpx]">
+      <scroll-view class="w-full" scroll-y :style="{ maxHeight: `calc(80vh - 128rpx)` }">
+        <view class="w-full py-[24rpx] px-[24rpx] box-border flex flex-col gap-[12rpx]">
           <view
-            class="w-full px-[24rpx] py-[12rpx] box-border rounded-[16rpx] flex flex-row items-center justify-center gap-[24rpx] transition-all duration-300"
+            class="w-full px-[24rpx] py-[24rpx] box-border rounded-[16rpx] flex flex-row items-center justify-center gap-[24rpx] transition-all duration-300"
             v-for="(item, index) in ratios" :key="item" :style="{
               backgroundColor: selectedRatioIndex === index ? 'rgba(255, 123, 172, 0.1)' : 'transparent',
             }" @click="handleItemClick(index)">

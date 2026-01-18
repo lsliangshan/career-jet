@@ -83,4 +83,8 @@ export enum EModalComponent {
   CONFIRM_ROLES_MODAL = "ConfirmRolesModal",
   CONFIRM_SCENES_MODAL = "ConfirmScenesModal",
   CONFIRM_COVER_MODAL = "ConfirmCoverModal",
+  SELECT_STYLE_MODAL = "SelectStyleModal",
+  SELECT_THEME_MODAL = "SelectThemeModal",
+  SELECT_LANGUAGE_MODAL = "SelectLanguageModal",
+  SELECT_RATIO_MODAL = "SelectRatioModal",
 }

@@ -3,13 +3,8 @@
     <CustomHeader title="创建绘本" show-back title-align="start" />
 
     <Layout hasHeader>
-      <scroll-view
-        type="custom"
-        scroll-y
-        class="w-full h-full overflow-y-auto"
-        :scroll-with-animation="!focusedNode"
-        :scroll-into-view="scrollToElementId"
-      >
+      <scroll-view type="custom" scroll-y class="w-full h-full overflow-y-auto" :scroll-with-animation="!focusedNode"
+        :scroll-into-view="scrollToElementId">
         <view class="page-bg w-full p-[24rpx] box-border">
           <view
             class="w-full h-full px-[32rpx] py-[32rpx] box-border bg-[#fff] rounded-[24rpx] flex flex-col gap-[32rpx] transition-all duration-300"
@@ -17,542 +12,269 @@
               canGenerate
                 ? 'pointer-events-auto opacity-100'
                 : 'pointer-events-none opacity-80',
-            ]"
-            v-if="true"
-          >
-            <view
-              class="w-full h-[60rpx] flex flex-row items-center justify-start gap-[16rpx]"
-            >
-              <view
-                class="w-[36rpx] h-[36rpx] flex flex-row items-center justify-center"
-              >
-                <image
-                  src="@static/icon_keyword.png"
-                  mode="aspectFill"
-                  class="w-full h-full"
-                ></image>
+            ]" v-if="true">
+            <view class="w-full h-[60rpx] flex flex-row items-center justify-start gap-[16rpx]">
+              <view class="w-[36rpx] h-[36rpx] flex flex-row items-center justify-center">
+                <image src="@static/icon_keyword.png" mode="aspectFill" class="w-full h-full"></image>
               </view>
               <text class="text-[36rpx] font-bold text-[#333]">绘本配置</text>
             </view>
 
-            <view
-              class="w-full h-[168rpx] flex flex-col gap-[16rpx]"
-              id="picture-book-theme"
-            >
+            <view class="w-full h-[168rpx] flex flex-col gap-[16rpx]" id="picture-book-theme">
               <view class="w-full h-[64rpx] flex flex-row items-center">
                 <text class="text-[32rpx] text-[#666]">绘本主题</text>
               </view>
               <view
-                class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center border border-[#E6E9F0] rounded-[16rpx]"
-                :class="[focusElement === 'theme' ? 'custom-input' : '']"
-              >
-                <picker
-                  class="relative h-full flex flex-row items-center"
-                  :class="[
+                class="relative w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center border border-[#E6E9F0] rounded-[16rpx]"
+                :class="[focusElement === 'theme' ? 'custom-input' : '']">
+                <view class="h-full px-[24rpx] box-border flex flex-row items-center justify-between" :class="[
+                  selectedThemeIndexes[0] ===
+                    moralities.length
+                    ? 'w-[340rpx]'
+                    : 'w-full',
+                ]" @click="showSelectThemeModal">
+                  <text class="text-[#333]" :class="[
                     selectedThemeIndexes[0] ===
-                    renderMoralityCategory.length - 1
-                      ? 'w-[340rpx]'
-                      : 'w-full',
-                  ]"
-                  mode="multiSelector"
-                  :range="renderMorality"
-                  :value="selectedThemeIndexes"
-                  @change="handleThemeChange"
-                  @columnchange="handleThemeColumnChange"
-                >
-                  <view
-                    class="absolute top-0 left-0 w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between"
-                  >
-                    <text
-                      class="text-[#333]"
-                      :class="[
-                        selectedThemeIndexes[0] ===
-                        renderMoralityCategory.length - 1
-                          ? 'text-[26rpx]'
-                          : 'text-[32rpx]',
-                      ]"
-                      >{{ renderMoralityChild[selectedThemeIndexes[1]] }}</text
-                    >
+                      moralities.length
+                      ? 'text-[26rpx]'
+                      : 'text-[32rpx]',
+                  ]">{{ !formData.theme ? '自定义输入' : formData.theme }}</text>
 
-                    <view
-                      class="w-[24rpx] h-[24rpx] flex flex-row items-center justify-center"
-                    >
-                      <image
-                        src="@static/icon_arraw_right.png"
-                        mode="aspectFill"
-                        class="w-full h-full rotate-90"
-                      >
-                      </image>
-                    </view>
+                  <view class="w-[24rpx] h-[24rpx] flex flex-row items-center justify-center">
+                    <image src="@static/icon_arraw_right.png" mode="aspectFill" class="w-full h-full rotate-90">
+                    </image>
                   </view>
-                </picker>
-                <template
-                  v-if="
-                    selectedThemeIndexes[0] ===
-                    renderMoralityCategory.length - 1
-                  "
-                >
-                  <view
-                    class="w-full h-full border-l border-l-[1rpx] border-l-[#E6E9F0]"
-                  >
-                    <input
-                      type="text"
-                      class="w-full h-full px-[16rpx] box-border"
-                      placeholder="请输入绘本主题"
-                      placeholder-class="custom-input-placeholder"
-                      :focus="focusedNode === 'theme'"
-                      @focus="focusElement = 'theme'"
-                      @blur="focusElement = null"
-                      @change="changeCustomTheme"
-                    />
-                  </view>
-                </template>
-              </view>
-            </view>
-
-            <view
-              class="w-full h-[168rpx] flex flex-col gap-[16rpx]"
-              id="picture-book-story-style"
-            >
-              <view class="w-full h-[64rpx] flex flex-row items-center">
-                <text class="text-[32rpx] text-[#666]">故事风格</text>
-              </view>
-              <view
-                class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center border border-[#E6E9F0] rounded-[16rpx]"
-                :class="[focusElement === 'storyStyle' ? 'custom-input' : '']"
-              >
-                <picker
-                  class="relative h-full flex flex-row items-center"
-                  :class="[
-                    selectedStoryStyleIndex === renderStoryStyles.length - 1
-                      ? 'w-[340rpx]'
-                      : 'w-full',
-                  ]"
-                  mode="selector"
-                  :range="renderStoryStyles"
-                  range-key="name"
-                  :value="selectedStoryStyleIndex"
-                  @change="handleStoryStylesChange"
-                >
-                  <view
-                    class="absolute top-0 left-0 w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between"
-                  >
-                    <text
-                      class="text-[#333]"
-                      :class="[
-                        selectedStoryStyleIndex === renderStoryStyles.length - 1
-                          ? 'text-[26rpx]'
-                          : 'text-[32rpx]',
-                      ]"
-                      >{{
-                        renderStoryStyles[selectedStoryStyleIndex].name
-                      }}</text
-                    >
-
-                    <view
-                      class="w-[24rpx] h-[24rpx] flex flex-row items-center justify-center"
-                    >
-                      <image
-                        src="@static/icon_arraw_right.png"
-                        mode="aspectFill"
-                        class="w-full h-full rotate-90"
-                      >
-                      </image>
-                    </view>
-                  </view>
-                </picker>
-                <template
-                  v-if="
-                    selectedStoryStyleIndex === renderStoryStyles.length - 1
-                  "
-                >
-                  <view
-                    class="w-full h-full border-l border-l-[1rpx] border-l-[#E6E9F0]"
-                  >
-                    <input
-                      type="text"
-                      class="w-full h-full px-[16rpx] box-border"
-                      placeholder="请输入绘本主题"
-                      placeholder-class="custom-input-placeholder"
-                      :focus="focusedNode === 'storyStyle'"
-                      @focus="focusElement = 'storyStyle'"
-                      @blur="focusElement = null"
-                      @change="changeCustomStoryStyle"
-                    />
-                  </view>
-                </template>
-              </view>
-            </view>
-
-            <view
-              class="w-full h-[168rpx] flex flex-col gap-[16rpx]"
-              id="picture-book-picture-style"
-            >
-              <view class="w-full h-[64rpx] flex flex-row items-center">
-                <text class="text-[32rpx] text-[#666]">图画风格</text>
-              </view>
-              <view
-                class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center border border-[#E6E9F0] rounded-[16rpx]"
-                :class="[focusElement === 'pictureStyle' ? 'custom-input' : '']"
-              >
-                <picker
-                  class="relative h-full flex flex-row items-center"
-                  :class="[
-                    selectedPictureStyleIndex === renderPictureStyles.length - 1
-                      ? 'w-[340rpx]'
-                      : 'w-full',
-                  ]"
-                  mode="selector"
-                  :range="renderPictureStyles"
-                  range-key="name"
-                  :value="selectedPictureStyleIndex"
-                  @change="handlePictureStylesChange"
-                >
-                  <view
-                    class="absolute top-0 left-0 w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between"
-                  >
-                    <text
-                      class="text-[#333]"
-                      :class="[
-                        selectedPictureStyleIndex ===
-                        renderPictureStyles.length - 1
-                          ? 'text-[26rpx]'
-                          : 'text-[32rpx]',
-                      ]"
-                      >{{
-                        renderPictureStyles[selectedPictureStyleIndex].name
-                      }}</text
-                    >
-
-                    <view
-                      class="w-[24rpx] h-[24rpx] flex flex-row items-center justify-center"
-                    >
-                      <image
-                        src="@static/icon_arraw_right.png"
-                        mode="aspectFill"
-                        class="w-full h-full rotate-90"
-                      >
-                      </image>
-                    </view>
-                  </view>
-                </picker>
-                <template
-                  v-if="
-                    selectedPictureStyleIndex === renderPictureStyles.length - 1
-                  "
-                >
-                  <view
-                    class="w-full h-full border-l border-l-[1rpx] border-l-[#E6E9F0]"
-                  >
-                    <input
-                      type="text"
-                      class="w-full h-full px-[16rpx] box-border"
-                      placeholder="请输入绘本主题"
-                      placeholder-class="custom-input-placeholder"
-                      :focus="focusedNode === 'pictureStyle'"
-                      @focus="focusElement = 'pictureStyle'"
-                      @blur="focusElement = null"
-                      @change="changeCustomPictureStyle"
-                    />
-                  </view>
-                </template>
-              </view>
-            </view>
-
-            <view
-              class="w-full h-[168rpx] flex flex-col gap-[16rpx]"
-              id="picture-book-language"
-            >
-              <view class="w-full h-[64rpx] flex flex-row items-center">
-                <text class="text-[32rpx] text-[#666]">故事语言</text>
-              </view>
-              <view
-                class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center border border-[#E6E9F0] rounded-[16rpx]"
-                :class="[focusElement === 'language' ? 'custom-input' : '']"
-              >
-                <picker
-                  class="relative w-full h-full flex flex-row items-center"
-                  mode="selector"
-                  :range="languages"
-                  :value="selectedLanguageIndex"
-                  @change="handleLanguageChange"
-                >
-                  <view
-                    class="absolute top-0 left-0 w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between"
-                  >
-                    <text class="text-[32rpx] text-[#333]">{{
-                      languages[selectedLanguageIndex]
-                    }}</text>
-
-                    <view
-                      class="w-[24rpx] h-[24rpx] flex flex-row items-center justify-center"
-                    >
-                      <image
-                        src="@static/icon_arraw_right.png"
-                        mode="aspectFill"
-                        class="w-full h-full rotate-90"
-                      >
-                      </image>
-                    </view>
-                  </view>
-                </picker>
-              </view>
-            </view>
-
-            <view
-              class="w-full h-[168rpx] flex flex-col gap-[16rpx]"
-              id="picture-book-length"
-            >
-              <view class="w-full h-[64rpx] flex flex-row items-center">
-                <text class="text-[32rpx] text-[#666]"
-                  >故事字数（{{ formData.length }}字）</text
-                >
-              </view>
-              <view
-                class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center justify-center"
-              >
-                <slider
-                  class="w-full"
-                  block-size="20"
-                  :activeColor="mainColor"
-                  :min="100"
-                  :max="1000"
-                  step="1"
-                  :value="formData.length"
-                  @changing="handleLengthChange"
-                  @change="handleLengthChange"
-                ></slider>
-              </view>
-            </view>
-
-            <view
-              class="w-full h-[168rpx] flex flex-col gap-[16rpx]"
-              id="picture-book-role-count"
-            >
-              <view
-                class="w-full h-[64rpx] flex flex-row items-center justify-between"
-              >
-                <text class="text-[32rpx] text-[#666]"
-                  >角色个数（{{
-                    formData.roleCount === -1
-                      ? "不限制个数"
-                      : formData.roleCount + "个"
-                  }}）</text
-                >
-                <view
-                  class="w-[200rpx] h-full flex flex-row items-center gap-[12rpx]"
-                >
-                  <checkbox-group @change="handleRoleUnlimitedChange">
-                    <label>
-                      <checkbox
-                        value="role-count"
-                        :color="mainColor"
-                        style="transform: scale(0.6)"
-                        :checked="formData.roleCount === -1"
-                      />
-                      <text class="text-[24rpx] text-[#333]">不限制个数</text>
-                    </label>
-                  </checkbox-group>
                 </view>
-              </view>
-              <view
-                class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center justify-center"
-              >
-                <slider
-                  class="w-full"
-                  :class="[formData.roleCount === -1 ? 'opacity-50' : '']"
-                  :disabled="formData.roleCount === -1"
-                  block-size="20"
-                  :activeColor="mainColor"
-                  :min="2"
-                  :max="5"
-                  step="1"
-                  :value="formData.roleCount"
-                  @changing="handleRoleCountChange"
-                  @change="handleRoleCountChange"
-                ></slider>
+                <template v-if="
+                  selectedThemeIndexes[0] ===
+                  moralities.length
+                ">
+                  <view class="w-full h-full border-l border-l-[1rpx] border-l-[#E6E9F0]">
+                    <input type="text" class="w-full h-full px-[16rpx] box-border" placeholder="请输入绘本主题"
+                      placeholder-class="custom-input-placeholder" :focus="focusedNode === 'theme'"
+                      @focus="focusElement = 'theme'" @blur="focusElement = null" @change="changeCustomTheme" />
+                  </view>
+                </template>
               </view>
             </view>
 
-            <view
-              class="w-full h-[168rpx] flex flex-col gap-[16rpx]"
-              id="picture-book-scene-count"
-            >
-              <view
-                class="w-full h-[64rpx] flex flex-row items-center justify-between"
-              >
-                <text class="text-[32rpx] text-[#666]"
-                  >场景个数（{{
-                    formData.sceneCount === -1
-                      ? "不限制个数"
-                      : formData.sceneCount + "个"
-                  }}）</text
-                >
-                <view
-                  class="w-[200rpx] h-full flex flex-row items-center gap-[12rpx]"
-                >
-                  <checkbox-group @change="handleSceneUnlimitedChange">
-                    <label>
-                      <checkbox
-                        value="scene-count"
-                        :color="mainColor"
-                        style="transform: scale(0.6)"
-                        :checked="formData.sceneCount === -1"
-                      />
-                      <text class="text-[24rpx] text-[#333]">不限制个数</text>
-                    </label>
-                  </checkbox-group>
-                </view>
-              </view>
-              <view
-                class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center justify-center"
-              >
-                <slider
-                  class="w-full"
-                  :class="[formData.sceneCount === -1 ? 'opacity-50' : '']"
-                  :disabled="formData.sceneCount === -1"
-                  block-size="20"
-                  :activeColor="mainColor"
-                  :min="2"
-                  :max="20"
-                  step="1"
-                  :value="formData.sceneCount"
-                  @changing="handleSceneCountChange"
-                  @change="handleSceneCountChange"
-                ></slider>
-              </view>
-            </view>
-
-            <view
-              class="w-full h-[168rpx] flex flex-col gap-[16rpx]"
-              id="picture-book-ratio"
-            >
+            <view class="w-full h-[168rpx] flex flex-col gap-[16rpx]" id="picture-book-ratio">
               <view class="w-full h-[64rpx] flex flex-row items-center">
                 <text class="text-[32rpx] text-[#666]">绘本比例</text>
               </view>
               <view
                 class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center border border-[#E6E9F0] rounded-[16rpx]"
-                :class="[focusElement === 'ratio' ? 'custom-input' : '']"
-              >
-                <picker
-                  class="relative w-full h-full flex flex-row items-center"
-                  mode="selector"
-                  :range="ratios"
-                  :value="selectedRatioIndex"
-                  @change="handleRatioChange"
-                >
-                  <view
-                    class="absolute top-0 left-0 w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between"
-                  >
+                :class="[focusElement === 'ratio' ? 'custom-input' : '']">
+                <view
+                    class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between"
+                    @click="showSelectRatioModal">
                     <text class="text-[32rpx] text-[#333]">{{
-                      ratios[selectedRatioIndex]
+                      formData.ratio
                     }}</text>
 
-                    <view
-                      class="w-[24rpx] h-[24rpx] flex flex-row items-center justify-center"
-                    >
-                      <image
-                        src="@static/icon_arraw_right.png"
-                        mode="aspectFill"
-                        class="w-full h-full rotate-90"
-                      >
+                    <view class="w-[24rpx] h-[24rpx] flex flex-row items-center justify-center">
+                      <image src="@static/icon_arraw_right.png" mode="aspectFill" class="w-full h-full rotate-90">
                       </image>
                     </view>
                   </view>
-                </picker>
+              </view>
+            </view>
+
+            <view class="w-full h-[168rpx] flex flex-col gap-[16rpx]" id="picture-book-story-style">
+              <view class="w-full h-[64rpx] flex flex-row items-center">
+                <text class="text-[32rpx] text-[#666]">故事风格</text>
+              </view>
+              <view
+                class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center border border-[#E6E9F0] rounded-[16rpx]"
+                :class="[focusElement === 'storyStyle' ? 'custom-input' : '']">
+                <view class="h-full px-[24rpx] box-border flex flex-row items-center justify-between" :class="[
+                  selectedStoryStyleIndex === renderStoryStyles.length - 1
+                    ? 'w-[340rpx]'
+                    : 'w-full',
+                ]" @click="showSelectStoryStyleModal">
+                  <text class="text-[#333]" :class="[
+                    selectedStoryStyleIndex === renderStoryStyles.length - 1
+                      ? 'text-[26rpx]'
+                      : 'text-[32rpx]',
+                  ]">{{
+                    !formData.storyStyle ? '自定义输入' : formData.storyStyle
+                    }}</text>
+
+                  <view class="w-[24rpx] h-[24rpx] flex flex-row items-center justify-center">
+                    <image src="@static/icon_arraw_right.png" mode="aspectFill" class="w-full h-full rotate-90">
+                    </image>
+                  </view>
+                </view>
+                <template v-if="
+                  selectedStoryStyleIndex === renderStoryStyles.length - 1
+                ">
+                  <view class="w-full h-full border-l border-l-[1rpx] border-l-[#E6E9F0]">
+                    <input type="text" class="w-full h-full px-[16rpx] box-border" placeholder="请输入绘本主题"
+                      placeholder-class="custom-input-placeholder" :focus="focusedNode === 'storyStyle'"
+                      @focus="focusElement = 'storyStyle'" @blur="focusElement = null"
+                      @change="changeCustomStoryStyle" />
+                  </view>
+                </template>
+              </view>
+            </view>
+
+            <view class="w-full h-[168rpx] flex flex-col gap-[16rpx]" id="picture-book-picture-style">
+              <view class="w-full h-[64rpx] flex flex-row items-center">
+                <text class="text-[32rpx] text-[#666]">图画风格</text>
+              </view>
+              <view
+                class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center border border-[#E6E9F0] rounded-[16rpx]"
+                :class="[focusElement === 'pictureStyle' ? 'custom-input' : '']">
+                <view class="px-[24rpx] box-border flex flex-row items-center justify-between" :class="[
+                  selectedPictureStyleIndex === renderPictureStyles.length - 1
+                    ? 'w-[340rpx]'
+                    : 'w-full',
+                ]" @click="showSelectPictureStyleModal">
+                  <text class="text-[#333]" :class="[
+                    selectedPictureStyleIndex === renderPictureStyles.length - 1
+                      ? 'text-[26rpx]'
+                      : 'text-[32rpx]',
+                  ]">{{
+                    !formData.pictureStyle ? '自定义输入' : formData.pictureStyle
+                    }}</text>
+
+                  <view class="w-[24rpx] h-[24rpx] flex flex-row items-center justify-center">
+                    <image src="@static/icon_arraw_right.png" mode="aspectFill" class="w-full h-full rotate-90">
+                    </image>
+                  </view>
+                </view>
+                <template v-if="
+                  selectedPictureStyleIndex === renderPictureStyles.length - 1
+                ">
+                  <view class="w-full h-full border-l border-l-[1rpx] border-l-[#E6E9F0]">
+                    <input type="text" class="w-full h-full px-[16rpx] box-border" placeholder="请输入绘本主题"
+                      placeholder-class="custom-input-placeholder" :focus="focusedNode === 'pictureStyle'"
+                      @focus="focusElement = 'pictureStyle'" @blur="focusElement = null"
+                      @change="changeCustomPictureStyle" />
+                  </view>
+                </template>
+              </view>
+            </view>
+
+            <view class="w-full h-[168rpx] flex flex-row items-center justify-between gap-[24rpx]">
+              <view class="w-full h-[168rpx] flex flex-col gap-[16rpx]" id="picture-book-language">
+                <view class="w-full h-[64rpx] flex flex-row items-center">
+                  <text class="text-[32rpx] text-[#666]">故事语言</text>
+                </view>
+                <view
+                  class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center border border-[#E6E9F0] rounded-[16rpx]"
+                  :class="[focusElement === 'language' ? 'custom-input' : '']">
+                  <view
+                      class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between"
+                      @click="showSelectLanguageModal">
+                      <text class="text-[32rpx] text-[#333]">{{
+                        formData.language
+                      }}</text>
+
+                      <view class="w-[24rpx] h-[24rpx] flex flex-row items-center justify-center">
+                        <image src="@static/icon_arraw_right.png" mode="aspectFill" class="w-full h-full rotate-90">
+                        </image>
+                      </view>
+                    </view>
+                </view>
+              </view>
+
+              <view class="w-full h-[168rpx] flex flex-col gap-[16rpx]" id="picture-book-length">
+                <view class="w-full h-[64rpx] flex flex-row items-center">
+                  <text class="text-[32rpx] text-[#666]">故事字数（{{ formData.length }}字）</text>
+                </view>
+                <view
+                  class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center justify-center border border-[#E6E9F0] rounded-[16rpx]">
+                  <slider class="w-full" block-size="20" :activeColor="mainColor" :min="100" :max="1000" step="1"
+                    :value="formData.length" @changing="handleLengthChange" @change="handleLengthChange"></slider>
+                </view>
+              </view>
+            </view>
+
+            <view class="w-full h-[168rpx] flex flex-row items-center justify-between gap-[24rpx]">
+              <view class="w-full h-[168rpx] flex flex-col gap-[16rpx]" id="picture-book-role-count">
+                <view class="w-full h-[64rpx] flex flex-row items-center justify-between">
+                  <text class="text-[32rpx] text-[#666]">角色个数（{{
+                    formData.roleCount === 0
+                      ? "不限制"
+                      : formData.roleCount + "个"
+                    }}）</text>
+                  
+                </view>
+                <view class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center justify-center border border-[#E6E9F0] rounded-[16rpx]">
+                  <slider class="w-full"
+                     block-size="20" :activeColor="mainColor" :min="0" :max="5"
+                    step="1" :value="formData.roleCount" @changing="handleRoleCountChange"
+                    @change="handleRoleCountChange"></slider>
+                </view>
+              </view>
+
+              <view class="w-full h-[168rpx] flex flex-col gap-[16rpx]" id="picture-book-scene-count">
+                <view class="w-full h-[64rpx] flex flex-row items-center justify-between">
+                  <text class="text-[32rpx] text-[#666]">场景个数（{{
+                    formData.sceneCount === 0
+                      ? "不限制"
+                      : formData.sceneCount + "个"
+                    }}）</text>
+                </view>
+                <view class="w-full h-[88rpx] bg-[#F8F9FF] flex flex-row items-center justify-center border border-[#E6E9F0] rounded-[16rpx]">
+                  <slider class="w-full" block-size="20" :activeColor="mainColor" :min="0" :max="20"
+                    step="1" :value="formData.sceneCount" @changing="handleSceneCountChange"
+                    @change="handleSceneCountChange"></slider>
+                </view>
               </view>
             </view>
 
             <view
-              class="w-full h-[112rpx] flex flex-row items-center justify-center bg-[#F8F9FF] border border-[#E6E9F0] rounded-[16rpx]"
-            >
-              <view
-                class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between"
-              >
+              class="w-full h-[112rpx] flex flex-row items-center justify-center bg-[#F8F9FF] border border-[#E6E9F0] rounded-[16rpx]">
+              <view class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between">
                 <text class="text-[32rpx] text-[#666]">自动确认故事内容</text>
-                <switch
-                  :checked="formData.autoConfirmedStory"
-                  :color="mainColor"
-                  style="transform: scale(0.6); transform-origin: right"
-                  @change="changeAutoConfirmedStory"
-                />
+                <switch :checked="formData.autoConfirmedStory" :color="mainColor"
+                  style="transform: scale(0.6); transform-origin: right" @change="changeAutoConfirmedStory" />
               </view>
             </view>
 
             <view
-              class="w-full h-[112rpx] flex flex-row items-center justify-center bg-[#F8F9FF] border border-[#E6E9F0] rounded-[16rpx]"
-            >
-              <view
-                class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between"
-              >
+              class="w-full h-[112rpx] flex flex-row items-center justify-center bg-[#F8F9FF] border border-[#E6E9F0] rounded-[16rpx]">
+              <view class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between">
                 <text class="text-[32rpx] text-[#666]">自动确认故事角色</text>
-                <switch
-                  :checked="formData.autoConfirmedRole"
-                  :color="mainColor"
-                  style="transform: scale(0.6); transform-origin: right"
-                  @change="changeAutoConfirmedRole"
-                />
+                <switch :checked="formData.autoConfirmedRole" :color="mainColor"
+                  style="transform: scale(0.6); transform-origin: right" @change="changeAutoConfirmedRole" />
               </view>
             </view>
 
             <view
-              class="w-full h-[112rpx] flex flex-row items-center justify-center bg-[#F8F9FF] border border-[#E6E9F0] rounded-[16rpx]"
-            >
-              <view
-                class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between"
-              >
+              class="w-full h-[112rpx] flex flex-row items-center justify-center bg-[#F8F9FF] border border-[#E6E9F0] rounded-[16rpx]">
+              <view class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between">
                 <text class="text-[32rpx] text-[#666]">自动确认故事场景</text>
-                <switch
-                  :checked="formData.autoConfirmedScene"
-                  :color="mainColor"
-                  style="transform: scale(0.6); transform-origin: right"
-                  @change="changeAutoConfirmedScene"
-                />
+                <switch :checked="formData.autoConfirmedScene" :color="mainColor"
+                  style="transform: scale(0.6); transform-origin: right" @change="changeAutoConfirmedScene" />
               </view>
             </view>
 
             <view
-              class="w-full h-[112rpx] flex flex-row items-center justify-center bg-[#F8F9FF] border border-[#E6E9F0] rounded-[16rpx]"
-            >
-              <view
-                class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between"
-              >
+              class="w-full h-[112rpx] flex flex-row items-center justify-center bg-[#F8F9FF] border border-[#E6E9F0] rounded-[16rpx]">
+              <view class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-between">
                 <text class="text-[32rpx] text-[#666]">自动确认故事封面</text>
-                <switch
-                  :checked="formData.autoConfirmedCover"
-                  :color="mainColor"
-                  style="transform: scale(0.6); transform-origin: right"
-                  @change="changeAutoConfirmedCover"
-                />
+                <switch :checked="formData.autoConfirmedCover" :color="mainColor"
+                  style="transform: scale(0.6); transform-origin: right" @change="changeAutoConfirmedCover" />
               </view>
             </view>
           </view>
-          <view
-            class="w-full h-[160rpx] mt-[12rpx] flex flex-row items-center justify-center"
-          >
+          <view class="w-full h-[160rpx] mt-[12rpx] flex flex-row items-center justify-center">
             <view
               class="w-full h-[112rpx] rounded-[24rpx] flex flex-row items-center justify-center gap-[16rpx] transition-all duration-300"
               :class="[
                 canGenerate
                   ? 'generate-btn-active active:scale-95'
                   : 'generate-btn-disabled',
-              ]"
-              @click="generate"
-            >
+              ]" @click="generate">
               <template v-if="canGenerate">
-                <view
-                  class="w-[40rpx] h-[40rpx] flex flex-row items-center justify-center"
-                >
-                  <image
-                    src="@static/icon_hot.png"
-                    mode="aspectFill"
-                    class="w-full h-full"
-                  ></image>
+                <view class="w-[40rpx] h-[40rpx] flex flex-row items-center justify-center">
+                  <image src="@static/icon_hot.png" mode="aspectFill" class="w-full h-full"></image>
                 </view>
 
-                <text class="text-[32rpx] text-[#fff] font-bold"
-                  >开始创作绘本</text
-                >
+                <text class="text-[32rpx] text-[#fff] font-bold">开始创作绘本</text>
               </template>
               <template v-else>
                 <!-- <view
@@ -565,23 +287,17 @@
                   ></image>
                 </view> -->
 
-                <text class="text-[32rpx] text-[#fff] font-bold"
-                  >绘本生成中</text
-                >
+                <text class="text-[32rpx] text-[#fff] font-bold">绘本生成中</text>
               </template>
             </view>
           </view>
 
           <transition name="fade">
-            <view
-              id="picture-book-generate-panel"
-              class="sticky top-0 left-0 w-full py-[24rpx] box-border"
-              v-if="!canGenerate"
-            >
+            <view id="picture-book-generate-panel" class="sticky top-0 left-0 w-full py-[24rpx] box-border"
+              v-if="!canGenerate">
               <view
                 class="w-full h-full py-[32rpx] box-border rounded-[24rpx] border border-dashed border-[1rpx] bg-[#fff] flex flex-col items-center justify-center gap-[16rpx]"
-                :style="{ borderColor: mainColor }"
-              >
+                :style="{ borderColor: mainColor }">
                 <div class="spinner">
                   <div class="spinner-inner"></div>
                   <div class="spinner-inner"></div>
@@ -589,34 +305,19 @@
                 <h3 class="text-[36rpx] text-[#333]">
                   正在创作【{{ formData.theme }}】的绘本...
                 </h3>
-                <p
-                  class="text-[32rpx] text-[#666]"
-                  v-if="generateStep === GenerateStep.generating"
-                >
+                <p class="text-[32rpx] text-[#666]" v-if="generateStep === GenerateStep.generating">
                   正在生成【{{ formData.theme }}】的故事
                 </p>
-                <p
-                  class="text-[32rpx] text-[#666]"
-                  v-else-if="generateStep === GenerateStep.confirmStory"
-                >
+                <p class="text-[32rpx] text-[#666]" v-else-if="generateStep === GenerateStep.confirmStory">
                   请确认故事内容
                 </p>
-                <p
-                  class="text-[32rpx] text-[#666]"
-                  v-else-if="generateStep === GenerateStep.confirmRoles"
-                >
+                <p class="text-[32rpx] text-[#666]" v-else-if="generateStep === GenerateStep.confirmRoles">
                   请确认角色
                 </p>
-                <p
-                  class="text-[32rpx] text-[#666]"
-                  v-else-if="generateStep === GenerateStep.confirmScenes"
-                >
+                <p class="text-[32rpx] text-[#666]" v-else-if="generateStep === GenerateStep.confirmScenes">
                   请确认场景
                 </p>
-                <p
-                  class="text-[32rpx] text-[#666]"
-                  v-else-if="generateStep === GenerateStep.confirmCover"
-                >
+                <p class="text-[32rpx] text-[#666]" v-else-if="generateStep === GenerateStep.confirmCover">
                   请确认封面
                 </p>
               </view>
@@ -646,49 +347,40 @@
       </scroll-view>
     </Layout>
 
-    <page-container
-      :show="modalVisible"
-      z-index="999"
-      round
-      overlay-style="background-color: rgba(0,0,0,0.05);"
-      custom-style="background-color: transparent;"
-    >
-      <ConfirmStoryModal
-        :info="modalData?.data"
-        v-if="modalData?.component === EModalComponent.CONFIRM_STORY_MODAL"
-        @on-confirm="handleConfirmedStory"
-        @on-regenerate="handleRegenerateStory"
-        @on-cancel="handleCancelConfirm"
-      />
+    <page-container :show="modalVisible" z-index="999" round
+      :overlay-style="modalData?.component?.startsWith('Confirm') ? 'background-color: rgba(0,0,0,0.05);' : ''"
+      custom-style="background-color: transparent;" @leave="closeModal">
+      <ConfirmStoryModal :info="modalData?.data" v-if="modalData?.component === EModalComponent.CONFIRM_STORY_MODAL"
+        @on-confirm="handleConfirmedStory" @on-regenerate="handleRegenerateStory" @on-cancel="handleCancelConfirm" />
 
-      <ConfirmRolesModal
-        :info="modalData?.data"
-        :ratio="formData.ratio"
-        :picture-style="formData.pictureStyle"
-        v-else-if="modalData?.component === EModalComponent.CONFIRM_ROLES_MODAL"
-        @on-cancel="handleCancelConfirm"
-        @on-confirm="handleConfirmedRole"
-      />
+      <ConfirmRolesModal :info="modalData?.data" :ratio="formData.ratio" :picture-style="formData.pictureStyle"
+        v-else-if="modalData?.component === EModalComponent.CONFIRM_ROLES_MODAL" @on-cancel="handleCancelConfirm"
+        @on-confirm="handleConfirmedRole" />
 
-      <ConfirmScenesModal
-        :info="modalData?.data"
-        :ratio="formData.ratio"
-        :picture-style="formData.pictureStyle"
+      <ConfirmScenesModal :info="modalData?.data" :ratio="formData.ratio" :picture-style="formData.pictureStyle"
         v-else-if="
           modalData?.component === EModalComponent.CONFIRM_SCENES_MODAL
-        "
-        @on-cancel="handleCancelConfirm"
-        @on-confirm="handleConfirmedScene"
-      />
+        " @on-cancel="handleCancelConfirm" @on-confirm="handleConfirmedScene" />
 
-      <ConfirmCoverModal
-        :info="modalData?.data"
-        :ratio="formData.ratio"
-        :picture-style="formData.pictureStyle"
-        v-else-if="modalData?.component === EModalComponent.CONFIRM_COVER_MODAL"
-        @on-cancel="handleCancelConfirm"
-        @on-confirm="handleConfirmedCover"
-      />
+      <ConfirmCoverModal :info="modalData?.data" :ratio="formData.ratio" :picture-style="formData.pictureStyle"
+        v-else-if="modalData?.component === EModalComponent.CONFIRM_COVER_MODAL" @on-cancel="handleCancelConfirm"
+        @on-confirm="handleConfirmedCover" />
+
+      <SelectStyleModal :active-index="modalData?.data?.selectedStyleIndex" :type="modalData?.data?.type"
+        v-else-if="modalData?.component === EModalComponent.SELECT_STYLE_MODAL" @on-cancel="handleCancelConfirm"
+        @on-confirm="handleStyleChange" />
+
+      <SelectThemeModal v-else-if="modalData?.component === EModalComponent.SELECT_THEME_MODAL"
+        :active-index="modalData?.data?.selectedThemeIndexes" @on-cancel="handleCancelConfirm"
+        @on-confirm="handleThemeChange" />
+
+      <SelectLanguageModal :active-index="modalData?.data?.selectedLanguageIndex"
+        v-else-if="modalData?.component === EModalComponent.SELECT_LANGUAGE_MODAL" @on-cancel="handleCancelConfirm"
+        @on-confirm="handleLanguageChange" />
+
+      <SelectRatioModal :active-index="modalData?.data?.selectedRatioIndex"
+        v-else-if="modalData?.component === EModalComponent.SELECT_RATIO_MODAL" @on-cancel="handleCancelConfirm"
+        @on-confirm="handleRatioChange" />
     </page-container>
   </view>
 </template>
@@ -711,6 +403,10 @@ import { EConfirmAction } from "./types";
 import ConfirmRolesModal from "./modals/ConfirmRolesModal.vue";
 import ConfirmScenesModal from "./modals/ConfirmScenesModal.vue";
 import ConfirmCoverModal from "./modals/ConfirmCoverModal.vue";
+import SelectStyleModal from "./modals/SelectStyleModal.vue";
+import SelectThemeModal from "./modals/SelectThemeModal.vue";
+import SelectLanguageModal from "./modals/SelectLanguageModal.vue";
+import SelectRatioModal from "./modals/SelectRatioModal.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 
@@ -740,12 +436,12 @@ const { loginInfo, isLoggedIn } = storeToRefs(userStore);
 
 const formData = ref({
   theme: "诚实与正直",
-  storyStyle: "李欧·李奥尼‌",
-  pictureStyle: "李欧·李奥尼‌",
+  storyStyle: "李欧·李奥尼",
+  pictureStyle: "李欧·李奥尼",
   length: 500,
   language: "中文",
-  roleCount: -1,
-  sceneCount: -1,
+  roleCount: 0,
+  sceneCount: 0,
   ratio: "16:9",
   autoConfirmedStory: false,
   autoConfirmedRole: false,
@@ -773,10 +469,6 @@ const generateStep = ref<GenerateStep>(GenerateStep.unstart);
 
 const scrollToElementId = ref<string>("");
 
-const renderMoralityCategory = computed(() => {
-  return moralities.map((item) => item.name).concat("自定义");
-});
-
 const renderMoralityChild = computed(() => {
   if (selectedThemeIndexes.value[0] === moralities.length) {
     return ["自定义输入"];
@@ -786,22 +478,26 @@ const renderMoralityChild = computed(() => {
   );
 });
 
-const renderMorality = computed(() => {
-  return [renderMoralityCategory.value, renderMoralityChild.value];
-});
-
 const renderStoryStyles = computed(() => {
-  return authors.concat({
-    name: "自定义输入",
-    name_en: "custom",
-  });
+  return [
+    ...authors,
+    {
+      name: '自定义',
+      en_name: 'Custom',
+      avatar: 'https://img.liangqy.com/crawlerjet/picture_book/img/author/custom.jpg',
+    },
+  ];
 });
 
 const renderPictureStyles = computed(() => {
-  return authors.concat({
-    name: "自定义输入",
-    name_en: "custom",
-  });
+  return [
+    ...authors,
+    {
+      name: '自定义',
+      en_name: 'Custom',
+      avatar: 'https://img.liangqy.com/crawlerjet/picture_book/img/author/custom.jpg',
+    },
+  ];
 });
 
 const canGenerate = computed(() => {
@@ -818,10 +514,24 @@ onMounted(() => {
 
 function initData() {
   selectedLanguageIndex.value = languages.findIndex(
-    (item) => item === formData.value.language
+    (item) => item.name === formData.value.language
   );
   if (selectedLanguageIndex.value === -1) {
     selectedLanguageIndex.value = 0;
+  }
+
+  selectedStoryStyleIndex.value = renderStoryStyles.value.findIndex(
+    (item) => item.name === formData.value.storyStyle
+  );
+  if (selectedStoryStyleIndex.value === -1) {
+    selectedStoryStyleIndex.value = 0;
+  }
+
+  selectedPictureStyleIndex.value = renderPictureStyles.value.findIndex(
+    (item) => item.name === formData.value.pictureStyle
+  );
+  if (selectedPictureStyleIndex.value === -1) {
+    selectedPictureStyleIndex.value = 0;
   }
 
   selectedRatioIndex.value = ratios.findIndex(
@@ -832,26 +542,133 @@ function initData() {
   }
 }
 
-function handleThemeChange(e: any) {
-  selectedThemeIndexes.value = e.detail.value;
-  if (
-    selectedThemeIndexes.value[0] ===
-    renderMoralityCategory.value.length - 1
-  ) {
-    // 自定义
-    formData.value.theme = "";
-  } else {
-    formData.value.theme =
-      moralities[selectedThemeIndexes.value[0]].children[
-        selectedThemeIndexes.value[1]
-      ].name;
+function showSelectThemeModal() {
+  modalData.value = {
+    component: EModalComponent.SELECT_THEME_MODAL,
+    data: {
+      selectedThemeIndexes: [0, 0],
+    },
+  };
+  nextTick(() => {
+    modalData.value = {
+      component: EModalComponent.SELECT_THEME_MODAL,
+      data: {
+        selectedThemeIndexes: selectedThemeIndexes.value,
+      },
+    };
+    modalVisible.value = true;
+  });
+}
+
+function showSelectStoryStyleModal() {
+  modalData.value = {
+    component: EModalComponent.SELECT_STYLE_MODAL,
+    data: {
+      selectedStyleIndex: 0,
+      type: 'storyStyle',
+    },
+  };
+  nextTick(() => {
+    modalData.value = {
+      component: EModalComponent.SELECT_STYLE_MODAL,
+      data: {
+        selectedStyleIndex: selectedStoryStyleIndex.value,
+        type: 'storyStyle',
+      },
+    };
+    modalVisible.value = true;
+  });
+}
+
+function showSelectPictureStyleModal() {
+  modalData.value = {
+    component: EModalComponent.SELECT_STYLE_MODAL,
+    data: {
+      selectedStyleIndex: 0,
+      type: 'pictureStyle',
+    },
+  };
+  nextTick(() => {
+    modalData.value = {
+      component: EModalComponent.SELECT_STYLE_MODAL,
+      data: {
+        selectedStyleIndex: selectedPictureStyleIndex.value,
+        type: 'pictureStyle',
+      },
+    };
+    modalVisible.value = true;
+  });
+}
+
+function showSelectLanguageModal() {
+  modalData.value = {
+    component: EModalComponent.SELECT_LANGUAGE_MODAL,
+    data: {
+      selectedLanguageIndex: 0,
+    },
+  };
+  nextTick(() => {
+    modalData.value = {
+      component: EModalComponent.SELECT_LANGUAGE_MODAL,
+      data: {
+        selectedLanguageIndex: selectedLanguageIndex.value,
+      },
+    };
+    modalVisible.value = true;
+  });
+}
+
+function showSelectRatioModal() {
+  modalData.value = {
+    component: EModalComponent.SELECT_RATIO_MODAL,
+    data: {
+      selectedRatioIndex: 0,
+    },
+  };
+  nextTick(() => {
+    modalData.value = {
+      component: EModalComponent.SELECT_RATIO_MODAL,
+      data: {
+        selectedRatioIndex: selectedRatioIndex.value,
+      },
+    };
+    modalVisible.value = true;
+  });
+}
+
+function handleStyleChange(e: any) {
+  if (e.type === 'storyStyle') {
+    selectedStoryStyleIndex.value = e.index;
+    formData.value.storyStyle = e.value;
+  } else if (e.type === 'pictureStyle') {
+    selectedPictureStyleIndex.value = e.index;
+    formData.value.pictureStyle = e.value;
   }
+  closeModal();
+}
+
+function handleThemeChange(e: any) {
+  selectedThemeIndexes.value = [...e.index];
+  formData.value.theme = e.value;
+  closeModal();
+}
+
+function handleLanguageChange(e: any) {
+  selectedLanguageIndex.value = e.index;
+  formData.value.language = e.value;
+  closeModal();
+}
+
+function handleRatioChange(e: any) {
+  selectedRatioIndex.value = e.index;
+  formData.value.ratio = e.value;
+  closeModal();
 }
 
 function changeCustomTheme(e: any) {
   if (
     selectedThemeIndexes.value[0] ===
-    renderMoralityCategory.value.length - 1
+    moralities.length
   ) {
     formData.value.theme = e.detail.value;
   }
@@ -881,10 +698,10 @@ function handleThemeColumnChange(e: any) {
 
 function handleStoryStylesChange(e: any) {
   selectedStoryStyleIndex.value = Number(e.detail.value);
-  if (selectedStoryStyleIndex.value === renderStoryStyles.value.length - 1) {
+  if (selectedStoryStyleIndex.value === 0) {
     formData.value.storyStyle = "";
   } else {
-    formData.value.storyStyle = authors[selectedStoryStyleIndex.value].name;
+    formData.value.storyStyle = authors[selectedStoryStyleIndex.value - 1].name;
   }
 }
 
@@ -898,16 +715,6 @@ function handlePictureStylesChange(e: any) {
   } else {
     formData.value.pictureStyle = authors[selectedPictureStyleIndex.value].name;
   }
-}
-
-function handleLanguageChange(e: any) {
-  selectedLanguageIndex.value = Number(e.detail.value);
-  formData.value.language = languages[selectedLanguageIndex.value];
-}
-
-function handleRatioChange(e: any) {
-  selectedRatioIndex.value = Number(e.detail.value);
-  formData.value.ratio = ratios[selectedRatioIndex.value];
 }
 
 function handleLengthChange(e: any) {
@@ -1325,6 +1132,7 @@ function handleConfirmedStory(e: any) {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }

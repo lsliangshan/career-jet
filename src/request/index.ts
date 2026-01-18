@@ -480,6 +480,7 @@ export function requestCustomUrl(params: {
       url: params.url,
       method: params.method,
       data: params.data,
+      timeout: 30 * 60 * 1000,
       success: (res) => {
         resolve(res.data);
       },

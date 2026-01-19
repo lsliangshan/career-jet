@@ -7,7 +7,9 @@ import {
   requestGetAudiosByPbIdAndVoiceType,
   requestGetMyPictureBooks,
   requestGetPictureBookDetail,
+  requestGetPictureBookLikeStatus,
   requestGetPictureBooks,
+  requestTogglePictureBookLikeStatus,
 } from "@/request";
 
 export const usePictureBookStore = defineStore("picture_book", () => {
@@ -61,6 +63,56 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     });
   }
 
+  function getPictureBookLikeStatus(params: { pbId: string }) {
+    return new Promise(async (resolve) => {
+      if (!isLoggedIn.value || !loginInfo.value.id) {
+        resolve({
+          code: 200,
+          message: "请先登录",
+          data: {
+            pbId: params.pbId,
+            like: false,
+          },
+        });
+        return;
+      }
+      const res = await requestGetPictureBookLikeStatus({
+        userId: loginInfo.value.id,
+        pbId: params.pbId,
+      });
+      resolve(res);
+    });
+  }
+
+  function togglePictureBookLikeStatus(params: {
+    like: boolean;
+    pbId: string;
+  }) {
+    return new Promise(async (resolve) => {
+      if (!isLoggedIn.value || !loginInfo.value.id) {
+        uni.showToast({
+          title: "请先登录",
+          icon: "none",
+        });
+        resolve({
+          code: 1001,
+          message: "请先登录",
+          data: {
+            pbId: params.pbId,
+            like: params.like,
+          },
+        });
+        return;
+      }
+      const res = await requestTogglePictureBookLikeStatus({
+        like: params.like,
+        userId: loginInfo.value.id,
+        pbId: params.pbId,
+      });
+      resolve(res);
+    });
+  }
+
   function getPictureBookDetail(params: { id: string }) {
     return new Promise(async (resolve) => {
       const res = await requestGetPictureBookDetail({
@@ -89,5 +141,7 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     getPictureBooks,
     getPictureBookDetail,
     getAudiosByPbIdAndVoiceType,
+    getPictureBookLikeStatus,
+    togglePictureBookLikeStatus,
   };
 });

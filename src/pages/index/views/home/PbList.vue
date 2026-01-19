@@ -235,8 +235,6 @@ const isRefreshing = ref(false);
 const successTip = ref("已更新");
 const refresherTriggered = ref(false);
 
-const scrollToView = ref("tab-all");
-
 const pageIndex = ref(1);
 const pageSize = ref(20);
 const totalCount = ref(0);
@@ -366,62 +364,6 @@ function handleViewPictureBook(pb: IPictureBook) {
 function handleImageError(id: string) {
   console.log(">>>>>> handleImageError: ", id);
   errorImageIds.value.add(id);
-}
-
-const clientX = ref(0);
-const touchTs = ref(0);
-
-function getNextViewId() {
-  const tabList = Object.keys(tabs).map((item) => `tab-${item}`);
-  const currentIndex = tabList.indexOf(scrollToView.value);
-  if (currentIndex === tabList.length - 1 || currentIndex === -1) {
-    return scrollToView.value;
-  } else {
-    return tabList[currentIndex + 1];
-  }
-}
-
-function getPreviousViewId() {
-  const tabList = Object.keys(tabs).map((item) => `tab-${item}`);
-  const currentIndex = tabList.indexOf(scrollToView.value);
-  if (currentIndex === 0 || currentIndex === -1) {
-    return scrollToView.value;
-  } else {
-    return tabList[currentIndex - 1];
-  }
-}
-
-function handleDragStart(e: any) {
-  clientX.value = e.changedTouches[0].clientX;
-  touchTs.value = Date.now();
-}
-
-function handleDragEnd(e: any) {
-  const offsetClientX = e.changedTouches[0].clientX - clientX.value;
-  const offsetTime = Date.now() - touchTs.value;
-  if (offsetClientX >= 0) {
-    if (offsetClientX > 100 || offsetTime < 300) {
-      scrollToView.value = getPreviousViewId();
-    } else {
-      // reset
-      const tmpView = scrollToView.value;
-      scrollToView.value = "";
-      setTimeout(() => {
-        scrollToView.value = tmpView;
-      }, 0);
-    }
-  } else {
-    if (offsetClientX < -100 || offsetTime < 300) {
-      scrollToView.value = getNextViewId();
-    } else {
-      // reset
-      const tmpView = scrollToView.value;
-      scrollToView.value = "";
-      setTimeout(() => {
-        scrollToView.value = tmpView;
-      }, 0);
-    }
-  }
 }
 </script>
 

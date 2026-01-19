@@ -5,6 +5,7 @@
     <template v-else-if="!!pbDetail">
       <PbHeader
         :scene-id="currentIndex > -1 ? pbDetail.scenes?.[currentIndex]?.id : ''"
+        :pb-id="pbDetail?.id"
         :playing-scene-id="isPlayingAudioSceneId"
         v-if="pbDetail && pbDetail.scenes"
         @on-back="handleBack"
@@ -174,6 +175,7 @@
         <PbHeader
           class="transition-all duration-300"
           :class="[cleanScreen ? 'opacity-0' : 'opacity-100']"
+          :pb-id="pbDetail?.id"
           :scene-id="
             currentIndex > -1 ? pbDetail.scenes?.[currentIndex]?.id : ''
           "

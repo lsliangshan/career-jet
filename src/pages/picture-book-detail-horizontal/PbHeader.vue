@@ -72,13 +72,23 @@
           height: `${calcSize(80)}rpx`,
         }"
         v-if="sceneId"
+        @click="toggleLike"
       >
         <image
           :style="{
             width: `${calcSize(38)}rpx`,
             height: `${calcSize(38)}rpx`,
           }"
+          src="@static/icon_like_red.png"
+          v-if="likeStatus"
+        ></image>
+        <image
+          :style="{
+            width: `${calcSize(38)}rpx`,
+            height: `${calcSize(38)}rpx`,
+          }"
           src="@static/icon_like_white.png"
+          v-else
         ></image>
       </view>
 
@@ -108,9 +118,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
+import { usePictureBookStore } from "@/stores/picture_book";
 
 interface Props {
+  pbId: string;
   sceneId: string;
   // 正在播放的场景ID
   playingSceneId?: string;
@@ -125,6 +137,10 @@ const $emit = defineEmits<{
 
 const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
 
+const pictureBookStore = usePictureBookStore();
+
+const likeStatus = ref<boolean>(false);
+
 const calcSize = computed(() => {
   const dpr = Number(
     (
@@ -136,12 +152,52 @@ const calcSize = computed(() => {
   };
 });
 
+onMounted(() => {
+  getPictureBookLikeStatus();
+});
+
+function getPictureBookLikeStatus() {
+  pictureBookStore
+    .getPictureBookLikeStatus({
+      pbId: props.pbId,
+    })
+    .then((res: any) => {
+      if (res.code === 200) {
+        likeStatus.value = res.data.like;
+      }
+    });
+}
+
 function handleBack() {
   $emit("on-back");
 }
 
 function handlePlayAudio() {
   $emit("on-play-audio", props.sceneId);
+}
+
+function toggleLike() {
+  likeStatus.value = !likeStatus.value;
+  pictureBookStore
+    .togglePictureBookLikeStatus({
+      like: likeStatus.value,
+      pbId: props.pbId,
+    })
+    .then((res: any) => {
+      if (res.code === 200) {
+        // likeStatus.value = res.data.like;
+        uni.showToast({
+          title: likeStatus.value ? "点赞成功" : "取消点赞成功",
+          icon: "none",
+        });
+      } else {
+        likeStatus.value = !likeStatus.value;
+        uni.showToast({
+          title: likeStatus.value ? "点赞失败" : "取消点赞失败",
+          icon: "none",
+        });
+      }
+    });
 }
 </script>
 

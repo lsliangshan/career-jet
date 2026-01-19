@@ -497,6 +497,58 @@ export function requestGetPictureBookDetail(params?: {
   });
 }
 
+/**
+ * 获取绘本点赞状态
+ * @param params
+ * @param {string} params.userId 用户ID
+ * @param {string} params.pbId 绘本ID
+ */
+export function requestGetPictureBookLikeStatus(params?: {
+  userId: string;
+  pbId: string;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/pb/get-like-status`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 给绘本点赞、取消点赞
+ * @param params
+ * @param {boolean} params.like 点赞状态
+ * @param {string} params.userId 用户ID
+ * @param {string} params.pbId 绘本ID
+ */
+export function requestTogglePictureBookLikeStatus(params: {
+  like: boolean;
+  userId: string;
+  pbId: string;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/pb/toggle-like-status`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
 export function requestCustomUrl(params: {
   url: string;
   method: "POST" | "GET" | "PUT" | "DELETE";
@@ -512,7 +564,6 @@ export function requestCustomUrl(params: {
         resolve(res.data);
       },
       fail: (e) => {
-        console.log(">>>> requestCustomUrl: ", e);
         resolve({
           code: 1001,
         });

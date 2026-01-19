@@ -5,6 +5,7 @@
     <template v-else-if="!!pbDetail">
       <PbHeader
         :scene-id="currentIndex > -1 ? pbDetail.scenes?.[currentIndex]?.id : ''"
+        :pb-id="pbDetail?.id"
         :playing-scene-id="isPlayingAudioSceneId"
         :author-id="pbDetail?.authorId"
         v-if="pbDetail && pbDetail.scenes"
@@ -131,6 +132,7 @@
           :scene-id="
             currentIndex > -1 ? pbDetail.scenes?.[currentIndex]?.id : ''
           "
+          :pb-id="pbDetail?.id"
           :playing-scene-id="isPlayingAudioSceneId"
           @on-back="handleLeave"
           @on-play-audio="handlePlayAudio"
@@ -153,13 +155,11 @@ import { mainColor } from "@/config/config";
 import PbHeader from "./PbHeader.vue";
 import { navigateBack } from "@/utils";
 
-
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
 // const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
 
 const pictureBookStore = usePictureBookStore();
-
 
 const id = ref("");
 
@@ -183,7 +183,6 @@ const audios = ref<
     url: string;
   }[]
 >([]);
-
 
 watch(
   () => currentIndex.value,

@@ -7,6 +7,7 @@ import {
   requestGetAudiosByPbIdAndVoiceType,
   requestGetMyPictureBooks,
   requestGetPictureBookDetail,
+  requestGetPictureBooks,
 } from "@/request";
 
 export const usePictureBookStore = defineStore("picture_book", () => {
@@ -43,6 +44,23 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     });
   }
 
+  function getPictureBooks(params?: {
+    type: "order-by-time" | "order-by-likes" | "order-by-views";
+    pageIndex?: number;
+    pageSize?: number;
+  }) {
+    return new Promise(async (resolve) => {
+      const pageIndex = params?.pageIndex || 1;
+      const pageSize = params?.pageSize || 20;
+      const res = await requestGetPictureBooks({
+        type: params?.type || "order-by-time",
+        pageIndex,
+        pageSize,
+      });
+      resolve(res);
+    });
+  }
+
   function getPictureBookDetail(params: { id: string }) {
     return new Promise(async (resolve) => {
       const res = await requestGetPictureBookDetail({
@@ -52,7 +70,10 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     });
   }
 
-  function getAudiosByPbIdAndVoiceType(params: { pbId: string; voiceType?: number }) {
+  function getAudiosByPbIdAndVoiceType(params: {
+    pbId: string;
+    voiceType?: number;
+  }) {
     return new Promise(async (resolve) => {
       const res = await requestGetAudiosByPbIdAndVoiceType({
         pbId: params.pbId,
@@ -65,6 +86,7 @@ export const usePictureBookStore = defineStore("picture_book", () => {
   return {
     myPictureBooks,
     getMyPictureBooks,
+    getPictureBooks,
     getPictureBookDetail,
     getAudiosByPbIdAndVoiceType,
   };

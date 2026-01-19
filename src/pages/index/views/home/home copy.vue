@@ -49,24 +49,66 @@
     </view>
 
     <Layout :hasHeader="true" :gap="88">
-      <view class="relative w-full h-full overflow-hidden">
+      <PageLoading v-if="!pageReady" />
+
+      <empty v-else-if="pageReady && pictureBooks.length === 0" />
+
+      <view class="relative w-full h-full overflow-hidden" v-else>
+        <refresher-success
+          v-model="refresherSuccessVisible"
+          :text="successTip"
+        />
         <scroll-view
           type="nested"
-          scroll-x
-          :scroll-into-view="scrollToView"
-          :scroll-with-animation="true"
-          class="w-full h-full whitespace-nowrap"
-          @touchstart="handleDragStart"
-          @touchend="handleDragEnd"
+          class="w-full h-full"
+          scroll-y
+          refresher-enabled
+          refresher-default-style="none"
+          :refresher-triggered="refresherTriggered"
+          @refresherrefresh="refresherrefresh"
+          @scrolltolower="onScrollToLower"
         >
-          <nested-scroll-body>
+          <template #refresher>
             <view
-              v-for="value in Object.keys(tabs)"
-              :id="`tab-${value}`"
-              class="inline-block w-full h-full"
+              class="w-full h-[100rpx] pt-[24rpx] box-border flex flex-row items-center justify-center"
             >
-              <PbList :type="(value as keyof typeof tabs)"></PbList>
+              <view
+                class="w-[100rpx] h-[100rpx] rounded-[8rpx] flex flex-row items-center justify-center"
+              >
+                <image
+                  class="w-[40rpx] h-[40rpx] animate-spin"
+                  src="@static/icon_loading.png"
+                  mode="aspectFit"
+                />
+              </view>
             </view>
+          </template>
+
+          <nested-scroll-body>
+            <scroll-view
+              type="custom"
+              scroll-x
+              :scroll-into-view="scrollToView"
+              :scroll-with-animation="true"
+              class="w-full h-full whitespace-nowrap"
+              @touchstart="handleDragStart"
+              @touchend="handleDragEnd"
+            >
+              <view
+                v-for="value in Object.keys(tabs)"
+                :id="`tab-${value}`"
+                class="inline-block w-full h-full"
+              >
+                <!-- <view
+                  class="w-full h-full flex flex-row items-center justify-center bg-[#fff]"
+                >
+                  <text class="text-[28rpx] font-medium">{{
+                    tabs[value as keyof typeof tabs]
+                  }}</text>
+                </view> -->
+                <PbList :type="(value as keyof typeof tabs)"></PbList>
+              </view>
+            </scroll-view>
           </nested-scroll-body>
         </scroll-view>
       </view>
@@ -76,17 +118,39 @@
 
 <script setup lang="ts">
 import Layout from "@/components/layout/layout.vue";
-import { ref, watch } from "vue";
-import { mainColor, tabs } from "@/config/config";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
+import type { IPictureBook } from "@/types";
+import { usePictureBookStore } from "@/stores/picture_book";
+import { mainColor, moralities, tabs } from "@/config/config";
+import RefresherSuccess from "@/components/RefresherSuccess.vue";
+import PageLoading from "@/components/page-loading/page-loading.vue";
+import Empty from "@/components/empty/empty.vue";
 import PbList from "./PbList.vue";
 
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
 
 const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
 
+const pictureBookStore = usePictureBookStore();
+
 // 全部、阅读最多、收藏最多
 const activeTheme = ref<keyof typeof tabs>("all");
 const scrollToView = ref("tab-all");
+
+const refresherSuccessVisible = ref(false);
+const isRefreshing = ref(false);
+const successTip = ref("已更新");
+const refresherTriggered = ref(false);
+
+const pageReady = ref(false);
+const isLoading = ref(false);
+
+const pageIndex = ref(1);
+const pageSize = ref(20);
+const totalCount = ref(0);
+const totalPage = ref(1);
+
+const pictureBooks = ref<IPictureBook[]>([]);
 
 watch(
   () => scrollToView.value,
@@ -94,6 +158,71 @@ watch(
     activeTheme.value = newVal.split("-")[1] as keyof typeof tabs;
   }
 );
+
+onMounted(() => {
+  nextTick(async () => {
+    await getMyPictureBooks();
+  });
+});
+
+// 下拉刷新
+async function refresherrefresh() {
+  if (isRefreshing.value) {
+    return;
+  }
+
+  isRefreshing.value = true;
+  refresherTriggered.value = true;
+
+  pageIndex.value = 1;
+
+  await getMyPictureBooks();
+
+  nextTick(() => {
+    const t = setTimeout(() => {
+      clearTimeout(t);
+      refresherTriggered.value = false;
+      isRefreshing.value = false;
+      refresherSuccessVisible.value = true;
+    }, 500);
+  });
+}
+
+// 上拉加载更多
+async function onScrollToLower() {
+  if (pageIndex.value >= totalPage.value || isLoading.value) {
+    return;
+  }
+  pageIndex.value++;
+  await getMyPictureBooks();
+}
+
+async function getMyPictureBooks() {
+  if (isLoading.value) {
+    return;
+  }
+
+  isLoading.value = true;
+
+  const res = await pictureBookStore.getMyPictureBooks({
+    pageIndex: pageIndex.value,
+    pageSize: pageSize.value,
+  });
+
+  if (res.code == 200 && res.data) {
+    totalCount.value = res.data.totalCount;
+    totalPage.value = res.data.totalPage;
+
+    if (res.data.pageIndex == 1) {
+      pictureBooks.value = [];
+    }
+
+    pictureBooks.value = [...pictureBooks.value, ...(res.data.list || [])];
+  }
+
+  pageReady.value = true;
+  isLoading.value = false;
+}
 
 function handleActiveTheme(value: keyof typeof tabs) {
   activeTheme.value = value;
@@ -132,7 +261,7 @@ function handleDragEnd(e: any) {
   const offsetClientX = e.changedTouches[0].clientX - clientX.value;
   const offsetTime = Date.now() - touchTs.value;
   if (offsetClientX >= 0) {
-    if (offsetClientX > 100 || (offsetClientX > 20 && offsetTime < 300)) {
+    if (offsetClientX > 100 || offsetTime < 300) {
       scrollToView.value = getPreviousViewId();
     } else {
       // reset
@@ -143,7 +272,7 @@ function handleDragEnd(e: any) {
       }, 0);
     }
   } else {
-    if (offsetClientX < -100 || (offsetClientX < -20 && offsetTime < 300)) {
+    if (offsetClientX < -100 || offsetTime < 300) {
       scrollToView.value = getNextViewId();
     } else {
       // reset

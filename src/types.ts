@@ -125,6 +125,8 @@ export interface IAuthorItem {
 
 export interface IPictureBook {
   id: string;
+  likes: number;
+  views: number;
   title: string;
   content: string;
   authorId: string;

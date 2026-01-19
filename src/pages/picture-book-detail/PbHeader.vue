@@ -50,7 +50,10 @@
         class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
         v-if="sceneId"
       >
-        <image class="w-[38rpx] h-[38rpx]" src="@static/icon_like.png"></image>
+        <image
+          class="w-[38rpx] h-[38rpx]"
+          src="@static/icon_like_white.png"
+        ></image>
       </view>
 
       <view
@@ -71,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed } from "vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 
@@ -91,7 +94,7 @@ const $emit = defineEmits<{
 
 const userStore = useUserStore();
 
-const {loginInfo} = storeToRefs(userStore);
+const { loginInfo } = storeToRefs(userStore);
 
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 88;
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
@@ -101,7 +104,6 @@ const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
 const isMyPictureBook = computed(() => {
   return props.authorId === loginInfo.value?.id;
 });
-
 
 function handleBack() {
   $emit("on-back");

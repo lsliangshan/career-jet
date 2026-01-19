@@ -409,7 +409,7 @@ export function requestGetAudiosByPbIdAndVoiceType(params: {
       data: {
         ...params,
         voiceType: params.voiceType || 502001,
-       },
+      },
       success: (res) => {
         resolve(res.data);
       },
@@ -435,6 +435,33 @@ export function requestGetMyPictureBooks(params?: {
   return new Promise<any>((resolve) => {
     uni.request({
       url: `${baseUrl}/pb/list-my-picture-books`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 获取绘本列表
+ * @param params
+ * @param {string} [params.type] 排序方式
+ * @param {number} [params.pageIndex=1] 页码
+ * @param {number} [params.pageSize=20] 每页条数
+ */
+export function requestGetPictureBooks(params?: {
+  type: "order-by-time" | "order-by-likes" | "order-by-views";
+  pageIndex?: number;
+  pageSize?: number;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/pb/list-picture-books`,
       method: "POST",
       data: { ...params },
       success: (res) => {

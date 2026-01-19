@@ -78,7 +78,7 @@
             width: `${calcSize(38)}rpx`,
             height: `${calcSize(38)}rpx`,
           }"
-          src="@static/icon_like.png"
+          src="@static/icon_like_white.png"
         ></image>
       </view>
 

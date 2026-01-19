@@ -3,9 +3,18 @@
 		{
 			"path": "pages/index/index",
 			"style": {
+				"navigationBarTitleText": "",
 				"navigationStyle": "custom",
+				"disableScroll": true,
 				"renderer": "skyline",
-				"componentFramework": "glass-easel"
+				"componentFramework": "glass-easel",
+				"rendererOptions": {
+					"skyline": {
+						"defaultDisplayBlock": true,
+						"enableScrollViewAutoSize": true,
+						"tagNameStyleIsolation": "legacy"
+					}
+				}
 			}
 		},
 		{

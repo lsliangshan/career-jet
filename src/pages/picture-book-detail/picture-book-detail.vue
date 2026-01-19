@@ -147,7 +147,7 @@
 import { usePictureBookStore } from "@/stores/picture_book";
 import type { IPictureBook } from "@/types";
 import { onLoad, onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
-import { computed, nextTick, ref, watch } from "vue";
+import { nextTick, ref, watch } from "vue";
 import PageLoading from "@/components/page-loading/page-loading.vue";
 import PbCover from "./PbCover.vue";
 import PbContent from "./PbContent.vue";
@@ -213,6 +213,10 @@ onLoad((options: any) => {
         audios.value = res.data.audios;
       }
     });
+
+  pictureBookStore.setPictureBookViews({
+    pbId: id.value,
+  });
 });
 
 function initPbDetail() {

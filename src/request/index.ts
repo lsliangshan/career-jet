@@ -549,6 +549,29 @@ export function requestTogglePictureBookLikeStatus(params: {
   });
 }
 
+/**
+ * 设置绘本浏览量
+ * @param params
+ * @param {string} params.pbId 绘本ID
+ */
+export function requestSetPictureBookViews(params?: {
+  pbId: string;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/pb/set-views`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
 export function requestCustomUrl(params: {
   url: string;
   method: "POST" | "GET" | "PUT" | "DELETE";

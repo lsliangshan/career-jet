@@ -268,6 +268,10 @@ onLoad((options: any) => {
         audios.value = res.data.audios;
       }
     });
+
+  pictureBookStore.setPictureBookViews({
+    pbId: id.value,
+  });
 });
 
 function initPbDetail() {

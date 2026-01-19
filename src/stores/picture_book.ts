@@ -9,6 +9,7 @@ import {
   requestGetPictureBookDetail,
   requestGetPictureBookLikeStatus,
   requestGetPictureBooks,
+  requestSetPictureBookViews,
   requestTogglePictureBookLikeStatus,
 } from "@/request";
 
@@ -113,6 +114,15 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     });
   }
 
+  function setPictureBookViews(params: { pbId: string }) {
+    return new Promise(async (resolve) => {
+      const res = await requestSetPictureBookViews({
+        pbId: params.pbId,
+      });
+      resolve(res);
+    });
+  }
+
   function getPictureBookDetail(params: { id: string }) {
     return new Promise(async (resolve) => {
       const res = await requestGetPictureBookDetail({
@@ -143,5 +153,6 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     getAudiosByPbIdAndVoiceType,
     getPictureBookLikeStatus,
     togglePictureBookLikeStatus,
+    setPictureBookViews,
   };
 });

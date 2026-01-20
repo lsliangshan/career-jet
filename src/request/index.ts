@@ -396,9 +396,8 @@ export function requestGenerateCover(params: {
  * 根据绘本ID和音色ID获取绘本的语音
  * @param params
  * @param {string} params.pbId 绘本id
- * @param {number} [params.voiceType=502001] 音色id
  */
-export function requestGetAudiosByPbIdAndVoiceType(params: {
+export function requestGetAudiosByPbId(params: {
   pbId: string;
   voiceType?: number;
 }): Promise<any> {

@@ -140,3 +140,14 @@ export interface IPictureBook {
   content_zh?: string;
   author?: IAuthorItem;
 }
+
+export interface IPBAudioItem {
+  sceneId: string;
+  url: string;
+}
+export interface IPBAudio {
+  id: string;
+  pbId: string;
+  voiceType: number;
+  audios: IPBAudioItem[];
+}

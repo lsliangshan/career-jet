@@ -162,9 +162,9 @@
 
 <script setup lang="ts">
 import { usePictureBookStore } from "@/stores/picture_book";
-import type { IPictureBook } from "@/types";
+import type { IPBAudio, IPBAudioItem, IPictureBook } from "@/types";
 import { onLoad, onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
-import { nextTick, provide, ref, watch, type Ref } from "vue";
+import { computed, nextTick, provide, ref, watch, type Ref } from "vue";
 import PageLoading from "@/components/page-loading/page-loading.vue";
 import PbCover from "./PbCover.vue";
 import PbContent from "./PbContent.vue";
@@ -197,12 +197,31 @@ const cleanScreen = ref(false);
 const audioContext = ref<any>(null);
 const isPlayingAudioSceneId = ref<string | undefined>();
 
-const audios = ref<
-  {
-    sceneId: string;
-    url: string;
-  }[]
->([]);
+const pbAudios = ref<IPBAudio[]>([]);
+
+// 当前音色
+const currentVoiceType = ref<number>(602003);
+
+// const audios = ref<
+//   {
+//     sceneId: string;
+//     url: string;
+//   }[]
+//   >([]);
+
+const audios = computed(() => {
+  if (pbAudios.value.length === 0) {
+    return [] as IPBAudioItem[];
+  }
+  if (currentVoiceType.value === 0) {
+    return pbAudios.value[0]?.audios || ([] as IPBAudioItem[]);
+  }
+  return (
+    pbAudios.value.find(
+      (audio: IPBAudio) => audio.voiceType === currentVoiceType.value
+    )?.audios || ([] as IPBAudioItem[])
+  );
+});
 
 provide<Ref<boolean>>("autoplayWithAudio", autoplayWithAudio);
 
@@ -236,13 +255,12 @@ onLoad((options: any) => {
   });
 
   pictureBookStore
-    .getAudiosByPbIdAndVoiceType({
+    .getAudiosByPbId({
       pbId: id.value,
-      voiceType: 502001,
     })
     .then((res: any) => {
-      if (res.code === 200 && res.data && res.data.audios) {
-        audios.value = res.data.audios;
+      if (res.code === 200 && res.data && res.data.list) {
+        pbAudios.value = res.data.list;
       }
     });
 
@@ -291,7 +309,10 @@ function handleStartReadingWithAudio() {
   currentIndex.value = 0;
   modalVisible.value = true;
 
-  playPictureBookWithAudio();
+  const t = setTimeout(() => {
+    clearTimeout(t);
+    playPictureBookWithAudio();
+  }, 300);
 }
 
 function playPictureBookWithAudio() {

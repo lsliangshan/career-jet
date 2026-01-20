@@ -20,7 +20,7 @@
       class="h-[80rpx] flex flex-row items-center justify-center gap-[16rpx]"
     >
       <view
-        class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
+        class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center shrink-0"
         v-if="isMyPictureBook"
       >
         <image
@@ -30,12 +30,12 @@
       </view>
 
       <view
-        class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
+        class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center shrink-0"
         v-if="sceneId"
         @click="handlePlayAudio"
       >
         <image
-          v-if="playingSceneId === sceneId"
+          v-if="playingSceneId === sceneId || autoplayWithAudio"
           class="w-[38rpx] h-[38rpx] animate-pulse"
           src="@static/icon_volume_red.png"
         ></image>
@@ -47,7 +47,7 @@
       </view>
 
       <view
-        class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
+        class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center shrink-0"
         v-if="sceneId"
         @click="toggleLike"
       >
@@ -64,7 +64,7 @@
       </view>
 
       <view
-        class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
+        class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center shrink-0"
       >
         <button
           open-type="share"
@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, inject, onMounted, type Ref, ref, watch } from "vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { usePictureBookStore } from "@/stores/picture_book";
@@ -100,6 +100,8 @@ const $emit = defineEmits<{
   (e: "on-back"): void;
   (e: "on-play-audio", sceneId: string): void;
 }>();
+
+const autoplayWithAudio = inject<Ref<boolean>>("autoplayWithAudio");
 
 const userStore = useUserStore();
 const pictureBookStore = usePictureBookStore();

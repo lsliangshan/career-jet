@@ -10,9 +10,7 @@
 				"componentFramework": "glass-easel",
 				"rendererOptions": {
 					"skyline": {
-						"defaultDisplayBlock": true,
-						"enableScrollViewAutoSize": true,
-						"tagNameStyleIsolation": "legacy"
+						"defaultDisplayBlock": true
 					}
 				}
 			}
@@ -63,9 +61,7 @@
 				"componentFramework": "glass-easel",
 				"rendererOptions": {
 					"skyline": {
-						"defaultDisplayBlock": true,
-						"enableScrollViewAutoSize": true,
-						"tagNameStyleIsolation": "legacy"
+						"defaultDisplayBlock": true
 					}
 				}
 			}
@@ -73,7 +69,16 @@
 		{
 			"path": "pages/picture-book-detail/picture-book-detail",
 			"style": {
-				"navigationStyle": "custom"
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom",
+				"disableScroll": true,
+				"renderer": "skyline",
+				"componentFramework": "glass-easel",
+				"rendererOptions": {
+					"skyline": {
+						"defaultDisplayBlock": true
+					}
+				}
 			}
 		},
 		{

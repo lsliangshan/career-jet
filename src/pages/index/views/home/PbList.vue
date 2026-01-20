@@ -211,7 +211,7 @@
 
 <script setup lang="ts">
 import { tabs, mainColor } from "@/config/config";
-import { IPictureBook } from "@/types";
+import type { IPictureBook } from "@/types";
 import { computed, nextTick, onMounted, ref } from "vue";
 import { usePictureBookStore } from "@/stores/picture_book";
 import RefresherSuccess from "@/components/RefresherSuccess.vue";

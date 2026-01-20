@@ -3,6 +3,12 @@
     <PageLoading v-if="!pageReady" />
 
     <template v-else-if="!!pbDetail">
+      <PbCover
+        :pbDetail="pbDetail"
+        @on-start-reading="handleStartReading"
+        @on-start-reading-with-audio="handleStartReadingWithAudio"
+      />
+
       <PbHeader
         :scene-id="currentIndex > -1 ? pbDetail.scenes?.[currentIndex]?.id : ''"
         :pb-id="pbDetail?.id"
@@ -11,8 +17,6 @@
         v-if="pbDetail && pbDetail.scenes"
         @on-back="handleBack"
       />
-
-      <PbCover :pbDetail="pbDetail" @on-start-reading="handleStartReading" />
     </template>
 
     <page-container
@@ -28,12 +32,22 @@
         @longpress="handleLongPress"
         @touchend="handleTouchEnd"
       >
+        <!-- scaleAndFade accordion threeD zoomIn zoomOut deepthPage -->
         <swiper
           class="swiper w-full h-full"
           :current="currentIndex"
+          :class="[
+            autoplayWithAudio ? 'pointer-events-none' : 'pointer-events-auto',
+          ]"
+          layout-type="transformer"
+          transformer-type="scaleAndFade"
           @change="handleSwiperChange"
+          @animationfinish="handleAnimationFinish"
         >
-          <swiper-item v-for="(scene, index) in pbDetail?.scenes">
+          <swiper-item
+            v-for="(scene, index) in pbDetail?.scenes"
+            :key="scene.id"
+          >
             <PbContent :info="scene" :total="pbDetail?.scenes?.length || 0" />
           </swiper-item>
         </swiper>
@@ -42,6 +56,7 @@
           class="absolute left-0 w-full px-[32rpx] box-border bg-[rgba(255,255,255,0.2)] shadow-[0_0_20rpx_20rpx_rgba(255,255,255,0.2)] flex flex-col items-center justify-center pointer-events-none transition-all duration-300"
           :class="[cleanScreen ? 'opacity-0' : 'opacity-100']"
           :style="{ bottom: `calc(${safeBottom}px + 88rpx + 32rpx + 24rpx)` }"
+          v-if="!autoplayWithAudio"
         >
           <view
             class="w-full rounded-[24rpx] px-[24rpx] pb-[24rpx] box-border flex flex-col bg-[rgba(0,0,0,0.2)] backdrop-blur-[12rpx]"
@@ -84,7 +99,7 @@
           class="absolute left-0 w-full h-[88rpx] px-[32rpx] box-border flex flex-row items-center justify-end transition-all duration-300 gap-[12rpx]"
           :class="[cleanScreen ? 'opacity-0' : 'opacity-100']"
           :style="{ bottom: `calc(${safeBottom}px + 32rpx)` }"
-          v-if="pbDetail?.scenes?.length"
+          v-if="pbDetail?.scenes?.length && !autoplayWithAudio"
         >
           <view
             class="h-[80rpx] bg-[rgba(0,0,0,0.3)] px-[32rpx] rounded-full backdrop-blur-md border border-white/20 active:scale-95 transition-all shadow-lg flex items-center justify-center gap-[12rpx]"
@@ -125,19 +140,21 @@
           </view>
         </view>
 
-        <PbHeader
-          class="transition-all duration-300"
-          :class="[cleanScreen ? 'opacity-0' : 'opacity-100']"
-          :author-id="pbDetail?.authorId"
-          :scene-id="
-            currentIndex > -1 ? pbDetail.scenes?.[currentIndex]?.id : ''
-          "
-          :pb-id="pbDetail?.id"
-          :playing-scene-id="isPlayingAudioSceneId"
-          @on-back="handleLeave"
-          @on-play-audio="handlePlayAudio"
-          v-if="pbDetail && pbDetail.scenes && currentIndex !== -1"
-        />
+        <view class="absolute left-0 top-0">
+          <PbHeader
+            class="transition-all duration-300"
+            :class="[cleanScreen ? 'opacity-0' : 'opacity-100']"
+            :author-id="pbDetail?.authorId"
+            :scene-id="
+              currentIndex > -1 ? pbDetail.scenes?.[currentIndex]?.id : ''
+            "
+            :pb-id="pbDetail?.id"
+            :playing-scene-id="isPlayingAudioSceneId"
+            @on-back="handleLeave"
+            @on-play-audio="handlePlayAudio"
+            v-if="pbDetail && pbDetail.scenes && currentIndex !== -1"
+          />
+        </view>
       </view>
     </page-container>
   </view>
@@ -147,7 +164,7 @@
 import { usePictureBookStore } from "@/stores/picture_book";
 import type { IPictureBook } from "@/types";
 import { onLoad, onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
-import { nextTick, ref, watch } from "vue";
+import { nextTick, provide, ref, watch, type Ref } from "vue";
 import PageLoading from "@/components/page-loading/page-loading.vue";
 import PbCover from "./PbCover.vue";
 import PbContent from "./PbContent.vue";
@@ -162,6 +179,9 @@ const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 const pictureBookStore = usePictureBookStore();
 
 const id = ref("");
+
+// 是否自动阅读绘本，播放音频模式
+const autoplayWithAudio = ref(false);
 
 const modalVisible = ref(false);
 
@@ -184,6 +204,8 @@ const audios = ref<
   }[]
 >([]);
 
+provide<Ref<boolean>>("autoplayWithAudio", autoplayWithAudio);
+
 watch(
   () => currentIndex.value,
   (val) => {
@@ -200,6 +222,16 @@ onLoad((options: any) => {
     audioContext.value.autoplay = true;
     audioContext.value.onEnded(() => {
       isPlayingAudioSceneId.value = undefined;
+
+      if (autoplayWithAudio.value) {
+        if (currentIndex.value === pbDetail.value!.scenes!.length - 1) {
+          autoplayWithAudio.value = false;
+          handleStopAudio();
+          console.log(">>>> 播放完成");
+        } else {
+          handleNext();
+        }
+      }
     });
   });
 
@@ -249,8 +281,30 @@ function initPbDetail() {
 }
 
 function handleStartReading() {
+  autoplayWithAudio.value = false;
   currentIndex.value = 0;
   modalVisible.value = true;
+}
+
+function handleStartReadingWithAudio() {
+  autoplayWithAudio.value = true;
+  currentIndex.value = 0;
+  modalVisible.value = true;
+
+  playPictureBookWithAudio();
+}
+
+function playPictureBookWithAudio() {
+  if (
+    currentIndex.value === -1 ||
+    currentIndex.value > pbDetail.value!.scenes!.length - 1
+  ) {
+    return;
+  }
+  const sceneId = pbDetail.value!.scenes![currentIndex.value].id;
+  if (sceneId) {
+    handlePlayAudio(sceneId);
+  }
 }
 
 function handleBack() {
@@ -263,6 +317,12 @@ function handleBack() {
 
 function handleSwiperChange(e: any) {
   currentIndex.value = e.detail.current;
+}
+
+function handleAnimationFinish(e: any) {
+  if (autoplayWithAudio.value) {
+    playPictureBookWithAudio();
+  }
 }
 
 function handleNext() {

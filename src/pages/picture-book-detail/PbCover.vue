@@ -72,6 +72,27 @@
             }}</text>
           </view>
         </view>
+
+        <view
+          class="w-full mt-[32rpx] flex flex-row items-center justify-center"
+        >
+          <view
+            class="px-[24rpx] py-[16rpx] box-border rounded-[16rpx] flex flex-col items-center justify-center gap-[12rpx] active:scale-95 transition-all duration-300"
+            @click="handleStartReadingWithAudio"
+          >
+            <view
+              class="w-[64rpx] h-[64rpx] bg-white flex flex-row items-center justify-center rounded-full"
+            >
+              <image
+                class="w-[32rpx] h-[32rpx]"
+                src="@static/icon_volume_red.png"
+              ></image>
+            </view>
+            <text class="text-[28rpx] text-[#fff]">{{
+              pbDetail?.config.language === "中文" ? "听绘本" : "Listen"
+            }}</text>
+          </view>
+        </view>
       </view>
     </view>
   </view>
@@ -90,6 +111,7 @@ const props = defineProps<Props>();
 
 const $emit = defineEmits<{
   (e: "on-start-reading"): void;
+  (e: "on-start-reading-with-audio"): void;
 }>();
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
@@ -110,6 +132,10 @@ function handleAvatarError() {
 
 function handleStartReading() {
   $emit("on-start-reading");
+}
+
+function handleStartReadingWithAudio() {
+  $emit("on-start-reading-with-audio");
 }
 </script>
 

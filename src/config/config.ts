@@ -18,7 +18,7 @@ export enum GameType {
 export const tabbars = [
   {
     name: "home",
-    label: "大厅",
+    label: "发现",
     icon: "../../../static/tabs/tab_home_unselect.png",
     activeIcon: "../../../static/tabs/tab_home_select.png",
   },

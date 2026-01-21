@@ -65,7 +65,7 @@
           <view class="flex flex-row items-center">
             <image
               class="w-[30rpx] h-[30rpx] mr-[12rpx]"
-              src="@static/icon_keyword.png"
+              src="@static/icon_gen_pb.png"
             ></image>
             <text
               class="text-[28rpx]"
@@ -99,7 +99,7 @@
           <view class="flex flex-row items-center">
             <image
               class="w-[30rpx] h-[30rpx] mr-[12rpx]"
-              src="@static/icon_keyword.png"
+              src="@static/icon_pb_list.png"
             ></image>
             <text
               class="text-[28rpx]"

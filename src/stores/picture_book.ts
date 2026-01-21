@@ -20,6 +20,7 @@ export const usePictureBookStore = defineStore("picture_book", () => {
   const myPictureBooks = ref<IPictureBook[]>([]);
 
   function getMyPictureBooks(params?: {
+    type: "draft" | "final";
     pageIndex?: number;
     pageSize?: number;
   }) {
@@ -36,6 +37,7 @@ export const usePictureBookStore = defineStore("picture_book", () => {
       const pageSize = params?.pageSize || 20;
       const res = await requestGetMyPictureBooks({
         userId: loginInfo.value.id,
+        type: params?.type || "final",
         pageIndex,
         pageSize,
       });

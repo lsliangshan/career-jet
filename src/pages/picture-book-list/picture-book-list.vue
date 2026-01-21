@@ -1,6 +1,10 @@
 <template>
   <view class="picture-book-list relative w-full h-full">
-    <CustomHeader title="我的绘本" show-back title-align="start" />
+    <CustomHeader
+      :title="type === 'draft' ? '我的草稿' : '我的绘本'"
+      show-back
+      title-align="start"
+    />
 
     <Layout :hasHeader="true">
       <PageLoading v-if="!pageReady" />
@@ -79,11 +83,15 @@
                     !pb.cover?.url ? "暂无封面" : "封面加载失败"
                   }}</text> -->
                   <image
-                  class="w-full h-full z-[9]"
-                  :src="isHorizontalRatio(pb.config.ratio) ? 'https://img.liangqy.com/crawlerjet/picture_book/img/pb_default_horizontal.png' : 'https://img.liangqy.com/crawlerjet/picture_book/img/pb_default_vertical.png'"
-                  mode="aspectFill"
-                  @error="handleImageError(pb.id)"
-                />
+                    class="w-full h-full z-[9]"
+                    :src="
+                      isHorizontalRatio(pb.config.ratio)
+                        ? 'https://img.liangqy.com/crawlerjet/picture_book/img/pb_default_horizontal.png'
+                        : 'https://img.liangqy.com/crawlerjet/picture_book/img/pb_default_vertical.png'
+                    "
+                    mode="aspectFill"
+                    @error="handleImageError(pb.id)"
+                  />
                 </view>
                 <image
                   class="w-full h-full z-[9]"
@@ -185,6 +193,7 @@ import type { IPictureBook } from "@/types";
 import { previewImage } from "@/utils";
 import { usePictureBookStore } from "@/stores/picture_book";
 import { mainColor } from "@/config/config";
+import { onLoad } from "@dcloudio/uni-app";
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
@@ -208,6 +217,8 @@ const pictureBooks = ref<IPictureBook[]>([]);
 // 加载失败的图片id列表
 const errorImageIds = ref<Set<string>>(new Set());
 
+const type = ref<"draft" | "final">("final");
+
 const isHorizontalRatio = computed(() => {
   return (ratio: string) => {
     return Number(ratio.split(":")[0]) > Number(ratio.split(":")[1]);
@@ -222,6 +233,10 @@ const renderImageHeight = computed(() => {
 
     return (378 * height) / width;
   };
+});
+
+onLoad((options: any) => {
+  type.value = options.type || "final";
 });
 
 onMounted(() => {
@@ -270,6 +285,7 @@ async function getMyPictureBooks() {
   isLoading.value = true;
 
   const res = await pictureBookStore.getMyPictureBooks({
+    type: type.value,
     pageIndex: pageIndex.value,
     pageSize: pageSize.value,
   });
@@ -290,7 +306,15 @@ async function getMyPictureBooks() {
 }
 
 function handleViewPictureBook(pb: IPictureBook) {
-  console.log(">>> 跳转：", pb);
+  if (type.value === "draft") {
+    uni.navigateTo({
+      url: `/pages/edit-picture-book/edit-picture-book?id=${pb.id}`,
+      complete: () => {
+        refresherSuccessVisible.value = false;
+      },
+    });
+    return;
+  }
   if (
     Number(pb.config.ratio.split(":")[0]) >
     Number(pb.config.ratio.split(":")[1])

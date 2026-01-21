@@ -87,6 +87,12 @@
 				"navigationStyle": "custom",
 				"pageOrientation": "landscape"
 			}
+		},
+		{
+			"path": "pages/edit-picture-book/edit-picture-book",
+			"style": {
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {

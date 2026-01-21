@@ -423,11 +423,13 @@ export function requestGetAudiosByPbId(params: {
  * 获取我的绘本列表
  * @param params
  * @param {string} params.userId 用户ID
+ * @param {"draft" | "final"} params.type 类型 draft: 草稿, final: 正式
  * @param {number} [params.pageIndex=1] 页码
  * @param {number} [params.pageSize=20] 每页条数
  */
 export function requestGetMyPictureBooks(params?: {
   userId: string;
+  type: "draft" | "final";
   pageIndex?: number;
   pageSize?: number;
 }): Promise<any> {

@@ -233,7 +233,7 @@
 import { usePictureBookStore } from "@/stores/picture_book";
 import type { IPBAudio, IPBAudioItem, IPictureBook } from "@/types";
 import { onLoad, onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
-import { computed, nextTick, provide, Ref, ref, watch } from "vue";
+import { computed, nextTick, provide, type Ref, ref, watch } from "vue";
 import PageLoading from "@/components/page-loading/page-loading.vue";
 import PbCover from "./PbCover.vue";
 import PbContent from "./PbContent.vue";

@@ -1,6 +1,7 @@
 // 图标  https://www.figma.com/design/awcDBnJQrEtyp1pyqbNudX/Iconicool-%7C-Free-Iconset--Community-?node-id=201-2755&t=a295C2jBOqBU2wA2-0
 
 // 图标  https://www.figma.com/design/w1aNBMFS5kyx4GLDGzNdAu/7000-FREE-UI-ICONS--Community-?node-id=1-5&p=f&t=2O3hQcSsDznLYi6V-0
+// https://www.iconfont.cn/collections/detail?spm=a313x.search_index.0.da5a778a4.3e343a81dO32kn&cid=44532
 
 export const DEFAULT_AVATAR =
   "https://img.liangqy.com/crawlerjet/picture_book/img/default_avatar.png";

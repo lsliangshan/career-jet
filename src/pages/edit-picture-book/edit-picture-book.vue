@@ -4,6 +4,9 @@
 
     <Layout hasHeader>
       <scroll-view type="custom" scroll-y class="w-full h-full overflow-y-auto">
+        <view class="sticky left-0 top-0 w-full h-[200rpx] bg-[#fff] z-[99]">
+        </view>
+
         <view class="page-bg w-full p-[24rpx] box-border">
           <view
             class="w-full h-full px-[32rpx] py-[32rpx] box-border bg-[#fff] rounded-[24rpx] flex flex-col gap-[32rpx] transition-all duration-300"
@@ -35,7 +38,7 @@ import Layout from "@/components/layout/layout.vue";
 import { EEditPictureBookStep } from "./type";
 import { onMounted, ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
-import { IPictureBook } from "@/types";
+import type { IPictureBook } from "@/types";
 import { usePictureBookStore } from "@/stores/picture_book";
 
 const pictureBookStore = usePictureBookStore();

@@ -39,11 +39,28 @@
           width: `${calcSize(80)}rpx`,
           height: `${calcSize(80)}rpx`,
         }"
-        v-if="sceneId"
+        v-if="isMyPictureBook"
+      >
+        <image
+          :style="{
+            width: `${calcSize(42)}rpx`,
+            height: `${calcSize(42)}rpx`,
+          }"
+          src="@static/icon_settings.png"
+        ></image>
+      </view>
+
+      <view
+        class="rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
+        :style="{
+          width: `${calcSize(80)}rpx`,
+          height: `${calcSize(80)}rpx`,
+        }"
+        v-if="sceneId && hasAudio"
         @click="handlePlayAudio"
       >
         <image
-          v-if="playingSceneId === sceneId"
+          v-if="playingSceneId === sceneId || autoplayWithAudio"
           :style="{
             width: `${calcSize(42)}rpx`,
             height: `${calcSize(42)}rpx`,
@@ -118,14 +135,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, inject, onMounted, type Ref, ref } from "vue";
 import { usePictureBookStore } from "@/stores/picture_book";
+import { useUserStore } from "@/stores/user";
+import { storeToRefs } from "pinia";
 
 interface Props {
   pbId: string;
   sceneId: string;
   // 正在播放的场景ID
   playingSceneId?: string;
+  authorId?: string;
+  hasAudio: boolean;
 }
 
 const props = defineProps<Props>();
@@ -135,11 +156,20 @@ const $emit = defineEmits<{
   (e: "on-play-audio", sceneId: string): void;
 }>();
 
+const autoplayWithAudio = inject<Ref<boolean>>("autoplayWithAudio");
+
 const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
 
+const userStore = useUserStore();
 const pictureBookStore = usePictureBookStore();
 
+const { loginInfo } = storeToRefs(userStore);
+
 const likeStatus = ref<boolean>(false);
+
+const isMyPictureBook = computed(() => {
+  return props.authorId === loginInfo.value?.id;
+});
 
 const calcSize = computed(() => {
   const dpr = Number(

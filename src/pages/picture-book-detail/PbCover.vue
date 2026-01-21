@@ -75,6 +75,7 @@
 
         <view
           class="w-full mt-[32rpx] flex flex-row items-center justify-center"
+          v-if="hasAudio"
         >
           <view
             class="px-[24rpx] py-[16rpx] box-border rounded-[16rpx] flex flex-col items-center justify-center gap-[12rpx] active:scale-95 transition-all duration-300"
@@ -105,6 +106,7 @@ import { nextTick, onBeforeMount, ref } from "vue";
 
 interface Props {
   pbDetail: IPictureBook;
+  hasAudio: boolean;
 }
 
 const props = defineProps<Props>();

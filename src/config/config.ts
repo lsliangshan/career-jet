@@ -1,5 +1,7 @@
 // 图标  https://www.figma.com/design/awcDBnJQrEtyp1pyqbNudX/Iconicool-%7C-Free-Iconset--Community-?node-id=201-2755&t=a295C2jBOqBU2wA2-0
 
+// 图标  https://www.figma.com/design/w1aNBMFS5kyx4GLDGzNdAu/7000-FREE-UI-ICONS--Community-?node-id=1-5&p=f&t=2O3hQcSsDznLYi6V-0
+
 export const DEFAULT_AVATAR =
   "https://img.liangqy.com/crawlerjet/picture_book/img/default_avatar.png";
 
@@ -745,3 +747,111 @@ export const tabs = {
   likes: "点赞最多",
   views: "浏览最多",
 };
+
+export const voiceTypes = [
+  {
+    name: "小柔",
+    value: 502001,
+    gender: "female",
+    audio:
+      "https://img.liangqy.com/crawlerjet/picture_book/audios/sample/502001.wav",
+  },
+  {
+    name: "小悠",
+    value: 602003,
+    gender: "female",
+    audio:
+      "https://img.liangqy.com/crawlerjet/picture_book/audios/sample/602003.wav",
+  },
+  {
+    name: "小虎",
+    value: 502007,
+    gender: "male",
+    audio:
+      "https://img.liangqy.com/crawlerjet/picture_book/audios/sample/502007.wav",
+  },
+  {
+    name: "小悟",
+    value: 502006,
+    gender: "male",
+    audio:
+      "https://img.liangqy.com/crawlerjet/picture_book/audios/sample/502006.wav",
+  },
+  {
+    name: "小解",
+    value: 502005,
+    gender: "male",
+    audio:
+      "https://img.liangqy.com/crawlerjet/picture_book/audios/sample/502005.wav",
+  },
+  {
+    name: "小满",
+    value: 502004,
+    gender: "female",
+    audio:
+      "https://img.liangqy.com/crawlerjet/picture_book/audios/sample/502004.wav",
+  },
+  {
+    name: "小敏",
+    value: 502003,
+    gender: "female",
+    audio:
+      "https://img.liangqy.com/crawlerjet/picture_book/audios/sample/502003.wav",
+  },
+  {
+    name: "阿灿",
+    value: 602004,
+    gender: "male",
+    audio:
+      "https://img.liangqy.com/crawlerjet/picture_book/audios/sample/602004.wav",
+  },
+  {
+    name: "梓欣",
+    value: 602005,
+    gender: "female",
+    audio:
+      "https://img.liangqy.com/crawlerjet/picture_book/audios/sample/602005.wav",
+  },
+  {
+    name: "懂事少年",
+    value: 603000,
+    gender: "male",
+    audio:
+      "https://img.liangqy.com/crawlerjet/picture_book/audios/sample/603000.wav",
+  },
+  {
+    name: "潇湘妹妹",
+    value: 603001,
+    gender: "female",
+    audio:
+      "https://img.liangqy.com/crawlerjet/picture_book/audios/sample/603001.wav",
+  },
+  {
+    name: "软萌心心",
+    value: 603002,
+    gender: "male",
+    audio:
+      "https://img.liangqy.com/crawlerjet/picture_book/audios/sample/603002.wav",
+  },
+  {
+    name: "随和老李",
+    value: 603003,
+    gender: "male",
+    audio:
+      "https://img.liangqy.com/crawlerjet/picture_book/audios/sample/603003.wav",
+  },
+  {
+    name: "温柔小柠",
+    value: 603004,
+    gender: "female",
+    audio:
+      "https://img.liangqy.com/crawlerjet/picture_book/audios/sample/603004.wav",
+  },
+  {
+    name: "知心大林",
+    value: 603005,
+    gender: "male",
+    audio:
+      "https://img.liangqy.com/crawlerjet/picture_book/audios/sample/603005.wav",
+  },
+];

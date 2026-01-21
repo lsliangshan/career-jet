@@ -5,6 +5,7 @@
     <template v-else-if="!!pbDetail">
       <PbCover
         :pbDetail="pbDetail"
+        :has-audio="pbAudios.length > 0"
         @on-start-reading="handleStartReading"
         @on-start-reading-with-audio="handleStartReadingWithAudio"
       />
@@ -14,6 +15,7 @@
         :pb-id="pbDetail?.id"
         :playing-scene-id="isPlayingAudioSceneId"
         :author-id="pbDetail?.authorId"
+        :has-audio="pbAudios.length > 0"
         v-if="pbDetail && pbDetail.scenes"
         @on-back="handleBack"
       />
@@ -22,13 +24,29 @@
     <page-container
       :show="modalVisible"
       z-index="999"
-      position="center"
-      overlay-style="background-color: rgba(0,0,0,0.05);"
-      custom-style="background-color: transparent;"
+      round
+      :position="
+        modalData?.component === EModalComponent.PICTURE_BOOK_DETAIL_MODAL
+          ? 'center'
+          : 'bottom'
+      "
+      :overlay-style="
+        modalData?.component === EModalComponent.PICTURE_BOOK_DETAIL_MODAL
+          ? 'background-color: rgba(0,0,0,0.05);'
+          : ''
+      "
+      :custom-style="
+        modalData?.component === EModalComponent.PICTURE_BOOK_DETAIL_MODAL
+          ? 'background-color: transparent;'
+          : ''
+      "
       @leave="handleLeave"
     >
       <view
         class="relative w-[100vw] h-[100vh] flex flex-row items-center justify-center"
+        v-if="
+          modalData?.component === EModalComponent.PICTURE_BOOK_DETAIL_MODAL
+        "
         @longpress="handleLongPress"
         @touchend="handleTouchEnd"
       >
@@ -39,8 +57,6 @@
           :class="[
             autoplayWithAudio ? 'pointer-events-none' : 'pointer-events-auto',
           ]"
-          layout-type="transformer"
-          transformer-type="scaleAndFade"
           @change="handleSwiperChange"
           @animationfinish="handleAnimationFinish"
         >
@@ -150,12 +166,20 @@
             "
             :pb-id="pbDetail?.id"
             :playing-scene-id="isPlayingAudioSceneId"
+            :has-audio="pbAudios.length > 0"
             @on-back="handleLeave"
             @on-play-audio="handlePlayAudio"
             v-if="pbDetail && pbDetail.scenes && currentIndex !== -1"
           />
         </view>
       </view>
+
+      <VoiceTypeModal
+        :current-voice-type="currentVoiceType"
+        :audios="pbAudios"
+        v-if="modalData?.component === EModalComponent.VOICE_TYPE_MODAL"
+        @on-confirm="handleConfirmVoiceType"
+      />
     </page-container>
   </view>
 </template>
@@ -171,6 +195,8 @@ import PbContent from "./PbContent.vue";
 import { mainColor } from "@/config/config";
 import PbHeader from "./PbHeader.vue";
 import { navigateBack } from "@/utils";
+import { EModalComponent } from "./types";
+import VoiceTypeModal from "./modals/VoiceTypeModal.vue";
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
@@ -184,6 +210,11 @@ const id = ref("");
 const autoplayWithAudio = ref(false);
 
 const modalVisible = ref(false);
+
+const modalData = ref<{
+  component?: string;
+  [key: string]: any;
+}>();
 
 const pbDetail = ref<IPictureBook | null>(null);
 
@@ -200,14 +231,7 @@ const isPlayingAudioSceneId = ref<string | undefined>();
 const pbAudios = ref<IPBAudio[]>([]);
 
 // 当前音色
-const currentVoiceType = ref<number>(602003);
-
-// const audios = ref<
-//   {
-//     sceneId: string;
-//     url: string;
-//   }[]
-//   >([]);
+const currentVoiceType = ref<number>(0);
 
 const audios = computed(() => {
   if (pbAudios.value.length === 0) {
@@ -246,7 +270,6 @@ onLoad((options: any) => {
         if (currentIndex.value === pbDetail.value!.scenes!.length - 1) {
           autoplayWithAudio.value = false;
           handleStopAudio();
-          console.log(">>>> 播放完成");
         } else {
           handleNext();
         }
@@ -268,6 +291,13 @@ onLoad((options: any) => {
     pbId: id.value,
   });
 });
+
+function closeModal() {
+  const t = setTimeout(() => {
+    clearTimeout(t);
+    modalVisible.value = false;
+  }, 200);
+}
 
 function initPbDetail() {
   pictureBookStore
@@ -301,18 +331,53 @@ function initPbDetail() {
 function handleStartReading() {
   autoplayWithAudio.value = false;
   currentIndex.value = 0;
+  modalData.value = {
+    component: EModalComponent.PICTURE_BOOK_DETAIL_MODAL,
+  };
   modalVisible.value = true;
 }
 
 function handleStartReadingWithAudio() {
+  if (pbAudios.value.length === 0) {
+    uni.showToast({
+      title: "暂无音频",
+      icon: "none",
+    });
+    return;
+  }
+  if (pbAudios.value.length < 2) {
+    currentVoiceType.value = pbAudios.value[0].voiceType;
+    doPlayPictureBookWithAudio();
+    return;
+  }
+  modalData.value = {
+    component: EModalComponent.VOICE_TYPE_MODAL,
+  };
+  modalVisible.value = true;
+}
+
+function doPlayPictureBookWithAudio() {
   autoplayWithAudio.value = true;
   currentIndex.value = 0;
+
+  modalData.value = {
+    component: EModalComponent.PICTURE_BOOK_DETAIL_MODAL,
+  };
   modalVisible.value = true;
 
-  const t = setTimeout(() => {
-    clearTimeout(t);
+  const t2 = setTimeout(() => {
+    clearTimeout(t2);
     playPictureBookWithAudio();
   }, 300);
+}
+
+function handleConfirmVoiceType(e: any) {
+  closeModal();
+  const t = setTimeout(() => {
+    clearTimeout(t);
+    currentVoiceType.value = e.voiceType;
+    doPlayPictureBookWithAudio();
+  }, 500);
 }
 
 function playPictureBookWithAudio() {

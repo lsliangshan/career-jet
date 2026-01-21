@@ -31,7 +31,7 @@
 
       <view
         class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center shrink-0"
-        v-if="sceneId"
+        v-if="sceneId && hasAudio"
         @click="handlePlayAudio"
       >
         <image
@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, onMounted, type Ref, ref, watch } from "vue";
+import { computed, inject, onMounted, type Ref, ref } from "vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { usePictureBookStore } from "@/stores/picture_book";
@@ -92,6 +92,7 @@ interface Props {
   // 正在播放的场景ID
   playingSceneId?: string;
   authorId?: string;
+  hasAudio: boolean;
 }
 
 const props = defineProps<Props>();

@@ -122,6 +122,49 @@
             >
           </view>
         </view>
+
+        <view
+          class="w-full flex flex-row items-center justify-center"
+          :style="{
+            marginTop: `${calcSize(32)}rpx`,
+          }"
+          v-if="hasAudio"
+        >
+          <view
+            class="box-border flex flex-col items-center justify-center active:scale-95 transition-all duration-300"
+            :style="{
+              padding: `${calcSize(16)}rpx ${calcSize(24)}rpx`,
+              borderRadius: `${calcSize(16)}rpx`,
+              gap: `${calcSize(12)}rpx`,
+            }"
+            @click="handleStartReadingWithAudio"
+          >
+            <view
+              class="bg-white flex flex-row items-center justify-center rounded-full"
+              :style="{
+                width: `${calcSize(64)}rpx`,
+                height: `${calcSize(64)}rpx`,
+              }"
+            >
+              <image
+                :style="{
+                  width: `${calcSize(32)}rpx`,
+                  height: `${calcSize(32)}rpx`,
+                }"
+                src="@static/icon_volume_red.png"
+              ></image>
+            </view>
+            <text
+              class="text-[#fff]"
+              :style="{
+                fontSize: `${calcSize(28)}rpx`,
+              }"
+              >{{
+                pbDetail?.config.language === "中文" ? "听绘本" : "Listen"
+              }}</text
+            >
+          </view>
+        </view>
       </view>
     </view>
   </view>
@@ -134,15 +177,15 @@ import { computed, nextTick, onBeforeMount, ref } from "vue";
 
 interface Props {
   pbDetail: IPictureBook;
+  hasAudio: boolean;
 }
 
 const props = defineProps<Props>();
 
 const $emit = defineEmits<{
   (e: "on-start-reading"): void;
+  (e: "on-start-reading-with-audio"): void;
 }>();
-
-const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
 const renderAvatar = ref();
 
@@ -171,6 +214,10 @@ function handleAvatarError() {
 
 function handleStartReading() {
   $emit("on-start-reading");
+}
+
+function handleStartReadingWithAudio() {
+  $emit("on-start-reading-with-audio");
 }
 </script>
 

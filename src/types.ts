@@ -142,6 +142,7 @@ export interface IPictureBook {
 }
 
 export interface IPBAudioItem {
+  voiceType: number;
   sceneId: string;
   url: string;
 }

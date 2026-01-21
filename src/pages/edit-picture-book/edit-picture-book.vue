@@ -4,7 +4,8 @@
 
     <Layout hasHeader>
       <scroll-view type="custom" scroll-y class="w-full h-full overflow-y-auto">
-        <view class="sticky left-0 top-0 w-full h-[200rpx] bg-[#fff] z-[99]">
+        <view class="sticky left-0 top-0 w-full bg-[#fff] z-[99] flex flex-col">
+          <view class="w-full h-[80rpx] bg-red-500"></view>
         </view>
 
         <view class="page-bg w-full p-[24rpx] box-border">

@@ -19,7 +19,7 @@
               :style="{
                 borderColor:
                   allSteps[currentStepIndex].id === step.id
-                    ? ThemeColors.primary300
+                    ? 'rgba(43,140,238,1)'
                     : 'white',
               }"
             >
@@ -30,6 +30,14 @@
                   currentStepIndex > index ? ThemeColors.primary : '#c8c8c8'
                 "
               />
+            </view>
+          </view>
+
+          <view class="w-full h-[88rpx] flex flex-row items-center justify-center">
+            <view class="h-[64rpx] px-[24rpx] box-border border border-[1rpx] border-[rgba(43,140,238,0.2)] bg-[rgba(43,140,238,0.1)] rounded-[32rpx] flex flex-row items-center justify-between gap-[12rpx]"
+            >
+              <text class="text-[28rpx] font-medium text-[rgba(43,140,238,1)]">步骤 {{ currentStepIndex + 1 }}: </text>
+              <text class="text-[28rpx] font-medium text-[rgba(43,140,238,1)]">{{ allSteps[currentStepIndex].title }}</text>
             </view>
           </view>
         </view>
@@ -84,22 +92,22 @@ const currentStepIndex = ref(0);
 const allSteps = [
   {
     id: EEditPictureBookStep.ROLES,
-    title: "角色",
+    title: "确认角色",
     icon: `/static/${iconThemeVersion}/icon_role_confirm.svg`,
   },
   {
     id: EEditPictureBookStep.SCENES,
-    title: "场景",
+    title: "确认场景",
     icon: `/static/${iconThemeVersion}/icon_scene_confirm.svg`,
   },
   {
     id: EEditPictureBookStep.COVER,
-    title: "封面",
+    title: "确认封面",
     icon: `/static/${iconThemeVersion}/icon_cover_confirm.svg`,
   },
   {
     id: EEditPictureBookStep.AUDIO,
-    title: "音频",
+    title: "确认音频",
     icon: `/static/${iconThemeVersion}/icon_audio_confirm.svg`,
   },
   {

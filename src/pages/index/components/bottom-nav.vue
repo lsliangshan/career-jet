@@ -18,7 +18,12 @@
         />
         <text
           class="text-[24rpx] transition-all duration-300"
-          :class="[index === currentIndex ? 'text-[#FF9A3C]' : 'text-[#999999]']"
+          :style="{
+            color:
+              index === currentIndex
+                ? ThemeColors.primary
+                : ThemeColors.text.label,
+          }"
           >{{ item.label }}</text
         >
       </view>
@@ -27,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { tabbars } from "@/config/config";
+import { tabbars, ThemeColors } from "@/config/config";
 import { useNavStore } from "@/stores/nav";
 import { storeToRefs } from "pinia";
 

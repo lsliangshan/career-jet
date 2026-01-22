@@ -31,49 +31,15 @@
                     mode="aspectFill"
                   ></image>
 
-                  <image
+                  <svg-icon
+                    :src="`/static/${iconThemeVersion}/icon_arrow_right.svg`"
                     class="w-[32rpx] h-[32rpx]"
-                    src="@static/icon_arraw_right.png"
-                    mode="aspectFill"
-                  ></image>
+                    :color="ThemeColors.text.disabled"
+                  />
                 </view>
               </button>
             </view>
           </view>
-
-          <!-- <view
-            class="h-[1rpx]"
-            :style="{
-              width: 'calc(100% - 64rpx)',
-              backgroundColor: ThemeColors.border,
-              marginLeft: '32rpx',
-            }"
-          ></view>
-
-          <view
-            class="w-full h-[100rpx] px-[32rpx] bg-[#fff] active:bg-[#f8f8f8] box-border flex flex-row items-center justify-between transition-all duration-300"
-          >
-            <view class="h-full flex flex-row items-center shrink-0">
-              <text
-                class="text-[30rpx] font-[500]"
-                :style="{ color: ThemeColors.text.title }"
-                >手机号</text
-              >
-            </view>
-            <view class="h-full flex flex-row items-center gap-[12rpx]">
-              <text
-                class="text-[26rpx]"
-                :style="{ color: ThemeColors.text.label }"
-                >{{ loginInfo?.phonenum }}</text
-              >
-
-              <image
-                class="w-[32rpx] h-[32rpx]"
-                src="@static/icon_arraw_right.png"
-                mode="aspectFill"
-              ></image>
-            </view>
-          </view> -->
 
           <view
             class="h-[1rpx]"
@@ -104,11 +70,11 @@
                 >{{ loginInfo?.nickname }}</text
               >
 
-              <image
+              <svg-icon
+                :src="`/static/${iconThemeVersion}/icon_arrow_right.svg`"
                 class="w-[32rpx] h-[32rpx]"
-                src="@static/icon_arraw_right.png"
-                mode="aspectFill"
-              ></image>
+                :color="ThemeColors.text.disabled"
+              />
             </view>
           </view>
 
@@ -141,11 +107,11 @@
                 >{{ loginInfo?.email }}</text
               >
 
-              <image
+              <svg-icon
+                :src="`/static/${iconThemeVersion}/icon_arrow_right.svg`"
                 class="w-[32rpx] h-[32rpx]"
-                src="@static/icon_arraw_right.png"
-                mode="aspectFill"
-              ></image>
+                :color="ThemeColors.text.disabled"
+              />
             </view>
           </view>
 
@@ -186,11 +152,11 @@
                     {{ genders[selectedGenderIndex]?.label }}
                   </text>
 
-                  <image
+                  <svg-icon
+                    :src="`/static/${iconThemeVersion}/icon_arrow_right.svg`"
                     class="w-[32rpx] h-[32rpx]"
-                    src="@static/icon_arraw_right.png"
-                    mode="aspectFill"
-                  ></image>
+                    :color="ThemeColors.text.disabled"
+                  />
                 </view>
               </picker>
             </view>
@@ -225,11 +191,11 @@
                     {{ loginInfo?.birthday }}
                   </text>
 
-                  <image
+                  <svg-icon
+                    :src="`/static/${iconThemeVersion}/icon_arrow_right.svg`"
                     class="w-[32rpx] h-[32rpx]"
-                    src="@static/icon_arraw_right.png"
-                    mode="aspectFill"
-                  ></image>
+                    :color="ThemeColors.text.disabled"
+                  />
                 </view>
               </picker>
             </view>
@@ -246,7 +212,7 @@ import Layout from "@/components/layout/layout.vue";
 import { ProfileDetailType, useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { computed, onMounted, ref } from "vue";
-import { ThemeColors } from "@/config/config";
+import { iconThemeVersion, ThemeColors } from "@/config/config";
 
 const userStore = useUserStore();
 const { loginInfo } = storeToRefs(userStore);

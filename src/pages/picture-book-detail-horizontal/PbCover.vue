@@ -101,14 +101,15 @@
             :style="{ backgroundColor: mainColor, gap: `${calcSize(16)}rpx` }"
             @click="handleStartReading"
           >
-            <image
+            <svg-icon
+              :src="`/static/${iconThemeVersion}/icon_start_read.svg`"
               :style="{
                 width: `${calcSize(32)}rpx`,
                 height: `${calcSize(32)}rpx`,
                 marginBottom: `${calcSize(4)}rpx`,
               }"
-              src="@static/icon_start_reading2.png"
-            ></image>
+              color="#fff"
+            />
             <text
               class="font-bold text-[#fff]"
               :style="{
@@ -146,13 +147,14 @@
                 height: `${calcSize(64)}rpx`,
               }"
             >
-              <image
+              <svg-icon
+                :src="`/static/${iconThemeVersion}/icon_volume.svg`"
                 :style="{
                   width: `${calcSize(32)}rpx`,
                   height: `${calcSize(32)}rpx`,
                 }"
-                src="@static/icon_volume_red.png"
-              ></image>
+                :color="ThemeColors.primary"
+              />
             </view>
             <text
               class="text-[#fff]"
@@ -172,7 +174,12 @@
 
 <script setup lang="ts">
 import type { IPictureBook } from "@/types";
-import { DEFAULT_AVATAR, mainColor } from "@/config/config";
+import {
+  DEFAULT_AVATAR,
+  iconThemeVersion,
+  mainColor,
+  ThemeColors,
+} from "@/config/config";
 import { computed, nextTick, onBeforeMount, ref } from "vue";
 
 interface Props {

@@ -54,10 +54,7 @@
           class="h-[30rpx] flex flex-row items-center justify-center gap-[8rpx]"
           v-else
         >
-          <image
-            src="@static/icon_loading_white.png"
-            class="w-[24rpx] h-[24rpx] animate-spin"
-          ></image>
+          <CustomLoader :size="24" color="#fff" />
           <text class="text-[28rpx]" :style="{ color: ThemeColors.text.white }"
             >登录中...</text
           >
@@ -71,20 +68,22 @@
       <view
         class="h-[48rpx] px-[24rpx] box-border rounded-[8rpx] overflow-hidden flex flex-row items-center justify-center"
       >
-        <image
+        <svg-icon
+          :src="`/static/${iconThemeVersion}/icon_arrow_right.svg`"
           class="w-[30rpx] h-[30rpx]"
-          src="@static/icon_arraw_right.png"
-        ></image>
+          :color="ThemeColors.text.disabled"
+        />
       </view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ThemeColors } from "@/config/config";
+import { iconThemeVersion, ThemeColors } from "@/config/config";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
+import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 
 const userStore = useUserStore();
 const { loginInfo, isLoggedIn } = storeToRefs(userStore);

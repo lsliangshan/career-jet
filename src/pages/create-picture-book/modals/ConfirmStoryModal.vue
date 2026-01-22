@@ -28,10 +28,11 @@
               ]"
               @click="closeModal"
             >
-              <image
-                src="@static/icon_close_black.png"
+              <svg-icon
+                :src="`/static/${iconThemeVersion}/icon_close.svg`"
                 class="w-[32rpx] h-[32rpx]"
-              ></image>
+                color="#000"
+              />
             </view>
           </view>
           <view class="relative w-full pb-[24rpx] box-border">
@@ -101,10 +102,11 @@
               ]"
               @click="doRegenerateStory"
             >
-              <image
-                src="@static/icon_generate_red.png"
+              <svg-icon
+                :src="`/static/${iconThemeVersion}/icon_generate.svg`"
                 class="w-[32rpx] h-[32rpx]"
-              ></image>
+                :color="ThemeColors.primary"
+              />
               <text class="text-[32rpx] text-[#FF7BAC]">{{
                 isRegenerating ? "重新生成中..." : "重新生成"
               }}</text>
@@ -155,6 +157,7 @@ import type { IConfirmRoleInfo, IConfirmStoryInfo } from "./types";
 import { nextTick, onMounted, ref, watch } from "vue";
 import { requestCustomUrl } from "@/request";
 import { EConfirmAction } from "../types";
+import { iconThemeVersion, ThemeColors } from "@/config/config";
 
 interface Props {
   info: IConfirmStoryInfo;

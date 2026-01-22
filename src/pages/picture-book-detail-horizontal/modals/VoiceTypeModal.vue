@@ -80,28 +80,24 @@
                   }"
                   @click.stop="handlePlayClick(item)"
                 >
-                  <image
-                    src="@/static/icon_circle_play_red.png"
-                    lazy-load
-                    class=""
+                  <svg-icon
+                    :src="`/static/${iconThemeVersion}/icon_play_circle.svg`"
                     :style="{
                       width: `${calcSize(48)}rpx`,
                       height: `${calcSize(48)}rpx`,
                     }"
-                    mode="aspectFill"
+                    :color="ThemeColors.primary"
                     v-if="currentAudioUrl !== item.audio"
-                  ></image>
-                  <image
-                    src="@/static/icon_circle_pause_red.png"
-                    lazy-load
-                    class=""
+                  />
+                  <svg-icon
+                    :src="`/static/${iconThemeVersion}/icon_pause_circle.svg`"
                     :style="{
                       width: `${calcSize(48)}rpx`,
                       height: `${calcSize(48)}rpx`,
                     }"
-                    mode="aspectFill"
+                    :color="ThemeColors.primary"
                     v-else
-                  ></image>
+                  />
                 </view>
               </view>
             </view>
@@ -113,7 +109,12 @@
 </template>
 
 <script setup lang="ts">
-import { voiceTypes, mainColor } from "@/config/config";
+import {
+  voiceTypes,
+  mainColor,
+  ThemeColors,
+  iconThemeVersion,
+} from "@/config/config";
 import type { IPBAudio } from "@/types";
 import { computed, onMounted, ref } from "vue";
 

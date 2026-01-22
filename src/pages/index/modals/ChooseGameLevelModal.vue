@@ -17,14 +17,26 @@
         @click="handleChangeGameLevel($event, item)"
       >
         <view class="w-full h-full flex flex-row items-center">
-          <text class="text-[28rpx]" :style="{ color: item.level === level.level ? ThemeColors.primary : ThemeColors.text.title }">
+          <text
+            class="text-[28rpx]"
+            :style="{
+              color:
+                item.level === level.level
+                  ? ThemeColors.primary
+                  : ThemeColors.text.title,
+            }"
+          >
             {{ item.level }}级 - ({{ item.name }})
           </text>
         </view>
-        <view class="h-full shrink-0 flex flex-row items-center justify-end" v-if="item.level === level.level">
-          <image
+        <view
+          class="h-full shrink-0 flex flex-row items-center justify-end"
+          v-if="item.level === level.level"
+        >
+          <svg-icon
+            :src="`/static/${iconThemeVersion}/icon_checked.svg`"
             class="w-[30rpx] h-[30rpx]"
-            src="@static/icon_checked.png"
+            :color="ThemeColors.primary"
           />
         </view>
       </view>
@@ -37,7 +49,11 @@
 </template>
 
 <script setup lang="ts">
-import { supportedLevels, ThemeColors } from "@/config/config";
+import {
+  iconThemeVersion,
+  supportedLevels,
+  ThemeColors,
+} from "@/config/config";
 import { useProfileStore } from "@/stores/profile";
 import type { ILevel } from "@/types";
 import { storeToRefs } from "pinia";

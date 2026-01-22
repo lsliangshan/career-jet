@@ -20,11 +20,7 @@
           <view
             class="w-[100rpx] h-[100rpx] rounded-[8rpx] flex flex-row items-center justify-center"
           >
-            <image
-              class="w-[40rpx] h-[40rpx] animate-spin"
-              src="@static/icon_loading.png"
-              mode="aspectFit"
-            />
+            <CustomLoader :size="40" :color="ThemeColors.primary" />
           </view>
         </view>
       </template>
@@ -139,10 +135,11 @@
                   class="w-full h-full flex flex-row items-center gap-[12rpx]"
                   v-else-if="renderOrderType === 'order-by-likes'"
                 >
-                  <image
+                  <svg-icon
+                    :src="`/static/${iconThemeVersion}/icon_like.svg`"
                     class="w-[28rpx] h-[28rpx]"
-                    src="@static/icon_like_red.png"
-                  ></image>
+                    :color="ThemeColors.primary"
+                  />
                   <text
                     class="text-[26rpx]"
                     :class="[
@@ -157,10 +154,11 @@
                   class="w-full h-full flex flex-row items-center gap-[12rpx]"
                   v-else-if="renderOrderType === 'order-by-views'"
                 >
-                  <image
+                  <svg-icon
+                    :src="`/static/${iconThemeVersion}/icon_eye.svg`"
                     class="w-[32rpx] h-[32rpx]"
-                    src="@static/icon_eye_red.png"
-                  ></image>
+                    :color="ThemeColors.primary"
+                  />
                   <text
                     class="text-[26rpx]"
                     :class="[
@@ -191,11 +189,7 @@
           <view
             class="w-[20rpx] h-[20rpx] rounded-[8rpx] flex flex-row items-center justify-center"
           >
-            <image
-              class="w-full h-full animate-spin"
-              src="@static/icon_loading.png"
-              mode="aspectFit"
-            />
+            <CustomLoader :size="20" :color="ThemeColors.text.disabled" />
           </view>
           <text class="text-[28rpx] text-[#888]">加载中</text>
         </view>
@@ -210,13 +204,19 @@
 </template>
 
 <script setup lang="ts">
-import { tabs, mainColor } from "@/config/config";
+import {
+  tabs,
+  mainColor,
+  iconThemeVersion,
+  ThemeColors,
+} from "@/config/config";
 import type { IPictureBook } from "@/types";
 import { computed, nextTick, onMounted, ref } from "vue";
 import { usePictureBookStore } from "@/stores/picture_book";
 import RefresherSuccess from "@/components/RefresherSuccess.vue";
 import PageLoading from "@/components/page-loading/page-loading.vue";
 import Empty from "@/components/empty/empty.vue";
+import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 
 interface Props {
   type: keyof typeof tabs;

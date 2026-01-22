@@ -14,7 +14,7 @@
     </view>
     <view class="w-full rounded-[8rpx] overflow-hidden flex flex-col">
       <view class="flex flex-row items-center">
-        <view
+        <!-- <view
           class="h-[100rpx] w-full pl-[24rpx] pr-[24rpx] box-border active:bg-[#fafafa] flex flex-row items-center justify-between"
           :style="{
             backgroundColor: ThemeColors.bgCard,
@@ -24,7 +24,7 @@
           <view class="flex flex-row items-center">
             <image
               class="w-[30rpx] h-[30rpx] mr-[12rpx]"
-              src="@static/icon_keyword.png"
+              :src="`@static/${iconThemeVersion}/icon_keyword.png`"
             ></image>
             <text
               class="text-[28rpx]"
@@ -42,21 +42,22 @@
               :style="{
                 color: ThemeColors.text.label,
               }"
-              >已答 <text class="text-[green]">{{ totalHistoryCount }}</text> 题</text
+              >已答
+              <text class="text-[green]">{{ totalHistoryCount }}</text> 题</text
             >
             <image
               class="w-[30rpx] h-[30rpx]"
-              src="@static/icon_arraw_right.png"
+              :src="`@static/${iconThemeVersion}/icon_arraw_right.png`"
             ></image>
           </view>
-        </view>
+        </view> -->
       </view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ThemeColors } from "@/config/config";
+import { iconThemeVersion, ThemeColors } from "@/config/config";
 import { useProfileStore } from "@/stores/profile";
 import { useQuestionStore } from "@/stores/question";
 import { storeToRefs } from "pinia";
@@ -82,6 +83,4 @@ function handleViewAnswerHistory() {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

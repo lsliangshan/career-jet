@@ -33,11 +33,7 @@
               <view
                 class="w-[100rpx] h-[100rpx] rounded-[8rpx] flex flex-row items-center justify-center"
               >
-                <image
-                  class="w-[40rpx] h-[40rpx] animate-spin"
-                  src="@static/icon_loading.png"
-                  mode="aspectFit"
-                />
+                <CustomLoader :size="40" :color="ThemeColors.primary" />
               </view>
             </view>
           </template>
@@ -79,9 +75,6 @@
                   class="absolute left-0 top-0 w-full h-full bg-[#e8e8e8] flex flex-row items-center justify-center"
                   v-if="!pb.cover?.url || errorImageIds.has(pb.id)"
                 >
-                  <!-- <text class="text-[24rpx] text-[#c8c8c8]">{{
-                    !pb.cover?.url ? "暂无封面" : "封面加载失败"
-                  }}</text> -->
                   <image
                     class="w-full h-full z-[9]"
                     :src="
@@ -166,11 +159,7 @@
             <view
               class="w-[20rpx] h-[20rpx] rounded-[8rpx] flex flex-row items-center justify-center"
             >
-              <image
-                class="w-full h-full animate-spin"
-                src="@static/icon_loading.png"
-                mode="aspectFit"
-              />
+              <CustomLoader :size="20" :color="ThemeColors.text.disabled" />
             </view>
             <text class="text-[28rpx] text-[#888]">加载中</text>
           </view>
@@ -190,10 +179,12 @@ import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import { computed, nextTick, onMounted, ref } from "vue";
 import type { IPictureBook } from "@/types";
-import { previewImage } from "@/utils";
 import { usePictureBookStore } from "@/stores/picture_book";
-import { mainColor } from "@/config/config";
+import { mainColor, ThemeColors } from "@/config/config";
 import { onLoad } from "@dcloudio/uni-app";
+import CustomLoader from "@/components/custom-loader/custom-loader.vue";
+import Empty from "@/components/empty/empty.vue";
+import PageLoading from "@/components/page-loading/page-loading.vue";
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 

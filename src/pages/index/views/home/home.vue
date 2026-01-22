@@ -62,6 +62,7 @@
           <nested-scroll-body>
             <view
               v-for="value in Object.keys(tabs)"
+              :key="value"
               :id="`tab-${value}`"
               class="inline-block w-full h-full"
             >

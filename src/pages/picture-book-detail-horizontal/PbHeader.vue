@@ -16,14 +16,15 @@
       }"
       @click="handleBack"
     >
-      <image
-        class="mr-[8rpx]"
+      <svg-icon
+        :src="`/static/${iconThemeVersion}/icon_back.svg`"
         :style="{
           width: `${calcSize(36)}rpx`,
           height: `${calcSize(36)}rpx`,
+          marginRight: `${calcSize(8)}rpx`,
         }"
-        src="@static/icon_back_white.png"
-      ></image>
+        color="#fff"
+      />
     </view>
 
     <view
@@ -41,13 +42,14 @@
         }"
         v-if="isMyPictureBook"
       >
-        <image
+        <svg-icon
+          :src="`/static/${iconThemeVersion}/icon_settings.svg`"
           :style="{
             width: `${calcSize(42)}rpx`,
             height: `${calcSize(42)}rpx`,
           }"
-          src="@static/icon_settings.png"
-        ></image>
+          color="#fff"
+        />
       </view>
 
       <view
@@ -59,27 +61,18 @@
         v-if="sceneId && hasAudio"
         @click="handlePlayAudio"
       >
-        <image
-          v-if="playingSceneId === sceneId || autoplayWithAudio"
+        <svg-icon
+          :src="`/static/${iconThemeVersion}/icon_volume.svg`"
           :style="{
             width: `${calcSize(42)}rpx`,
             height: `${calcSize(42)}rpx`,
           }"
-          class="animate-pulse"
-          src="
-            @static/icon_volume_red.png
+          :color="
+            playingSceneId === sceneId || autoplayWithAudio
+              ? ThemeColors.primary
+              : '#fff'
           "
-        ></image>
-        <image
-          v-else
-          :style="{
-            width: `${calcSize(42)}rpx`,
-            height: `${calcSize(42)}rpx`,
-          }"
-          src="
-            @static/icon_volume.png
-          "
-        ></image>
+        />
       </view>
 
       <view
@@ -91,22 +84,14 @@
         v-if="sceneId"
         @click="toggleLike"
       >
-        <image
+        <svg-icon
+          :src="`/static/${iconThemeVersion}/icon_like.svg`"
           :style="{
             width: `${calcSize(38)}rpx`,
             height: `${calcSize(38)}rpx`,
           }"
-          src="@static/icon_like_red.png"
-          v-if="likeStatus"
-        ></image>
-        <image
-          :style="{
-            width: `${calcSize(38)}rpx`,
-            height: `${calcSize(38)}rpx`,
-          }"
-          src="@static/icon_like_white.png"
-          v-else
-        ></image>
+          :color="likeStatus ? ThemeColors.primary : '#fff'"
+        />
       </view>
 
       <view
@@ -120,14 +105,15 @@
           open-type="share"
           class="w-full h-full border-none after:border-none bg-transparent p-0 flex flex-row items-center justify-center"
         >
-          <image
+          <svg-icon
+            :src="`/static/${iconThemeVersion}/icon_share.svg`"
             :style="{
               width: `${calcSize(40)}rpx`,
               height: `${calcSize(40)}rpx`,
               marginRight: `${calcSize(8)}rpx`,
             }"
-            src="@static/icon_share.png"
-          ></image>
+            color="#fff"
+          />
         </button>
       </view>
     </view>
@@ -139,6 +125,7 @@ import { computed, inject, onMounted, type Ref, ref } from "vue";
 import { usePictureBookStore } from "@/stores/picture_book";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+import { iconThemeVersion, ThemeColors } from "@/config/config";
 
 interface Props {
   pbId: string;

@@ -13,45 +13,6 @@
       >
     </view>
     <view class="w-full rounded-[8rpx] overflow-hidden flex flex-col">
-      <view class="flex flex-row items-center">
-        <view
-          class="h-[100rpx] w-full pl-[24rpx] pr-[24rpx] box-border active:bg-[#fafafa] flex flex-row items-center justify-between"
-          :style="{
-            backgroundColor: ThemeColors.bgCard,
-          }"
-          @click="handleEditGameLevel"
-        >
-          <view class="flex flex-row items-center">
-            <image
-              class="w-[30rpx] h-[30rpx] mr-[12rpx]"
-              src="@static/icon_keyword.png"
-            ></image>
-            <text
-              class="text-[28rpx]"
-              :style="{
-                color: ThemeColors.text.title,
-              }"
-              >挑战难度</text
-            >
-          </view>
-          <view
-            class="h-full shrink-0 flex flex-row items-center justify-center"
-          >
-            <text
-              class="text-[28rpx] mr-[12rpx]"
-              :style="{
-                color: ThemeColors.text.label,
-              }"
-              >{{ level.level }}级({{ level.name }})</text
-            >
-            <image
-              class="w-[30rpx] h-[30rpx]"
-              src="@static/icon_arraw_right.png"
-            ></image>
-          </view>
-        </view>
-      </view>
-
       <view
         class="flex flex-row items-center border-t border-t-[1rpx] border-t-[#f8f8f8]"
       >
@@ -62,11 +23,12 @@
           }"
           @click="handleCreatePictureBook"
         >
-          <view class="flex flex-row items-center">
-            <image
-              class="w-[30rpx] h-[30rpx] mr-[12rpx]"
-              src="@static/icon_gen_pb.png"
-            ></image>
+          <view class="flex flex-row items-center gap-[12rpx]">
+            <svg-icon
+              :src="`/static/${iconThemeVersion}/icon_generate.svg`"
+              class="w-[28rpx] h-[28rpx]"
+              color="#000"
+            />
             <text
               class="text-[28rpx]"
               :style="{
@@ -78,10 +40,11 @@
           <view
             class="h-full shrink-0 flex flex-row items-center justify-center"
           >
-            <image
+            <svg-icon
+              :src="`/static/${iconThemeVersion}/icon_arrow_right.svg`"
               class="w-[30rpx] h-[30rpx]"
-              src="@static/icon_arraw_right.png"
-            ></image>
+              :color="ThemeColors.text.disabled"
+            />
           </view>
         </view>
       </view>
@@ -96,11 +59,12 @@
           }"
           @click="handleViewMyPictureBooks('draft')"
         >
-          <view class="flex flex-row items-center">
-            <image
-              class="w-[30rpx] h-[30rpx] mr-[12rpx]"
-              src="@static/icon_draft.png"
-            ></image>
+          <view class="flex flex-row items-center gap-[12rpx]">
+            <svg-icon
+              :src="`/static/${iconThemeVersion}/icon_pb_draft.svg`"
+              class="w-[28rpx] h-[28rpx]"
+              color="#000"
+            />
             <text
               class="text-[28rpx]"
               :style="{
@@ -112,10 +76,11 @@
           <view
             class="h-full shrink-0 flex flex-row items-center justify-center"
           >
-            <image
+            <svg-icon
+              :src="`/static/${iconThemeVersion}/icon_arrow_right.svg`"
               class="w-[30rpx] h-[30rpx]"
-              src="@static/icon_arraw_right.png"
-            ></image>
+              :color="ThemeColors.text.disabled"
+            />
           </view>
         </view>
       </view>
@@ -130,11 +95,12 @@
           }"
           @click="handleViewMyPictureBooks('final')"
         >
-          <view class="flex flex-row items-center">
-            <image
-              class="w-[30rpx] h-[30rpx] mr-[12rpx]"
-              src="@static/icon_final.png"
-            ></image>
+          <view class="flex flex-row items-center gap-[12rpx]">
+            <svg-icon
+              :src="`/static/${iconThemeVersion}/icon_pb_list.svg`"
+              class="w-[26rpx] h-[26rpx]"
+              color="#000"
+            />
             <text
               class="text-[28rpx]"
               :style="{
@@ -146,10 +112,11 @@
           <view
             class="h-full shrink-0 flex flex-row items-center justify-center"
           >
-            <image
+            <svg-icon
+              :src="`/static/${iconThemeVersion}/icon_arrow_right.svg`"
               class="w-[30rpx] h-[30rpx]"
-              src="@static/icon_arraw_right.png"
-            ></image>
+              :color="ThemeColors.text.disabled"
+            />
           </view>
         </view>
       </view>
@@ -173,7 +140,7 @@
 </template>
 
 <script setup lang="ts">
-import { ThemeColors } from "@/config/config";
+import { iconThemeVersion, ThemeColors } from "@/config/config";
 import { useProfileStore } from "@/stores/profile";
 import { storeToRefs } from "pinia";
 import { EModalComponent } from "../../modals/types";

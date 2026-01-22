@@ -4,13 +4,27 @@
 
     <Layout hasHeader>
       <view class="relative w-full h-full overflow-hidden">
-        <refresher-success v-model="refresherSuccessVisible" :text="successTip" />
-        <scroll-view type="custom" class="w-full h-full" scroll-y refresher-enabled refresher-default-style="none"
-          :refresher-triggered="refresherTriggered" @refresherrefresh="refresherrefresh">
+        <refresher-success
+          v-model="refresherSuccessVisible"
+          :text="successTip"
+        />
+        <scroll-view
+          type="custom"
+          class="w-full h-full"
+          scroll-y
+          refresher-enabled
+          refresher-default-style="none"
+          :refresher-triggered="refresherTriggered"
+          @refresherrefresh="refresherrefresh"
+        >
           <template #refresher>
-            <view class="w-full h-[100rpx] flex flex-row items-center justify-center">
-              <view class="w-[100rpx] h-[100rpx] rounded-[8rpx] flex flex-row items-center justify-center">
-                <image class="w-[40rpx] h-[40rpx] animate-spin" src="@static/icon_loading.png" mode="aspectFit" />
+            <view
+              class="w-full h-[100rpx] flex flex-row items-center justify-center"
+            >
+              <view
+                class="w-[100rpx] h-[100rpx] rounded-[8rpx] flex flex-row items-center justify-center"
+              >
+                <CustomLoader :size="40" :color="ThemeColors.primary" />
               </view>
             </view>
           </template>
@@ -26,17 +40,27 @@
                   class="h-[100rpx] w-full pl-[24rpx] pr-[24rpx] box-border active:bg-[#fafafa] flex flex-row items-center justify-between"
                   :style="{
                     backgroundColor: ThemeColors.bgCard,
-                  }">
+                  }"
+                >
                   <view class="flex flex-row items-center">
-                    <!-- <image class="w-[30rpx] h-[30rpx] mr-[12rpx]" src="@static/icon_keyword.png"></image> -->
-                    <text class="text-[28rpx]" :style="{
-                      color: ThemeColors.text.title,
-                    }">总积分</text>
+                    <text
+                      class="text-[28rpx]"
+                      :style="{
+                        color: ThemeColors.text.title,
+                      }"
+                      >总积分</text
+                    >
                   </view>
-                  <view class="h-full shrink-0 flex flex-row items-center justify-center">
-                    <text class="text-[28rpx] mr-[12rpx]" :style="{
-                      color: ThemeColors.primary,
-                    }">{{ userSummary?.points }}</text>
+                  <view
+                    class="h-full shrink-0 flex flex-row items-center justify-center"
+                  >
+                    <text
+                      class="text-[28rpx] mr-[12rpx]"
+                      :style="{
+                        color: ThemeColors.primary,
+                      }"
+                      >{{ userSummary?.points }}</text
+                    >
                   </view>
                 </view>
               </view>
@@ -45,27 +69,34 @@
             <view class="w-full h-[24rpx]"></view>
 
             <GeneralSettings />
-            
+
             <view class="w-full h-[24rpx]"></view>
 
             <HistorySettings />
 
             <view class="w-full h-[24rpx]"></view>
 
-            <view class="w-full px-[12rpx] box-border h-[80rpx] mt-[64rpx] flex flex-row items-center justify-center"
-              v-if="isLoggedIn">
+            <view
+              class="w-full px-[12rpx] box-border h-[80rpx] mt-[64rpx] flex flex-row items-center justify-center"
+              v-if="isLoggedIn"
+            >
               <view
                 class="w-full h-full rounded-[40rpx] overflow-hidden bg-[#ff3333] active:bg-[#e62e2e] flex flex-row items-center justify-center"
-                @click="handleLogout">
+                @click="handleLogout"
+              >
                 <text class="text-[28rpx] text-[#fff]">退出登录</text>
               </view>
             </view>
           </view>
 
-          <view class="w-full" :style="{
-            height: `calc(100rpx + 32rpx + ${safeBottom == 0 ? '32rpx' : safeBottom + 'px'
+          <view
+            class="w-full"
+            :style="{
+              height: `calc(100rpx + 32rpx + ${
+                safeBottom == 0 ? '32rpx' : safeBottom + 'px'
               })`,
-          }"></view>
+            }"
+          ></view>
         </scroll-view>
       </view>
     </Layout>
@@ -84,6 +115,7 @@ import GeneralSettings from "./general-settings.vue";
 import { ThemeColors } from "@/config/config";
 import HistorySettings from "./history-settings.vue";
 import { useQuestionStore } from "@/stores/question";
+import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 
 const userStore = useUserStore();
 const { isLoggedIn, userSummary } = storeToRefs(userStore);
@@ -103,10 +135,10 @@ const successTip = ref("我的信息已更新");
 onMounted(async () => {
   nextTick(async () => {
     if (isLoggedIn.value) {
-    await questionStore.getUserAnswerHistory();
-  }
-  })
-})
+      await questionStore.getUserAnswerHistory();
+    }
+  });
+});
 
 // 下拉刷新
 const refresherrefresh = async () => {

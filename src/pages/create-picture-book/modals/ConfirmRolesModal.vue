@@ -22,10 +22,11 @@
               class="absolute right-[12rpx] top-0 z-[9] w-[88rpx] h-[88rpx] active:opacity-80 shrink-0 flex flex-row items-center justify-center transition-opacity duration-300"
               @click="closeModal"
             >
-              <image
-                src="@static/icon_close_black.png"
+              <svg-icon
+                :src="`/static/${iconThemeVersion}/icon_close.svg`"
                 class="w-[32rpx] h-[32rpx]"
-              ></image>
+                color="#000"
+              />
             </view>
           </view>
 
@@ -85,10 +86,11 @@
                       backgroundColor: mainColor,
                     }"
                   >
-                    <image
-                      src="@static/icon_regenerate_white.png"
+                    <svg-icon
+                      :src="`/static/${iconThemeVersion}/icon_regenerate.svg`"
                       class="w-[24rpx] h-[24rpx]"
-                    ></image>
+                      color="#fff"
+                    />
                   </view>
                 </view>
                 <view
@@ -200,10 +202,11 @@
                   }"
                   @click="handleRegenerateRole"
                 >
-                  <image
-                    src="@static/icon_generate_white.png"
+                  <svg-icon
+                    :src="`/static/${iconThemeVersion}/icon_generate.svg`"
                     class="w-[32rpx] h-[32rpx]"
-                  ></image>
+                    color="#fff"
+                  />
                   <text class="text-[32rpx] text-[#fff]">{{
                     isRegeneratingRole ? "正在生成" : "重新生成"
                   }}</text>
@@ -214,10 +217,11 @@
                 class="absolute right-0 top-0 z-[99] w-[88rpx] h-[88rpx] flex flex-row items-center justify-center"
                 @click="hideRegenerateModal"
               >
-                <image
-                  src="@static/icon_close_black.png"
+                <svg-icon
+                  :src="`/static/${iconThemeVersion}/icon_close.svg`"
                   class="w-[32rpx] h-[32rpx]"
-                ></image>
+                  color="#000"
+                />
               </view>
             </view>
           </view>
@@ -243,7 +247,7 @@ import {
 } from "@/request";
 import { computed, nextTick, onMounted, ref } from "vue";
 import { previewImage } from "@/utils";
-import { mainColor } from "@/config/config";
+import { iconThemeVersion, mainColor } from "@/config/config";
 
 interface Props {
   info: IConfirmRoleInfo;

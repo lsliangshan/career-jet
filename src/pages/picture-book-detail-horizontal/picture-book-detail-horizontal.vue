@@ -150,14 +150,15 @@
             ]"
             @click="handlePrevious"
           >
-            <image
+            <svg-icon
+              :src="`/static/${iconThemeVersion}/icon_arrow_right.svg`"
               class="rotate-180"
               :style="{
                 width: `${calcSize(32)}rpx`,
                 height: `${calcSize(32)}rpx`,
               }"
-              src="@static/icon_arrow_right.png"
-            ></image>
+              color="#fff"
+            />
             <text
               class="text-white/95 font-medium"
               :style="{
@@ -192,13 +193,14 @@
                 pbDetail.config.language === "中文" ? "下一页" : "Next"
               }}</text
             >
-            <image
+            <svg-icon
+              :src="`/static/${iconThemeVersion}/icon_arrow_right.svg`"
               :style="{
                 width: `${calcSize(32)}rpx`,
                 height: `${calcSize(32)}rpx`,
               }"
-              src="@static/icon_arrow_right.png"
-            ></image>
+              color="#fff"
+            />
           </view>
         </view>
 
@@ -237,7 +239,7 @@ import { computed, nextTick, provide, type Ref, ref, watch } from "vue";
 import PageLoading from "@/components/page-loading/page-loading.vue";
 import PbCover from "./PbCover.vue";
 import PbContent from "./PbContent.vue";
-import { mainColor } from "@/config/config";
+import { iconThemeVersion, mainColor } from "@/config/config";
 import PbHeader from "./PbHeader.vue";
 import { navigateBack } from "@/utils";
 import { EModalComponent } from "./types";

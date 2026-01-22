@@ -28,24 +28,6 @@
 			}
 		},
 		{
-			"path": "pages/playground/playground",
-			"style": {
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/answer-history/answer-history",
-			"style": {
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/question-history/question-history",
-			"style": {
-				"navigationStyle": "custom"
-			}
-		},
-		{
 			"path": "pages/create-picture-book/create-picture-book",
 			"style": {
 				"navigationStyle": "custom"
@@ -99,6 +81,11 @@
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"backgroundColor": "#F8F8F8",
+		"mp-weixin": {
+			"usingComponents": {
+				"svg-icon": "/wxcomponents/wx-svg/index"
+			}
+		}
 	}
 }

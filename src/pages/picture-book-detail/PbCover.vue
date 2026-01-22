@@ -61,10 +61,11 @@
             :style="{ backgroundColor: mainColor }"
             @click="handleStartReading"
           >
-            <image
-              class="w-[32rpx] h-[32rpx] mb-[4rpx]"
-              src="@static/icon_start_reading2.png"
-            ></image>
+            <svg-icon
+              :src="`/static/${iconThemeVersion}/icon_start_read.svg`"
+              class="w-[32rpx] h-[32rpx] mb-[8rpx]"
+              color="#fff"
+            />
             <text class="text-lg font-bold text-[#fff]">{{
               pbDetail?.config.language === "中文"
                 ? "开始阅读"
@@ -84,10 +85,11 @@
             <view
               class="w-[64rpx] h-[64rpx] bg-white flex flex-row items-center justify-center rounded-full"
             >
-              <image
+              <svg-icon
+                :src="`/static/${iconThemeVersion}/icon_volume.svg`"
                 class="w-[32rpx] h-[32rpx]"
-                src="@static/icon_volume_red.png"
-              ></image>
+                :color="ThemeColors.primary"
+              />
             </view>
             <text class="text-[28rpx] text-[#fff]">{{
               pbDetail?.config.language === "中文" ? "听绘本" : "Listen"
@@ -101,7 +103,12 @@
 
 <script setup lang="ts">
 import type { IPictureBook } from "@/types";
-import { DEFAULT_AVATAR, mainColor } from "@/config/config";
+import {
+  DEFAULT_AVATAR,
+  iconThemeVersion,
+  mainColor,
+  ThemeColors,
+} from "@/config/config";
 import { nextTick, onBeforeMount, ref } from "vue";
 
 interface Props {

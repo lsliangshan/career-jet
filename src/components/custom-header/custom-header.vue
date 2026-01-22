@@ -17,7 +17,11 @@
         @click="handleBack"
         v-if="showBack"
       >
-        <image class="w-[40rpx] h-[40rpx]" src="@static/icon_back.png"></image>
+        <svg-icon
+          class="w-[32rpx] h-[32rpx]"
+          :src="`/static/${iconThemeVersion}/icon_back.svg`"
+          color="#000"
+        />
       </view>
       <view
         class="w-full h-full box-border flex flex-row items-center justify-center"
@@ -41,6 +45,7 @@
 </template>
 
 <script setup lang="ts">
+import { iconThemeVersion } from "@/config/config";
 import { nextTick, onMounted, ref } from "vue";
 
 interface Props {

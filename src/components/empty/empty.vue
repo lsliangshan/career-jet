@@ -4,7 +4,7 @@
   >
     <image
       class="w-[300rpx] h-[300rpx]"
-      src="@static/icon_empty.png"
+      :src="`/static/${iconThemeVersion}/icon_empty.png`"
       mode="aspectFit"
     />
     <text class="text-[24rpx]" :style="{ color: ThemeColors.text.disabled }"
@@ -15,6 +15,7 @@
 
 <script setup lang="ts">
 import { ThemeColors } from "@/config/config";
+import { iconThemeVersion } from "@/config/config";
 </script>
 
 <style scoped></style>

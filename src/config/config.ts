@@ -20,8 +20,7 @@ export const tabbars = [
   {
     name: "home",
     label: "发现",
-    icon: "../../../static/tabs/tab_home_unselect.png",
-    activeIcon: "../../../static/tabs/tab_home_select.png",
+    icon: "/static/tabs/icon_home.svg",
   },
   // {
   //   name: "deliver",
@@ -32,8 +31,7 @@ export const tabbars = [
   {
     name: "profile",
     label: "我的",
-    icon: "../../../static/tabs/tab_profile_unselect.png",
-    activeIcon: "../../../static/tabs/tab_profile_select.png",
+    icon: "/static/tabs/icon_profile.svg",
   },
 ];
 

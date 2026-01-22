@@ -12,9 +12,14 @@
         :key="item.name"
         @click="changeTab(index)"
       >
-        <image
-          :src="index === currentIndex ? item.activeIcon : item.icon"
+        <svg-icon
+          :src="item.icon"
           class="w-[48rpx] h-[48rpx]"
+          :color="
+            index === currentIndex
+              ? ThemeColors.primary
+              : ThemeColors.text.label
+          "
         />
         <text
           class="text-[24rpx] transition-all duration-300"

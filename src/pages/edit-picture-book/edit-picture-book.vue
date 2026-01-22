@@ -79,7 +79,7 @@ import { iconThemeVersion, ThemeColors } from "@/config/config";
 
 const pictureBookStore = usePictureBookStore();
 
-const currentStepIndex = ref(1);
+const currentStepIndex = ref(0);
 
 const allSteps = [
   {
@@ -155,15 +155,18 @@ function initPbDetail() {
 }
 
 function initStep() {
-  if (!pbDetail.value?.roles) {
+  if (!pbDetail.value?.roles || pbDetail.value?.roles.length === 0) {
     currentStepIndex.value = 0;
     return;
   }
-  if (!pbDetail.value?.scenes) {
+  if (!pbDetail.value?.scenes || pbDetail.value?.scenes.length === 0) {
     currentStepIndex.value = 1;
     return;
   }
-  if (!pbDetail.value?.cover) {
+  if (
+    !pbDetail.value?.cover ||
+    Object.keys(pbDetail.value?.cover).length === 0
+  ) {
     currentStepIndex.value = 2;
     return;
   }

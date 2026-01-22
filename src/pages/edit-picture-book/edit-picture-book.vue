@@ -13,21 +13,23 @@
               :style="{ width: `calc(100% - 20rpx)` }"
             ></view>
             <view
-              class="w-[72rpx] h-[72rpx] z-[9] bg-[#f0f0f0] rounded-[50%] p-[20rpx] box-border border border-[6rpx] flex flex-row items-center justify-center"
+              class="w-[88rpx] h-[88rpx] z-[9] bg-[#f0f0f0] rounded-[50%] p-[20rpx] box-border border border-[6rpx] flex flex-row items-center justify-center"
               v-for="(step, index) in allSteps"
               :key="step.id"
               :style="{
                 borderColor:
                   allSteps[currentStepIndex].id === step.id
-                    ? 'rgba(255, 123, 172, 0.4)'
+                    ? ThemeColors.primary300
                     : 'white',
               }"
             >
-              <image
-                :src="index < currentStepIndex ? step.activeIcon : step.icon"
-                mode="aspectFill"
+              <svg-icon
+                :src="step.icon"
                 class="w-full h-full"
-              ></image>
+                :color="
+                  currentStepIndex > index ? ThemeColors.primary : '#c8c8c8'
+                "
+              />
             </view>
           </view>
         </view>
@@ -73,7 +75,7 @@ import { onMounted, ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import type { IPictureBook } from "@/types";
 import { usePictureBookStore } from "@/stores/picture_book";
-import { iconThemeVersion, mainColor } from "@/config/config";
+import { iconThemeVersion, ThemeColors } from "@/config/config";
 
 const pictureBookStore = usePictureBookStore();
 
@@ -83,32 +85,27 @@ const allSteps = [
   {
     id: EEditPictureBookStep.ROLES,
     title: "角色",
-    icon: "/static/icon_role_normal.png",
-    activeIcon: "/static/icon_role_finish.png",
+    icon: `/static/${iconThemeVersion}/icon_role_confirm.svg`,
   },
   {
     id: EEditPictureBookStep.SCENES,
     title: "场景",
-    icon: "/static/icon_scene_normal.png",
-    activeIcon: "/static/icon_scene_finish.png",
+    icon: `/static/${iconThemeVersion}/icon_scene_confirm.svg`,
   },
   {
     id: EEditPictureBookStep.COVER,
     title: "封面",
-    icon: "/static/icon_cover_normal.png",
-    activeIcon: "/static/icon_cover_finish.png",
+    icon: `/static/${iconThemeVersion}/icon_cover_confirm.svg`,
   },
   {
     id: EEditPictureBookStep.AUDIO,
     title: "音频",
-    icon: "/static/icon_audio_normal.png",
-    activeIcon: "/static/icon_audio_finish.png",
+    icon: `/static/${iconThemeVersion}/icon_audio_confirm.svg`,
   },
   {
     id: EEditPictureBookStep.FINISHED,
     title: "完成",
-    icon: "/static/icon_complete_normal.png",
-    activeIcon: "/static/icon_complete_finish.png",
+    icon: `/static/${iconThemeVersion}/icon_checked.svg`,
   },
 ];
 

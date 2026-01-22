@@ -57,17 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import { iconThemeVersion, ThemeColors } from "@/config/config";
-import { useProfileStore } from "@/stores/profile";
-import { useQuestionStore } from "@/stores/question";
-import { storeToRefs } from "pinia";
-import { EModalComponent } from "../../modals/types";
-
-const profileStore = useProfileStore();
-const { level } = storeToRefs(profileStore);
-
-const questionStore = useQuestionStore();
-const { totalHistoryCount } = storeToRefs(questionStore);
+import { ThemeColors } from "@/config/config";
 
 interface Props {
   showHeader?: boolean;
@@ -75,12 +65,6 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   showHeader: true,
 });
-
-function handleViewAnswerHistory() {
-  uni.navigateTo({
-    url: `/pages/question-history/question-history`,
-  });
-}
 </script>
 
 <style scoped></style>

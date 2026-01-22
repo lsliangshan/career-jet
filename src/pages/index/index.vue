@@ -1,8 +1,6 @@
 <template>
   <view class="relative w-full h-full">
-    <view
-      class="w-full h-full"
-    >
+    <view class="w-full h-full">
       <swiper
         :current="currentIndex"
         class="w-full h-full"
@@ -29,7 +27,9 @@
     >
       <view class="w-full" :style="{ backgroundColor: ThemeColors.bgCard }">
         <ChooseGameLevelModal
-          v-if="modalData?.component === EModalComponent.CHOOSE_GAME_LEVEL_MODAL"
+          v-if="
+            modalData?.component === EModalComponent.CHOOSE_GAME_LEVEL_MODAL
+          "
         />
       </view>
     </page-container>
@@ -39,7 +39,6 @@
 <script setup lang="ts">
 import BottomNav from "./components/bottom-nav.vue";
 import home from "./views/home/home.vue";
-import game from "./views/game/game.vue";
 import profile from "./views/profile/profile.vue";
 import { useNavStore } from "@/stores/nav";
 import { storeToRefs } from "pinia";
@@ -52,7 +51,7 @@ import { EModalComponent } from "./modals/types";
 const navStore = useNavStore();
 const { currentIndex } = storeToRefs(navStore);
 
-const modalVisible = ref(false)
+const modalVisible = ref(false);
 const modalData = ref<{
   component?: string;
   [key: string]: any;
@@ -69,7 +68,7 @@ onMounted(() => {
   uni.$on("hide-modal", () => {
     modalVisible.value = false;
   });
-})
+});
 
 function handleLeave() {
   modalVisible.value = false;
@@ -86,16 +85,14 @@ onShareAppMessage(() => {
   return {
     title: "解锁孩子的观察力与表达力！这个AI小工具太会了！🚀",
     path: `/pages/index/index`,
-    imageUrl:
-      "https://img.liangqy.com/crawlerjet/img/description_share.png",
+    imageUrl: "https://img.liangqy.com/crawlerjet/img/description_share.png",
   };
 });
 
 onShareTimeline(() => {
   return {
     title: "解锁孩子的观察力与表达力！这个AI小工具太会了！🚀",
-    imageUrl:
-      "https://img.liangqy.com/crawlerjet/img/description_share.png",
+    imageUrl: "https://img.liangqy.com/crawlerjet/img/description_share.png",
   };
 });
 </script>

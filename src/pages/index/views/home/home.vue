@@ -55,6 +55,7 @@
           scroll-x
           :scroll-into-view="scrollToView"
           :scroll-with-animation="true"
+          :bounces="false"
           class="w-full h-full whitespace-nowrap"
           @touchstart="handleDragStart"
           @touchend="handleDragEnd"
@@ -77,7 +78,7 @@
 
 <script setup lang="ts">
 import Layout from "@/components/layout/layout.vue";
-import { ref, watch } from "vue";
+import { nextTick, ref, watch } from "vue";
 import { mainColor, tabs } from "@/config/config";
 import PbList from "./PbList.vue";
 
@@ -134,7 +135,9 @@ function handleDragEnd(e: any) {
   const offsetTime = Date.now() - touchTs.value;
   if (offsetClientX >= 0) {
     if (offsetClientX > 100 || (offsetClientX > 20 && offsetTime < 300)) {
-      scrollToView.value = getPreviousViewId();
+      nextTick(() => {
+        scrollToView.value = getPreviousViewId();
+      });
     } else {
       // reset
       const tmpView = scrollToView.value;
@@ -145,7 +148,9 @@ function handleDragEnd(e: any) {
     }
   } else {
     if (offsetClientX < -100 || (offsetClientX < -20 && offsetTime < 300)) {
-      scrollToView.value = getNextViewId();
+      nextTick(() => {
+        scrollToView.value = getNextViewId();
+      });
     } else {
       // reset
       const tmpView = scrollToView.value;

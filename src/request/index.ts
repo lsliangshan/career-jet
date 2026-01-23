@@ -119,6 +119,32 @@ export function requestGetUserSummary(params?: {
  * 生成绘本
  * @param params
  * @param {string} params.userId 用户ID
+ * @param {string} params.pbId 主题
+ */
+export function requestEditPictureBook(params?: {
+  userId: string;
+  pbId: string;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `https://wf.qyflows.com/webhook-test/pb/edit`,
+      // url: `${baseUrl}/pb/edit`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 生成绘本
+ * @param params
+ * @param {string} params.userId 用户ID
  * @param {string} params.theme 主题
  * @param {string} params.storyStyle 故事风格
  * @param {string} params.pictureStyle 图画风格

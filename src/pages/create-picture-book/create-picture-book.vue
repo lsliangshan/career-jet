@@ -679,7 +679,7 @@ import {
 import { requestGeneratePictureBook } from "@/request";
 import { EModalComponent } from "./modals/types";
 import ConfirmStoryModal from "./modals/ConfirmStoryModal.vue";
-import { EConfirmAction } from "./types";
+import { EConfirmAction } from "@/types";
 import ConfirmRolesModal from "./modals/ConfirmRolesModal.vue";
 import ConfirmScenesModal from "./modals/ConfirmScenesModal.vue";
 import ConfirmCoverModal from "./modals/ConfirmCoverModal.vue";

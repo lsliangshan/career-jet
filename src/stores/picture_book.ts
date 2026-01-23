@@ -4,6 +4,7 @@ import { ref } from "vue";
 import { useUserStore } from "./user";
 import { storeToRefs } from "pinia";
 import {
+  requestEditPictureBook,
   requestGetAudiosByPbId,
   requestGetMyPictureBooks,
   requestGetPictureBookDetail,
@@ -143,6 +144,30 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     });
   }
 
+  function editPictureBook(params: { pbId: string }) {
+    return new Promise(async (resolve) => {
+      if (!isLoggedIn.value || !loginInfo.value.id) {
+        uni.showToast({
+          title: "请先登录",
+          icon: "none",
+        });
+        resolve({
+          code: 1001,
+          message: "请先登录",
+          data: {
+            pbId: params.pbId,
+          },
+        });
+        return;
+      }
+      const res = await requestEditPictureBook({
+        userId: loginInfo.value.id,
+        pbId: params.pbId,
+      });
+      resolve(res);
+    });
+  }
+
   return {
     myPictureBooks,
     getMyPictureBooks,
@@ -152,5 +177,6 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     getPictureBookLikeStatus,
     togglePictureBookLikeStatus,
     setPictureBookViews,
+    editPictureBook,
   };
 });

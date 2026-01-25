@@ -178,8 +178,8 @@
       <RegenerateModal
         :info="modalData?.data?.info"
         :type="modalData?.data?.type"
-        :ratio="pbDetail?.config?.ratio"
-        :pictureStyle="pbDetail?.config?.pictureStyle"
+        :ratio="pbDetail?.config?.ratio || '16:9'"
+        :pictureStyle="pbDetail?.config?.pictureStyle || ''"
         v-if="modalData?.component === EModalComponent.REGENERATE_MODAL"
         @on-close="closeModal"
         @on-start-regenerate="handleStartRegenerate"
@@ -463,6 +463,14 @@ function resetData() {
 
 async function handleNextStep() {
   console.log(">>>> handleNextStep: ", stepData.value);
+
+  pictureBookStore.confirmRoles({
+    pbId: id.value,
+    confirmed: stepData.value.roles,
+  });
+
+  return;
+
   if (isConfirming.value) {
     return;
   }

@@ -4,6 +4,7 @@ import { ref } from "vue";
 import { useUserStore } from "./user";
 import { storeToRefs } from "pinia";
 import {
+  requestConfirmRoles,
   requestEditPictureBook,
   requestGetAudiosByPbId,
   requestGetMyPictureBooks,
@@ -19,6 +20,17 @@ export const usePictureBookStore = defineStore("picture_book", () => {
   const { loginInfo, isLoggedIn } = storeToRefs(userStore);
 
   const myPictureBooks = ref<IPictureBook[]>([]);
+
+  function ensureLoginStatus() {
+    if (!isLoggedIn.value || !loginInfo.value.id) {
+      uni.showToast({
+        title: "请先登录",
+        icon: "none",
+      });
+      throw new Error("请先登录");
+    }
+    return loginInfo.value.id;
+  }
 
   function getMyPictureBooks(params?: {
     type: "draft" | "final";
@@ -168,6 +180,18 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     });
   }
 
+  function confirmRoles(params: { pbId: string; confirmed: object[] }) {
+    return new Promise(async (resolve) => {
+      const userId = ensureLoginStatus();
+      const res = await requestConfirmRoles({
+        userId: userId,
+        pbId: params.pbId,
+        confirmed: params.confirmed,
+      });
+      resolve(res);
+    });
+  }
+
   return {
     myPictureBooks,
     getMyPictureBooks,
@@ -178,5 +202,6 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     togglePictureBookLikeStatus,
     setPictureBookViews,
     editPictureBook,
+    confirmRoles,
   };
 });

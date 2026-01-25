@@ -116,10 +116,10 @@ export function requestGetUserSummary(params?: {
 }
 
 /**
- * 生成绘本
+ * 编辑绘本
  * @param params
  * @param {string} params.userId 用户ID
- * @param {string} params.pbId 主题
+ * @param {string} params.pbId 绘本ID
  */
 export function requestEditPictureBook(params?: {
   userId: string;
@@ -129,6 +129,90 @@ export function requestEditPictureBook(params?: {
     uni.request({
       url: `https://wf.qyflows.com/webhook-test/pb/edit`,
       // url: `${baseUrl}/pb/edit`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 确认角色
+ * @param params
+ * @param {string} params.userId 用户ID
+ * @param {string} params.pbId 绘本ID
+ * @param {object[]} params.confirmed 确认的角色列表
+ */
+export function requestConfirmRoles(params?: {
+  userId: string;
+  pbId: string;
+  confirmed: object[];
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      // url: `https://wf.qyflows.com/webhook-test/pb/confirm-roles`,
+      url: `${baseUrl}/pb/confirm-roles`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 确认场景
+ * @param params
+ * @param {string} params.userId 用户ID
+ * @param {string} params.pbId 绘本ID
+ * @param {object[]} params.confirmed 确认的场景列表
+ */
+export function requestConfirmScenes(params?: {
+  userId: string;
+  pbId: string;
+  confirmed: object[];
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      // url: `https://wf.qyflows.com/webhook-test/pb/confirm-scenes`,
+      url: `${baseUrl}/pb/confirm-scenes`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 确认封面
+ * @param params
+ * @param {string} params.userId 用户ID
+ * @param {string} params.pbId 绘本ID
+ * @param {object} params.confirmed 确认的封面对象
+ */
+export function requestConfirmCover(params?: {
+  userId: string;
+  pbId: string;
+  confirmed: object;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      // url: `https://wf.qyflows.com/webhook-test/pb/confirm-cover`,
+      url: `${baseUrl}/pb/confirm-cover`,
       method: "POST",
       data: { ...params },
       success: (res) => {

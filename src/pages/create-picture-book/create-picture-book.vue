@@ -1053,29 +1053,6 @@ function doGenerate() {
       autoConfirmedScene: formData.value.autoConfirmedScene,
     });
 
-    // const res = {
-    //   code: 200,
-    //   message: "请确认故事封面",
-    //   action: "confirm-cover",
-    //   data: {
-    //     id: "fb0a7d88d91fbe2fc1b8d27d",
-    //     confirmUrl:
-    //       "https://wf.qyflows.com/webhook-waiting/630395/pb-confirm-cover",
-    //     cover: {
-    //       code: 200,
-    //       msg: "success",
-    //       data: {
-    //         taskId: "f6453259e44ed9f9504a0d02ffea574f",
-    //         recordId: "f6453259e44ed9f9504a0d02ffea574f",
-    //         prompt:
-    //           "小熊咕咚和兔子蹦蹦在森林中，蜂蜜四溢，体现温暖诚实和友谊的场景，画面充满生气和童趣。",
-    //         prompt_en:
-    //           "The bear Gudong and rabbit Bengbeng in the forest, honey flowing, a scene filled with warmth, honesty, and friendship, lively and playful imagery.",
-    //       },
-    //     },
-    //   },
-    // };
-
     if (res.code !== 200) {
       generateStep.value = GenerateStep.failed;
       uni.showToast({
@@ -1100,6 +1077,10 @@ function doGenerate() {
       });
     } else if (res.action === EConfirmAction.CONFIRM_ROLES) {
       generateStep.value = GenerateStep.confirmRoles;
+      modalData.value = {
+        component: EModalComponent.CONFIRM_ROLES_MODAL,
+        data: res.data,
+      };
       nextTick(() => {
         openModal({
           component: EModalComponent.CONFIRM_ROLES_MODAL,

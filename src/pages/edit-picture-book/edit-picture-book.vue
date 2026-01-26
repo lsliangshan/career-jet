@@ -70,33 +70,25 @@
         >
           <view class="w-full h-full flex flex-row flex-wrap gap-[24rpx]">
             <view
-              class="relative w-[339rpx] border border-[1rpx] border-[#f0f0f0] rounded-[24rpx] overflow-hidden"
+              class="relative w-[339rpx] border border-[1rpx] border-[#f0f0f0] rounded-[24rpx] overflow-hidden flex flex-col"
               :style="{
-                height: `${renderImageHeight + 64}rpx`,
+                minHeight: `${
+                  currentStepIndex === EStepIndex.SCENES
+                    ? renderImageHeight + 144
+                    : renderImageHeight + 64
+                }rpx`,
               }"
-              v-for="(role, index) in renderList"
-              :key="role.data.id"
+              v-for="(item, index) in renderList"
+              :key="item.data.id"
             >
               <view
-                class="absolute left-0 bottom-0 z-[9] bg-[#d8d8d8] w-full flex flex-col"
-              >
-                <view
-                  class="w-full h-[64rpx] px-[12rpx] py-[12rpx] box-border flex flex-row items-center"
-                >
-                  <text
-                    class="text-[28rpx] font-bold text-[#666] line-clamp-1 overflow-hidden text-ellipsis break-all"
-                    >{{ role.data.name }}</text
-                  >
-                </view>
-              </view>
-
-              <view
                 class="w-full h-full bg-white flex flex-row items-start justify-center"
-                v-if="imageUrls.has(role.data.id)"
-                @click="previewImage([imageUrls.get(role.data.id) || ''])"
+                v-if="imageUrls.has(item.data.id)"
+                :style="{ height: `${renderImageHeight}rpx` }"
+                @click="previewImage([imageUrls.get(item.data.id) || ''])"
               >
                 <image
-                  :src="imageUrls.get(role.data.id)"
+                  :src="imageUrls.get(item.data.id)"
                   class="w-full"
                   :style="{ height: `${renderImageHeight}rpx` }"
                   mode="aspectFit"
@@ -104,18 +96,54 @@
               </view>
 
               <view
+                class="absolute left-0 bottom-0 z-[9] bg-[#d8d8d8] w-full flex flex-col"
+                v-if="currentStepIndex === EStepIndex.ROLES"
+              >
+                <view
+                  class="w-full h-[64rpx] px-[12rpx] py-[12rpx] box-border flex flex-row items-center"
+                >
+                  <text
+                    class="text-[28rpx] font-bold text-[#666] line-clamp-1 overflow-hidden text-ellipsis break-all"
+                    >{{ item.data.name }}</text
+                  >
+                </view>
+              </view>
+
+              <tempalte v-else-if="currentStepIndex === EStepIndex.SCENES">
+                <view
+                  class="z-[9] bg-[rgba(0,0,0,0.05)] w-full flex-1 flex flex-col"
+                >
+                  <view
+                    class="w-full min-h-[64rpx] px-[12rpx] py-[12rpx] box-border flex flex-row items-center"
+                  >
+                    <text class="text-[28rpx] text-[#666]">{{
+                      item.data.content
+                    }}</text>
+                  </view>
+                </view>
+
+                <view
+                  class="absolute left-[20rpx] top-[20rpx] z-[99] h-[56rpx] bg-[#f0f0f0] rounded-[12rpx] px-[12rpx] box-border flex flex-row items-center justify-center transition-all duration-300"
+                >
+                  <text class="text-[28rpx] text-[#666]"
+                    >场景: {{ item.data.index }}</text
+                  >
+                </view>
+              </tempalte>
+
+              <view
                 class="absolute right-0 top-0 z-[99] w-[88rpx] h-[88rpx] opacity-0 flex flex-row items-center justify-center transition-all duration-300"
                 :class="[
-                  loadingImageIds.has(role.data.id)
+                  loadingImageIds.has(item.data.id)
                     ? 'opacity-0 pointer-events-none'
                     : 'opacity-100 active:scale-95 pointer-events-auto',
                 ]"
-                @click="openRegenerateModal(role.data)"
+                @click="openRegenerateModal(item.data)"
               >
                 <view
                   class="w-[56rpx] h-[56rpx] rounded-[12rpx] bg-[#fff] flex flex-row items-center justify-center active:scale-95 transition-all duration-300"
                   :style="{
-                    backgroundColor: regeneratingIds.has(role.data.id)
+                    backgroundColor: regeneratingIds.has(item.data.id)
                       ? '#ccc'
                       : ThemeColors.primary,
                   }"
@@ -123,7 +151,7 @@
                   <svg-icon
                     :src="`/static/${iconThemeVersion}/icon_regenerate.svg`"
                     :class="[
-                      regeneratingIds.has(role.data.id) ? 'animate-spin' : '',
+                      regeneratingIds.has(item.data.id) ? 'animate-spin' : '',
                     ]"
                     class="w-[24rpx] h-[24rpx]"
                     color="#fff"
@@ -132,7 +160,7 @@
               </view>
               <view
                 class="absolute left-0 top-0 w-full h-full bg-white flex flex-row items-center justify-center"
-                v-if="loadingImageIds.has(role.data.id)"
+                v-if="loadingImageIds.has(item.data.id)"
               >
                 <CustomLoading
                   :size="40"
@@ -203,13 +231,14 @@ import { previewImage } from "@/utils";
 import { requestCustomUrl, requestGetImageUrls } from "@/request";
 import CustomLoading from "@/components/custom-loader/custom-loader.vue";
 import RegenerateModal from "./modals/RegenerateModal.vue";
-import { EModalComponent } from "./modals/types";
+import { EModalComponent, EStepIndex } from "./modals/types";
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
 const pictureBookStore = usePictureBookStore();
 
-const currentStepIndex = ref(0);
+// 当前选中的步骤索引
+const currentStepIndex = ref<EStepIndex>(EStepIndex.ROLES);
 
 const imageUrls = ref<Map<string, string>>(new Map());
 
@@ -273,17 +302,18 @@ const renderImageHeight = computed(() => {
   return (339 * height) / width;
 });
 
-const renderList = computed(() => {
-  if (currentStepIndex.value === 0) {
-    return stepData.value.roles;
-  } else if (currentStepIndex.value === 1) {
-    return stepData.value.scenes;
-  } else if (currentStepIndex.value === 2) {
-    return stepData.value.cover;
-  } else {
-    return [];
-  }
-});
+// const renderList = computed(() => {
+//   if (currentStepIndex.value === EStepIndex.ROLES) {
+//     return stepData.value.roles;
+//   } else if (currentStepIndex.value === EStepIndex.SCENES) {
+//     return stepData.value.scenes;
+//   } else if (currentStepIndex.value === EStepIndex.COVER) {
+//     return stepData.value.cover;
+//   } else {
+//     return [];
+//   }
+// });
+const renderList = ref<any[]>([]);
 
 provide("pbDetail", pbDetail);
 
@@ -297,9 +327,9 @@ onMounted(async () => {
 
 async function initData() {
   await Promise.all([initPbDetail(), editPictureBook()]);
-  if (renderList.value?.length > 0) {
-    listImageUrls(renderList.value.map((item: any) => item.data.taskId));
-  }
+  // if (renderList.value?.length > 0) {
+  //   listImageUrls(renderList.value.map((item: any) => item.data.taskId));
+  // }
   nextTick(() => {
     pageReady.value = true;
     const t = setTimeout(() => {
@@ -347,8 +377,22 @@ async function listImageUrls(taskIds: string[]) {
       }
       imageUrls.value.set(id, url);
 
-      if (currentStepIndex.value === 0) {
+      if (currentStepIndex.value === EStepIndex.ROLES) {
         stepData.value.roles = stepData.value.roles.map((item: any) => {
+          if (item.data.taskId === taskId) {
+            item.data.url = url;
+          }
+          return item;
+        });
+      } else if (currentStepIndex.value === EStepIndex.SCENES) {
+        stepData.value.scenes = stepData.value.scenes.map((item: any) => {
+          if (item.data.taskId === taskId) {
+            item.data.url = url;
+          }
+          return item;
+        });
+      } else if (currentStepIndex.value === EStepIndex.COVER) {
+        stepData.value.cover = stepData.value.cover.map((item: any) => {
           if (item.data.taskId === taskId) {
             item.data.url = url;
           }
@@ -360,60 +404,83 @@ async function listImageUrls(taskIds: string[]) {
 }
 
 async function editPictureBook() {
-  const res = await pictureBookStore.editPictureBook({
-    pbId: id.value,
-  });
+  // const res = await pictureBookStore.editPictureBook({
+  //   pbId: id.value,
+  // });
 
-  // const res = {
-  //   code: 200,
-  //   message: "请确认故事角色",
-  //   action: "confirm-roles",
-  //   data: {
-  //     id: "6ee38157c802262d0dfc5989",
-  //     confirmUrl:
-  //       "https://wf.qyflows.com/webhook-waiting/666743/pb-confirm-role",
-  //     roles: [
-  //       {
-  //         code: 200,
-  //         msg: "success",
-  //         data: {
-  //           taskId: "15a75bcb819f76f89d49a6ebef5fd8ef",
-  //           recordId: "15a75bcb819f76f89d49a6ebef5fd8ef",
-  //           id: "role1",
-  //           name: "小栗色兔子",
-  //           prompt:
-  //             "一只可爱的小栗色兔子，毛茸茸的身体，圆圆的脑袋，大大的眼睛，长长的耳朵，穿着可爱的睡衣，表情天真无邪，使用纯白色背景。",
-  //           prompt_en:
-  //             "An adorable little brown rabbit, fluffy body, round head, big eyes, long ears, wearing cute pajamas, with an innocent expression, using a pure white background.",
-  //         },
-  //       },
-  //       {
-  //         code: 200,
-  //         msg: "success",
-  //         data: {
-  //           taskId: "07d3829115181d92db2cd218f3e3ad26",
-  //           recordId: "07d3829115181d92db2cd218f3e3ad26",
-  //           id: "role2",
-  //           name: "大栗色兔子",
-  //           prompt:
-  //             "一只温柔的大栗色兔子，毛茸茸的身体，圆圆的脑袋，大大的眼睛，长长的耳朵，穿着舒适的睡衣，表情慈爱，使用纯白色背景。",
-  //           prompt_en:
-  //             "A gentle big brown rabbit, fluffy body, round head, big eyes, long ears, wearing comfortable pajamas, with a loving expression, using a pure white background.",
-  //         },
-  //       },
-  //     ],
-  //   },
-  // };
+  const res = {
+    code: 200,
+    message: "成功",
+    action: "confirm-scenes",
+    data: {
+      scenes: [
+        {
+          code: 200,
+          msg: "成功",
+          data: {
+            taskId: "7167b15f849e3df58730eb63cae2c482",
+            recordId: "7167b15f849e3df58730eb63cae2c482",
+            id: "s1",
+            index: 1,
+            content:
+              "小栗色兔子该上床睡觉了，可是他紧紧地抓住 大栗色兔子的耳朵不放。\n\n他要大兔子好好听他说。\n“猜猜我有多爱你？”他说。\n大兔子说：“喔，这我可猜不出来。”",
+            prompt:
+              "夜晚的卧室，小兔子紧紧抓着大兔子的长耳朵，仰头望着大兔子，表情期待。大兔子低头温柔地看着小兔子，背景有温暖的床头灯。卡通绘本风格，柔和色调。",
+            prompt_en:
+              "A nighttime bedroom scene where the little rabbit tightly holds the big rabbit's long ears, looking up expectantly. The big rabbit gazes down gently, with warm bedside lamp lighting. Cartoon picture book style with soft color palette.",
+            roleIds: ["r1", "r2"],
+            roleUrls: [
+              "https://tempfile.aiquickdraw.com/workers/nano/image_1769414799383_yuzdcn.png",
+              "https://tempfile.aiquickdraw.com/workers/nano/image_1769414790325_a8x6wu.png",
+            ],
+          },
+        },
+        {
+          code: 200,
+          msg: "成功",
+          data: {
+            taskId: "e04de75d3fce76f944c556bb33208f23",
+            recordId: "e04de75d3fce76f944c556bb33208f23",
+            id: "s2",
+            index: 2,
+            content:
+              "小兔子说：“这么多。”他把手臂张开，开的不能再开。\n\n大兔子的手臂要长得多，“我爱你有这么多。”他说。",
+            prompt:
+              "小兔子站在草地上尽力张开短短的手臂，表情认真。大兔子蹲下身张开更长的双臂，形成温暖拥抱的姿势。阳光透过树叶斑驳洒落。水彩风格。",
+            prompt_en:
+              "The little rabbit stands on grass stretching his short arms as wide as possible with a serious expression. The big rabbit crouches down with even wider arm span, forming a warm hugging gesture. Dappled sunlight filters through leaves. Watercolor style.",
+            roleIds: ["r1", "r2"],
+            roleUrls: [
+              "https://tempfile.aiquickdraw.com/workers/nano/image_1769414799383_yuzdcn.png",
+              "https://tempfile.aiquickdraw.com/workers/nano/image_1769414790325_a8x6wu.png",
+            ],
+          },
+        },
+      ],
+    },
+  };
 
   if (res.code === 200) {
-    if (res.action === "confirm-roles") {
-      currentStepIndex.value = 0;
-    } else if (res.action === "confirm-scenes") {
-      currentStepIndex.value = 1;
-    } else if (res.action === "confirm-cover") {
-      currentStepIndex.value = 2;
-    } else if (res.action === "confirm-audio") {
-      currentStepIndex.value = 3;
+    let imageTaskIds: string[] = [];
+    if (res.action === EConfirmAction.CONFIRM_ROLES) {
+      currentStepIndex.value = EStepIndex.ROLES;
+      renderList.value = res.data.roles || [];
+      imageTaskIds = res.data.roles.map((item: any) => item.data.taskId);
+    } else if (res.action === EConfirmAction.CONFIRM_SCENES) {
+      renderList.value = res.data.scenes || [];
+      currentStepIndex.value = EStepIndex.SCENES;
+      imageTaskIds = res.data.scenes.map((item: any) => item.data.taskId);
+    } else if (res.action === EConfirmAction.CONFIRM_COVER) {
+      renderList.value = [res.data.cover];
+      currentStepIndex.value = EStepIndex.COVER;
+      imageTaskIds = [res.data.cover.taskId];
+    } else if (res.action === EConfirmAction.CONFIRM_AUDIO) {
+      renderList.value = [];
+      currentStepIndex.value = EStepIndex.AUDIO;
+    }
+    console.log(">>>>>>>>> imageTaskIds: ", renderList.value);
+    if (imageTaskIds.length > 0) {
+      listImageUrls(imageTaskIds);
     }
     stepData.value = res.data;
   }
@@ -461,29 +528,10 @@ function resetData() {
   loadingImageIds.value.clear();
 }
 
-async function handleNextStep() {
-  console.log(">>>> handleNextStep: ", stepData.value);
-
-  pictureBookStore.confirmRoles({
+async function handleConfirmRoles() {
+  const res = await pictureBookStore.confirmRoles({
     pbId: id.value,
     confirmed: stepData.value.roles,
-  });
-
-  return;
-
-  if (isConfirming.value) {
-    return;
-  }
-  isConfirming.value = true;
-
-  const res = await requestCustomUrl({
-    url: stepData.value.confirmUrl,
-    method: "POST",
-    data: {
-      id: stepData.value.id,
-      confirmed: stepData.value.roles,
-      unconfirmed: [],
-    },
   });
 
   resetData();
@@ -494,17 +542,33 @@ async function handleNextStep() {
       icon: "none",
     });
 
-    return;
+    throw new Error("确认失败，请稍后再试");
   }
   if (res.code !== 200) {
     uni.showToast({
       title: "确认失败，请重新确认",
       icon: "none",
     });
+    throw new Error("确认失败，请重新确认");
+  }
+  stepData.value = res.data;
+  currentStepIndex.value = EStepIndex.SCENES;
+}
+
+async function handleNextStep() {
+  console.log(">>>> handleNextStep: ", stepData.value);
+  if (isConfirming.value) {
     return;
   }
+  isConfirming.value = true;
 
-  handleAllConfirmed(res);
+  if (currentStepIndex.value === EStepIndex.ROLES) {
+    await handleConfirmRoles();
+  } else if (currentStepIndex.value === EStepIndex.SCENES) {
+    // await handleConfirmScenes();
+  } else if (currentStepIndex.value === EStepIndex.COVER) {
+    // await handleConfirmCover();
+  }
 
   nextTick(() => {
     isConfirming.value = false;
@@ -556,21 +620,21 @@ function initPbDetail() {
 
 function initStep() {
   if (!pbDetail.value?.roles || pbDetail.value?.roles.length === 0) {
-    currentStepIndex.value = 0;
+    currentStepIndex.value = EStepIndex.ROLES;
     return;
   }
   if (!pbDetail.value?.scenes || pbDetail.value?.scenes.length === 0) {
-    currentStepIndex.value = 1;
+    currentStepIndex.value = EStepIndex.SCENES;
     return;
   }
   if (
     !pbDetail.value?.cover ||
     Object.keys(pbDetail.value?.cover).length === 0
   ) {
-    currentStepIndex.value = 2;
+    currentStepIndex.value = EStepIndex.COVER;
     return;
   }
-  currentStepIndex.value = 3;
+  currentStepIndex.value = EStepIndex.AUDIO;
 }
 
 function closeModal() {

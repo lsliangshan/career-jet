@@ -150,15 +150,11 @@ async function handleRegenerate() {
     prompt: `a children's book illustation style by ${props.pictureStyle}, ${props.info.prompt}`,
     ratio: props.ratio,
   };
-  if (props.type === "scene") {
-    // requestParams.imageUrls = [props.info.url];
+  if (props.type !== "role") {
+    requestParams.imageUrls = props.info.roleUrls;
   }
 
-  const res = await requestGenerateRoleOrScene({
-    id: props.info.id,
-    prompt: `a children's book illustation style by ${props.pictureStyle}, ${props.info.prompt}`,
-    ratio: props.ratio,
-  });
+  const res = await requestGenerateRoleOrScene(requestParams);
 
   if (res.code === 200) {
     closeModal();

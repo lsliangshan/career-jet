@@ -1139,10 +1139,7 @@ function scrollToGeneratePanel(id: string) {
 }
 
 function closeModal() {
-  const t = setTimeout(() => {
-    clearTimeout(t);
-    modalVisible.value = false;
-  }, 200);
+  modalVisible.value = false;
 }
 
 function openModal(params: { component?: EModalComponent; data?: any }) {

@@ -371,6 +371,7 @@ async function listImageUrls(taskIds: string[]) {
   // await sleep(3000);
   images.forEach((url, taskId) => {
     const id = getIdByTaskId(taskId);
+    console.log(">>>>>>> id: ", stepData.value);
     if (id) {
       if (loadingImageIds.value.has(id)) {
         loadingImageIds.value.delete(id);
@@ -393,8 +394,13 @@ async function listImageUrls(taskIds: string[]) {
         });
       } else if (currentStepIndex.value === EStepIndex.COVER) {
         stepData.value.cover = stepData.value.cover.map((item: any) => {
-          if (item.data.taskId === taskId) {
-            item.data.url = url;
+          if (item.data.id === id) {
+            item.data = {
+              ...item.data,
+              taskId: taskId,
+              url: url,
+              recordId: taskId,
+            };
           }
           return item;
         });
@@ -404,61 +410,61 @@ async function listImageUrls(taskIds: string[]) {
 }
 
 async function editPictureBook() {
-  // const res = await pictureBookStore.editPictureBook({
-  //   pbId: id.value,
-  // });
+  const res = await pictureBookStore.editPictureBook({
+    pbId: id.value,
+  });
 
-  const res = {
-    code: 200,
-    message: "成功",
-    action: "confirm-scenes",
-    data: {
-      scenes: [
-        {
-          code: 200,
-          msg: "成功",
-          data: {
-            taskId: "7167b15f849e3df58730eb63cae2c482",
-            recordId: "7167b15f849e3df58730eb63cae2c482",
-            id: "s1",
-            index: 1,
-            content:
-              "小栗色兔子该上床睡觉了，可是他紧紧地抓住 大栗色兔子的耳朵不放。\n\n他要大兔子好好听他说。\n“猜猜我有多爱你？”他说。\n大兔子说：“喔，这我可猜不出来。”",
-            prompt:
-              "夜晚的卧室，小兔子紧紧抓着大兔子的长耳朵，仰头望着大兔子，表情期待。大兔子低头温柔地看着小兔子，背景有温暖的床头灯。卡通绘本风格，柔和色调。",
-            prompt_en:
-              "A nighttime bedroom scene where the little rabbit tightly holds the big rabbit's long ears, looking up expectantly. The big rabbit gazes down gently, with warm bedside lamp lighting. Cartoon picture book style with soft color palette.",
-            roleIds: ["r1", "r2"],
-            roleUrls: [
-              "https://tempfile.aiquickdraw.com/workers/nano/image_1769414799383_yuzdcn.png",
-              "https://tempfile.aiquickdraw.com/workers/nano/image_1769414790325_a8x6wu.png",
-            ],
-          },
-        },
-        {
-          code: 200,
-          msg: "成功",
-          data: {
-            taskId: "e04de75d3fce76f944c556bb33208f23",
-            recordId: "e04de75d3fce76f944c556bb33208f23",
-            id: "s2",
-            index: 2,
-            content:
-              "小兔子说：“这么多。”他把手臂张开，开的不能再开。\n\n大兔子的手臂要长得多，“我爱你有这么多。”他说。",
-            prompt:
-              "小兔子站在草地上尽力张开短短的手臂，表情认真。大兔子蹲下身张开更长的双臂，形成温暖拥抱的姿势。阳光透过树叶斑驳洒落。水彩风格。",
-            prompt_en:
-              "The little rabbit stands on grass stretching his short arms as wide as possible with a serious expression. The big rabbit crouches down with even wider arm span, forming a warm hugging gesture. Dappled sunlight filters through leaves. Watercolor style.",
-            roleIds: ["r1", "r2"],
-            roleUrls: [
-              "https://tempfile.aiquickdraw.com/workers/nano/image_1769414799383_yuzdcn.png",
-              "https://tempfile.aiquickdraw.com/workers/nano/image_1769414790325_a8x6wu.png",
-            ],
-          },
-        },
-      ],
-    },
-  };
+  // const res = {
+  //   code: 200,
+  //   message: "成功",
+  //   action: "confirm-scenes",
+  //   data: {
+  //     scenes: [
+  //       {
+  //         code: 200,
+  //         msg: "成功",
+  //         data: {
+  //           taskId: "7167b15f849e3df58730eb63cae2c482",
+  //           recordId: "7167b15f849e3df58730eb63cae2c482",
+  //           id: "s1",
+  //           index: 1,
+  //           content:
+  //             "小栗色兔子该上床睡觉了，可是他紧紧地抓住 大栗色兔子的耳朵不放。\n\n他要大兔子好好听他说。\n“猜猜我有多爱你？”他说。\n大兔子说：“喔，这我可猜不出来。”",
+  //           prompt:
+  //             "夜晚的卧室，小兔子紧紧抓着大兔子的长耳朵，仰头望着大兔子，表情期待。大兔子低头温柔地看着小兔子，背景有温暖的床头灯。卡通绘本风格，柔和色调。",
+  //           prompt_en:
+  //             "A nighttime bedroom scene where the little rabbit tightly holds the big rabbit's long ears, looking up expectantly. The big rabbit gazes down gently, with warm bedside lamp lighting. Cartoon picture book style with soft color palette.",
+  //           roleIds: ["r1", "r2"],
+  //           roleUrls: [
+  //             "https://tempfile.aiquickdraw.com/workers/nano/image_1769414799383_yuzdcn.png",
+  //             "https://tempfile.aiquickdraw.com/workers/nano/image_1769414790325_a8x6wu.png",
+  //           ],
+  //         },
+  //       },
+  //       {
+  //         code: 200,
+  //         msg: "成功",
+  //         data: {
+  //           taskId: "e04de75d3fce76f944c556bb33208f23",
+  //           recordId: "e04de75d3fce76f944c556bb33208f23",
+  //           id: "s2",
+  //           index: 2,
+  //           content:
+  //             "小兔子说：“这么多。”他把手臂张开，开的不能再开。\n\n大兔子的手臂要长得多，“我爱你有这么多。”他说。",
+  //           prompt:
+  //             "小兔子站在草地上尽力张开短短的手臂，表情认真。大兔子蹲下身张开更长的双臂，形成温暖拥抱的姿势。阳光透过树叶斑驳洒落。水彩风格。",
+  //           prompt_en:
+  //             "The little rabbit stands on grass stretching his short arms as wide as possible with a serious expression. The big rabbit crouches down with even wider arm span, forming a warm hugging gesture. Dappled sunlight filters through leaves. Watercolor style.",
+  //           roleIds: ["r1", "r2"],
+  //           roleUrls: [
+  //             "https://tempfile.aiquickdraw.com/workers/nano/image_1769414799383_yuzdcn.png",
+  //             "https://tempfile.aiquickdraw.com/workers/nano/image_1769414790325_a8x6wu.png",
+  //           ],
+  //         },
+  //       },
+  //     ],
+  //   },
+  // };
 
   if (res.code === 200) {
     let imageTaskIds: string[] = [];
@@ -471,9 +477,9 @@ async function editPictureBook() {
       currentStepIndex.value = EStepIndex.SCENES;
       imageTaskIds = res.data.scenes.map((item: any) => item.data.taskId);
     } else if (res.action === EConfirmAction.CONFIRM_COVER) {
-      renderList.value = [res.data.cover];
+      renderList.value = res.data.cover;
       currentStepIndex.value = EStepIndex.COVER;
-      imageTaskIds = [res.data.cover.taskId];
+      imageTaskIds = res.data.cover.map((item: any) => item.data.taskId);
     } else if (res.action === EConfirmAction.CONFIRM_AUDIO) {
       renderList.value = [];
       currentStepIndex.value = EStepIndex.AUDIO;
@@ -518,6 +524,40 @@ function handleRegenerate(params: {
       }
       return item;
     });
+
+    renderList.value = stepData.value.roles;
+  } else if (params.type === "scene") {
+    imageUrls.value.set(params.data.id, params.data.url);
+    loadingImageIds.value.delete(params.data.id);
+
+    stepData.value.scenes = stepData.value.scenes.map((item: any) => {
+      if (item.data.id === params.data.id) {
+        item.data = {
+          ...item.data,
+          taskId: params.data.taskId,
+          url: params.data.url,
+        };
+      }
+      return item;
+    });
+
+    renderList.value = stepData.value.scenes;
+  } else if (params.type === "cover") {
+    imageUrls.value.set(params.data.id, params.data.url);
+    loadingImageIds.value.delete(params.data.id);
+
+    stepData.value.cover = stepData.value.cover.map((item: any) => {
+      if (item.data.id === params.data.id) {
+        item.data = {
+          ...item.data,
+          taskId: params.data.taskId,
+          url: params.data.url,
+        };
+      }
+      return item;
+    });
+
+    renderList.value = stepData.value.cover;
   }
 }
 
@@ -555,6 +595,60 @@ async function handleConfirmRoles() {
   currentStepIndex.value = EStepIndex.SCENES;
 }
 
+async function handleConfirmScenes() {
+  const res = await pictureBookStore.confirmScenes({
+    pbId: id.value,
+    confirmed: stepData.value.scenes,
+  });
+
+  resetData();
+
+  if (res.code === 409) {
+    uni.showToast({
+      title: "确认失败，请稍后再试",
+      icon: "none",
+    });
+
+    throw new Error("确认失败，请稍后再试");
+  }
+  if (res.code !== 200) {
+    uni.showToast({
+      title: "确认失败，请重新确认",
+      icon: "none",
+    });
+    throw new Error("确认失败，请重新确认");
+  }
+  stepData.value = res.data;
+  currentStepIndex.value = EStepIndex.COVER;
+}
+
+async function handleConfirmCover() {
+  const res = await pictureBookStore.confirmCover({
+    pbId: id.value,
+    confirmed: stepData.value.cover,
+  });
+
+  resetData();
+
+  if (res.code === 409) {
+    uni.showToast({
+      title: "确认失败，请稍后再试",
+      icon: "none",
+    });
+
+    throw new Error("确认失败，请稍后再试");
+  }
+  if (res.code !== 200) {
+    uni.showToast({
+      title: "确认失败，请重新确认",
+      icon: "none",
+    });
+    throw new Error("确认失败，请重新确认");
+  }
+  stepData.value = res.data;
+  currentStepIndex.value = EStepIndex.AUDIO;
+}
+
 async function handleNextStep() {
   console.log(">>>> handleNextStep: ", stepData.value);
   if (isConfirming.value) {
@@ -565,9 +659,9 @@ async function handleNextStep() {
   if (currentStepIndex.value === EStepIndex.ROLES) {
     await handleConfirmRoles();
   } else if (currentStepIndex.value === EStepIndex.SCENES) {
-    // await handleConfirmScenes();
+    await handleConfirmScenes();
   } else if (currentStepIndex.value === EStepIndex.COVER) {
-    // await handleConfirmCover();
+    await handleConfirmCover();
   }
 
   nextTick(() => {

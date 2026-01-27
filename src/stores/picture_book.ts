@@ -4,7 +4,9 @@ import { ref } from "vue";
 import { useUserStore } from "./user";
 import { storeToRefs } from "pinia";
 import {
+  requestConfirmCover,
   requestConfirmRoles,
+  requestConfirmScenes,
   requestEditPictureBook,
   requestGetAudiosByPbId,
   requestGetMyPictureBooks,
@@ -192,6 +194,30 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     });
   }
 
+  function confirmScenes(params: { pbId: string; confirmed: object[] }) {
+    return new Promise(async (resolve) => {
+      const userId = ensureLoginStatus();
+      const res = await requestConfirmScenes({
+        userId: userId,
+        pbId: params.pbId,
+        confirmed: params.confirmed,
+      });
+      resolve(res);
+    });
+  }
+
+  function confirmCover(params: { pbId: string; confirmed: object[] }) {
+    return new Promise(async (resolve) => {
+      const userId = ensureLoginStatus();
+      const res = await requestConfirmCover({
+        userId: userId,
+        pbId: params.pbId,
+        confirmed: params.confirmed,
+      });
+      resolve(res);
+    });
+  }
+
   return {
     myPictureBooks,
     getMyPictureBooks,
@@ -203,5 +229,7 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     setPictureBookViews,
     editPictureBook,
     confirmRoles,
+    confirmScenes,
+    confirmCover,
   };
 });

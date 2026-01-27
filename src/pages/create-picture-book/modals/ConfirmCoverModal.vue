@@ -14,7 +14,7 @@
           }"
         >
           <view
-            class="sticky top-0 left-0 z-[99] w-full h-[88rpx] bg-[#fff] border-b border-b-[1rpx] border-[#F0F0F0] flex flex-row items-center justify-center"
+            class="sticky top-0 left-0 z-[999] w-full h-[88rpx] bg-[#fff] border-b border-b-[1rpx] border-[#F0F0F0] flex flex-row items-center justify-center"
           >
             <text class="text-[36rpx] font-bold text-[#333]">确认封面</text>
 

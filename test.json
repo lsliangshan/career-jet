@@ -1,77 +1,97 @@
 {
   "roles": [
     {
-      "id": "role1",
-      "name": "冬冬",
-      "prompt": "一只可爱的小松鼠，拥有圆圆的脑袋和明亮的大眼睛，身体覆盖着柔软蓬松的棕红色皮毛，肚皮是柔软的奶油白色。他有一个毛茸茸的大尾巴，可以像围巾一样环绕身体。面部表情总是友善而好奇，带着纯真的微笑。穿着自然，没有任何衣物，形象天真烂漫。使用纯白色背景。",
-      "prompt_en": "An adorable little squirrel with a round head and bright, large eyes. His body is covered in soft, fluffy reddish-brown fur, with a soft cream-white belly. He has a big, fluffy tail that can wrap around his body like a scarf. His facial expression is always friendly and curious, with an innocent smile. He wears no clothes, appearing natural and naive. Use a pure white background.",
-      "taskId": "4c4830a3ab1aea37ede868f041625577",
-      "url": "https://tempfile.aiquickdraw.com/r/71fcdad787546be1a3b71b98f38707b7_1769134892_0pjcrake.png"
+      "id": "role_1",
+      "url": "https://tempfile.aiquickdraw.com/workers/nano/image_1769480806336_sfb5bt.png",
+      "name": "凯凯",
+      "prompt": "一个小男孩，有着圆润可爱的脸庞和明亮好奇的大眼睛，穿着舒适的短袖T恤和短裤，色彩明亮柔和，脸上带着友善温暖的表情，使用纯白色背景。",
+      "taskId": "d8cccc281992ce8b7b9db86718c1948e",
+      "recordId": "d8cccc281992ce8b7b9db86718c1948e",
+      "prompt_en": "A little boy with a round, cute face and bright, curious big eyes, wearing a comfortable short-sleeved T-shirt and shorts in bright, soft colors, with a friendly, warm expression on his face, pure white background."
     },
     {
-      "id": "role2",
-      "name": "猫头鹰爷爷",
-      "prompt": "一只慈祥睿智的年长猫头鹰，拥有圆润的头部和巨大的、充满智慧的黄色眼睛。羽毛是柔和的灰褐色与白色相间，显得温暖而蓬松。体型圆润可爱，喙部短小呈淡黄色，眉毛处有少许蓬松的白色羽毛，像两撇可爱的胡子，增添了几分和蔼可亲。表情温和，带着关切和智慧。使用纯白色背景。",
-      "prompt_en": "A kind and wise elderly owl with a round head and large, intelligent yellow eyes. His feathers are a soft mix of grey-brown and white, giving him a warm and fluffy appearance. His body is round and cute, with a short, pale yellow beak. He has a few fluffy white feathers above his eyes that resemble cute mustaches, adding to his amiable look. His expression is gentle, showing concern and wisdom. Use a pure white background.",
-      "taskId": "b51ba52418be577bcae9683d9cb22ba3",
-      "url": "https://tempfile.aiquickdraw.com/workers/nano/image_1769134894356_opxp6q.png"
+      "id": "role_2",
+      "url": "https://tempfile.aiquickdraw.com/workers/nano/image_1769480806036_wl9ph4.png",
+      "name": "闪闪",
+      "prompt": "一个小女孩，梳着可爱的发型，发型上可能有俏皮的发饰，穿着色彩鲜艳的连衣裙或上衣，表情活泼开朗，脸上带着开心的笑容，外形圆润可爱，使用纯白色背景。",
+      "taskId": "5578d9a7ad3914752fe2a3242545f6bf",
+      "recordId": "5578d9a7ad3914752fe2a3242545f6bf",
+      "prompt_en": "A little girl with a cute hairstyle, possibly with a playful hair accessory, wearing a colorful dress or top, with a lively and cheerful expression and a happy smile on her face, round and lovely in shape, pure white background."
     }
   ],
   "scenes": [
     {
-      "taskId": "8f865a75924c40aaf7cb9034e5d65547",
-      "recordId": "8f865a75924c40aaf7cb9034e5d65547",
-      "id": "scene1",
+      "taskId": "efbc621a95b465022617a28e1987fd52",
+      "recordId": "efbc621a95b465022617a28e1987fd52",
+      "id": "scene_1",
       "index": 1,
-      "content": "小松鼠冬冬发现了一颗闪闪发亮的蓝石头，开心极了。他把蓝石头捧在手心，一路跑回树洞。",
-      "prompt": "阳光斑驳的森林地面上，一只可爱的小松鼠兴奋地发现了一颗闪闪发亮的蓝色石头，他用两只小爪子小心翼翼地捧着石头，脸上洋溢着惊喜和开心的笑容，大眼睛闪闪发光。他正迈着小短腿欢快地在长满青苔和落叶的林间小路上奔跑，目标是他那棵有树洞的大树。画面温暖明亮，充满童趣和发现宝藏的喜悦，低角度镜头捕捉他奔跑的姿态。",
-      "prompt_en": "In a sun-dappled forest clearing, an adorable little squirrel excitedly discovers a sparkling blue stone. He carefully cradles the stone in his two tiny paws, his face beaming with surprise and joy, his large eyes sparkling. He is happily scampering along a moss and leaf-covered forest path on his short little legs, heading towards his tree with a hole. The scene is warm and bright, full of childlike fun and the joy of discovery, with a low-angle shot capturing his running posture.",
+      "content": "凯凯在森林里玩耍，找到一颗闪着光的蓝色小石头。",
+      "prompt": "阳光明媚的森林场景，绿意盎然，柔和的阳光透过树叶洒下光斑。可爱的男孩凯凯蹲在地上，表情充满惊喜与好奇，他刚刚发现了一颗躺在草地上的、闪着柔和蓝色光芒的小石头，他的眼睛亮晶晶的。画面温馨，充满童趣和探索氛围，风格卡通可爱。",
+      "prompt_en": "A sunny forest scene with lush greenery and soft sunlight filtering through leaves creating light spots. The cute boy Kaikai is squatting on the ground with an expression full of surprise and curiosity. He has just discovered a small stone lying on the grass that emits a soft blue glow. His eyes are sparkling. The picture is warm and full of childlike fun and exploratory atmosphere, in a cute cartoon style.",
       "roleIds": [
-        "role1"
+        "role_1"
       ],
       "roleUrls": [
-        "https://tempfile.aiquickdraw.com/r/71fcdad787546be1a3b71b98f38707b7_1769134892_0pjcrake.png"
+        "https://tempfile.aiquickdraw.com/workers/nano/image_1769480806336_sfb5bt.png"
       ]
     },
     {
-      "taskId": "64b5eef31d273c2620bc2d850d7b3568",
-      "recordId": "64b5eef31d273c2620bc2d850d7b3568",
-      "id": "scene2",
+      "taskId": "d507ab4f07bb630e537059360507f925",
+      "recordId": "d507ab4f07bb630e537059360507f925",
+      "id": "scene_2",
       "index": 2,
-      "content": "路上，他遇到了猫头鹰爷爷。“看呀，我找到了最珍贵的石头！”可猫头鹰爷爷告诉他，那是森林里刚立起的路标上掉落的。",
-      "prompt": "在一条安静的森林小径上，小松鼠冬冬停下来，向站在树枝上的猫头鹰爷爷展示他捧着的蓝石头。冬冬仰着头，脸上带着自豪和期待的表情。猫头鹰爷爷微微俯身，表情慈祥而略带歉意，他的一只翅膀正指向不远处一个刚刚设立、顶部有缺口的木质路标。阳光透过树叶缝隙洒下，营造出宁静而富有教诲意味的氛围，中景镜头包含两个角色。",
-      "prompt_en": "On a quiet forest path, the little squirrel Dong Dong stops to show the blue stone he's holding to Grandpa Owl perched on a branch. Dong Dong looks up, his face showing pride and anticipation. Grandpa Owl leans forward slightly with a kind and slightly apologetic expression, one of his wings pointing towards a newly erected wooden signpost with a missing top piece not far away. Sunlight filters through the leaves, creating a serene and instructive atmosphere. The shot is a medium shot that includes both characters.",
+      "content": "闪闪看到了，说：‘真好看！这是我的。’ 凯凯犹豫了一下。",
+      "prompt": "森林中的空地，可爱的女孩闪闪快速跑过来，手指着男孩凯凯手中的蓝色发光石头，她的脸上洋溢着兴奋和渴望的笑容，眼睛睁得大大的。凯凯看着闪闪，又低头看看手中的石头，脸上露出犹豫和思考的表情，手微微收回。画面捕捉到两个角色互动时的情感变化，氛围从单纯的快乐变得略带思考。",
+      "prompt_en": "A clearing in the forest. The cute girl Shanshan quickly runs over, pointing at the glowing blue stone in the boy Kaikai's hand, her face lit up with an excited and eager smile, her eyes wide open. Kaikai looks at Shanshan, then down at the stone in his hand, showing a hesitant and thoughtful expression, his hand slightly withdrawn. The picture captures the emotional change during the interaction between the two characters, the atmosphere shifting from simple joy to slightly contemplative.",
       "roleIds": [
-        "role1",
-        "role2"
+        "role_1",
+        "role_2"
       ],
       "roleUrls": [
-        "https://tempfile.aiquickdraw.com/r/71fcdad787546be1a3b71b98f38707b7_1769134892_0pjcrake.png",
-        "https://tempfile.aiquickdraw.com/workers/nano/image_1769134894356_opxp6q.png"
+        "https://tempfile.aiquickdraw.com/workers/nano/image_1769480806336_sfb5bt.png",
+        "https://tempfile.aiquickdraw.com/workers/nano/image_1769480806036_wl9ph4.png"
       ]
     },
     {
-      "taskId": "834360683fcf07edc4b56c247eae47a8",
-      "recordId": "834360683fcf07edc4b56c247eae47a8",
-      "id": "scene3",
+      "taskId": "cbfa22534d39073991cbbd5d13ef6250",
+      "recordId": "cbfa22534d39073991cbbd5d13ef6250",
+      "id": "scene_3",
       "index": 3,
-      "content": "冬冬低下头，又立刻抬起头。“我要把它还回去。”他把蓝石头放回路标顶上，整片森林都变得更明亮了。",
-      "prompt": "特写镜头：小松鼠冬冬先是低头看着手中的蓝石头，表情若有所思，然后他坚定地抬起头，眼神明亮而果断。全景镜头：小松鼠冬冬站在木质路标前，踮起脚，用尽全力将闪亮的蓝石头放回路标的顶端。当石头被放回原位时，一道温暖的光芒从石头中散发出来，整个森林沐浴在更加明亮、梦幻的光线中，树木和花朵都显得生机勃勃，色彩柔和鲜艳，充满魔法般的治愈感。",
-      "prompt_en": "Close-up shot: The little squirrel Dong Dong first looks down at the blue stone in his hands with a thoughtful expression, then he resolutely raises his head, his eyes bright and determined. Full shot: The little squirrel Dong Dong stands in front of the wooden signpost, tiptoeing and using all his strength to place the sparkling blue stone back on top of the signpost. As the stone is returned to its place, a warm glow emanates from it, bathing the entire forest in brighter, dreamier light. The trees and flowers appear vibrant, with soft, vivid colors, creating a magical and healing atmosphere.",
+      "content": "晚上，凯凯看着小石头，总觉得心里有什么东西硌着，不太舒服。",
+      "prompt": "夜晚，在凯凯温馨的儿童卧室里，室内灯光柔和温暖。凯凯穿着睡衣，坐在床边，低着头专注地看着手掌中那颗静静发着蓝光的石头。他的表情复杂，混合着困扰和一丝不安，眉头微微蹙起，营造出一种安静内省和内心矛盾的情感氛围。特写镜头，突出角色表情和手中发光的石头。",
+      "prompt_en": "Nighttime, in Kaikai's cozy children's bedroom with soft, warm indoor lighting. Kaikai, wearing pajamas, sits on the edge of his bed, head bowed, gazing intently at the stone glowing softly with blue light in his palm. His expression is complex, a mix of troubled and slightly uneasy feelings, his brow slightly furrowed, creating an atmosphere of quiet introspection and inner conflict. Close-up shot highlighting the character's expression and the glowing stone in his hand.",
       "roleIds": [
-        "role1"
+        "role_1"
       ],
       "roleUrls": [
-        "https://tempfile.aiquickdraw.com/r/71fcdad787546be1a3b71b98f38707b7_1769134892_0pjcrake.png"
+        "https://tempfile.aiquickdraw.com/workers/nano/image_1769480806336_sfb5bt.png"
+      ]
+    },
+    {
+      "taskId": "08c30418c54f40c951cab7c03c9598ad",
+      "recordId": "08c30418c54f40c951cab7c03c9598ad",
+      "id": "scene_4",
+      "index": 4,
+      "content": "第二天，凯凯找到了闪闪，把石头递过去：‘我想它属于发现它的地方。’",
+      "prompt": "白天，可能在森林边缘或一个可爱的户外玩耍地点。凯凯找到了闪闪，他脸上带着释然和友善的微笑，双手将那颗蓝色发光的小石头递向闪闪。闪闪的表情先是惊讶，然后转为开心和理解，她可能正准备伸手去接。背景明亮可爱，阳光明媚，画面传递出分享、诚实与友谊的温暖氛围。",
+      "prompt_en": "Daytime, perhaps at the edge of the forest or a cute outdoor play area. Kaikai has found Shanshan. He wears a relieved and friendly smile on his face, holding out the small glowing blue stone with both hands towards Shanshan. Shanshan's expression is first surprised, then turns happy and understanding. She is likely about to reach out to take it. The background is bright and lovely, with sunny weather. The picture conveys a warm atmosphere of sharing, honesty, and friendship.",
+      "roleIds": [
+        "role_1",
+        "role_2"
+      ],
+      "roleUrls": [
+        "https://tempfile.aiquickdraw.com/workers/nano/image_1769480806336_sfb5bt.png",
+        "https://tempfile.aiquickdraw.com/workers/nano/image_1769480806036_wl9ph4.png"
       ]
     }
   ],
   "cover": {
-    "prompt": "故事封面：在一片充满童话色彩的明亮森林里，可爱的小松鼠冬冬和慈祥的猫头鹰爷爷站在一起。冬冬正仰头看着猫头鹰爷爷，手里捧着一颗闪闪发光的蓝色石头。背景中可以看到那个顶部有缺口的木质路标。整幅画面温暖、友爱，色调柔和明亮，充满了童趣和奇幻感，象征着诚实与分享的美好品德。",
-    "prompt_en": "Story cover: In a bright, fairy-tale-like forest, the adorable little squirrel Dong Dong and the kind Grandpa Owl stand together. Dong Dong is looking up at Grandpa Owl, holding a sparkling blue stone in his hands. In the background, the wooden signpost with a missing top piece is visible. The entire scene is warm and friendly, with soft, bright colors, full of childlike fun and a sense of fantasy, symbolizing the virtues of honesty and sharing.",
+    "id": "cover-1",
+    "prompt": "故事封面图，在一个阳光明媚、绿意盎然的可爱森林中，男孩凯凯和女孩闪闪站在一起。凯凯正友善地将一颗闪着柔和蓝色光芒的小石头递给闪闪，闪闪开心地准备接住。两个角色都穿着明亮可爱的衣服，脸上带着温暖快乐的笑容。画面风格卡通、温馨、色彩柔和明亮，充满童趣和友谊的氛围，包含了故事的两个主要角色。",
+    "prompt_en": "Story cover image, in a sunny, lush, and lovely forest. The boy Kaikai and the girl Shanshan are standing together. Kaikai is kindly handing a small stone glowing with soft blue light to Shanshan, who is happily about to receive it. Both characters are dressed in bright and cute clothes, with warm, happy smiles on their faces. The picture is in a cartoon style, warm and cozy, with soft and bright colors, full of childlike fun and an atmosphere of friendship, including the two main characters of the story.",
     "roleIds": [
-      "role1",
-      "role2"
+      "role_1",
+      "role_2"
     ]
   }
 }

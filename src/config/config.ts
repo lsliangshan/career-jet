@@ -771,11 +771,22 @@ export const languages = [
   },
 ];
 
-export const tabs = {
-  all: "全部",
-  likes: "点赞最多",
-  views: "浏览最多",
-};
+// export const tabs = {
+//   all: "全部",
+//   likes: "点赞最多",
+//   views: "浏览最多",
+// };
+export const tabs = [
+  {
+    name: "全部",
+  },
+  {
+    name: "点赞最多",
+  },
+  {
+    name: "浏览最多",
+  },
+];
 
 export const voiceTypes = [
   {

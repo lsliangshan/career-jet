@@ -1,6 +1,9 @@
 <template>
   <view
     class="home-refresher-success"
+    :style="{
+      marginTop: offsetY ? `${offsetY}px` : '0',
+    }"
     :class="{ 'home-refresher-success--animation': modelValue }"
   >
     <text class="text-[26rpx] text-[#fff]">{{ refreshText }}</text>
@@ -12,6 +15,7 @@ import { watch, computed } from "vue";
 interface IProps {
   modelValue: boolean;
   text?: string;
+  offsetY?: number;
 }
 
 const props = defineProps<IProps>();
@@ -56,47 +60,35 @@ watch(
   z-index: 999;
   /* margin-left: -130rpx; */
   color: #fff;
+  opacity: 0;
   transform: translate(-50%, 0);
-  transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
 }
 
 .home-refresher-success--animation {
   transform: translate(-50%, 164rpx);
+  opacity: 1;
 }
 
 @keyframes refresher-success {
   0% {
     top: -100rpx;
+    opacity: 0;
   }
 
   30% {
     top: 64rpx;
+    opacity: 1;
   }
 
   70% {
     top: 64rpx;
+    opacity: 1;
   }
 
   100% {
     top: -100rpx;
-  }
-}
-
-@keyframes refresher-success {
-  0% {
-    top: -100rpx;
-  }
-
-  30% {
-    top: 64rpx;
-  }
-
-  70% {
-    top: 64rpx;
-  }
-
-  100% {
-    top: -100rpx;
+    opacity: 0;
   }
 }
 </style>

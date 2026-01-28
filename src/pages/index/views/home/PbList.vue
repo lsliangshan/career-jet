@@ -2,7 +2,11 @@
   <PageLoading v-if="!pageReady" />
 
   <template v-else>
-    <refresher-success v-model="refresherSuccessVisible" :text="successTip" />
+    <refresher-success
+      :offset-y="0"
+      v-model="refresherSuccessVisible"
+      :text="successTip"
+    />
     <scroll-view
       type="custom"
       class="w-full h-full"
@@ -11,6 +15,9 @@
       refresher-default-style="none"
       :refresher-triggered="refresherTriggered"
       @refresherrefresh="refresherrefresh"
+      @refresherpulling="refresherpulling"
+      @refresherrestore="refresherrestore"
+      @refresherabort="refresherabort"
       @scrolltolower="onScrollToLower"
     >
       <template #refresher>
@@ -18,7 +25,8 @@
           class="w-full h-[100rpx] pt-[24rpx] box-border flex flex-row items-center justify-center"
         >
           <view
-            class="w-[100rpx] h-[100rpx] rounded-[8rpx] flex flex-row items-center justify-center"
+            class="w-[100rpx] h-[100rpx] rounded-[8rpx] flex flex-row items-center justify-center transition-opacity duration-300"
+            :class="[refresherVisible ? 'opacity-100' : 'opacity-0']"
           >
             <CustomLoader :size="40" :color="ThemeColors.primary" />
           </view>
@@ -40,8 +48,8 @@
         >
           <view
             class="w-full"
-            v-for="(pb, index) in pictureBooks"
-            :key="pb.id"
+            v-for="(pb, index) in Array(20).fill(pictureBooks[0])"
+            :key="index"
             :style="{
               height: `${
                 renderImageHeight(pb.config?.ratio) +
@@ -219,7 +227,7 @@ import Empty from "@/components/empty/empty.vue";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 
 interface Props {
-  type: keyof typeof tabs;
+  activeIndex: number;
 }
 
 const props = defineProps<Props>();
@@ -234,6 +242,8 @@ const refresherSuccessVisible = ref(false);
 const isRefreshing = ref(false);
 const successTip = ref("已更新");
 const refresherTriggered = ref(false);
+
+const refresherVisible = ref(false);
 
 const pageIndex = ref(1);
 const pageSize = ref(20);
@@ -264,11 +274,12 @@ const renderImageHeight = computed(() => {
 });
 
 const renderOrderType = computed(() => {
-  if (props.type === "all") {
+  const name = tabs[props.activeIndex].name;
+  if (name === "全部") {
     return "order-by-time";
-  } else if (props.type === "likes") {
+  } else if (name === "点赞最多") {
     return "order-by-likes";
-  } else if (props.type === "views") {
+  } else if (name === "浏览最多") {
     return "order-by-views";
   }
 });
@@ -305,6 +316,18 @@ async function getPictureBooks() {
 
   pageReady.value = true;
   isLoading.value = false;
+}
+
+function refresherpulling() {
+  refresherVisible.value = true;
+}
+
+function refresherrestore() {
+  refresherVisible.value = false;
+}
+
+function refresherabort() {
+  refresherVisible.value = false;
 }
 
 // 下拉刷新

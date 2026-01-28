@@ -49,7 +49,7 @@
           ref="waterfallRef"
         >
           <view class="w-full" v-for="(pb, index) in pictureBooks" :key="pb.id">
-            <PbCard :renderOrderType="renderOrderType" :info="pb" />
+            <PbCard :type="type" :info="pb" />
           </view>
           <!-- <view
             class="w-full"
@@ -233,6 +233,7 @@ import PbCard from "@/components/pb-card/pb-card.vue";
 
 interface Props {
   activeIndex: number;
+  type: string;
 }
 
 const props = defineProps<Props>();

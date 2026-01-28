@@ -42,13 +42,11 @@
         :current="activeThemeIndex"
         @change="handleChangeTheme"
       >
-        <swiper-item v-for="value in tabs" :key="value">
-          <view
-            :id="`tab-${value}`"
-            class="inline-block w-full h-full relative"
-          >
+        <swiper-item v-for="tab in tabs" :key="tab.value">
+          <view class="inline-block w-full h-full relative">
             <PbList
               class="overflow-hidden"
+              :type="tab.value"
               :active-index="activeThemeIndex"
             ></PbList>
           </view>

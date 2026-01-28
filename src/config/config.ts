@@ -779,12 +779,15 @@ export const languages = [
 export const tabs = [
   {
     name: "全部",
+    value: "all",
   },
   {
     name: "点赞最多",
+    value: "like",
   },
   {
     name: "浏览最多",
+    value: "view",
   },
 ];
 

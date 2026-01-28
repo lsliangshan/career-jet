@@ -18,17 +18,18 @@
       <view
         class="flex items-center gap-1 mt-0.5 opacity-60 dark:text-white/60"
       >
-        <template v-if="renderOrderType === 'order-by-time'">
+        <template v-if="type === 'all'">
           <text class="text-[10px] font-bold">{{ info.createAt }}</text>
         </template>
-        <template v-else-if="renderOrderType === 'order-by-likes'">
+        <template v-else-if="type === 'like'">
           <svg-icon
             :src="`/static/${iconThemeVersion}/icon_like.svg`"
-            class="w-[28rpx] h-[28rpx]"
+            class="w-[24rpx] h-[24rpx]"
+            :color="ThemeColors.primary"
           ></svg-icon>
           <text class="text-[10px] font-bold">{{ info.likes }}</text>
         </template>
-        <template v-else-if="renderOrderType === 'order-by-views'">
+        <template v-else-if="type === 'view'">
           <svg-icon
             :src="`/static/${iconThemeVersion}/icon_eye.svg`"
             class="w-[28rpx] h-[28rpx]"
@@ -41,13 +42,13 @@
 </template>
 
 <script setup lang="ts">
-import { iconThemeVersion } from "@/config/config";
+import { iconThemeVersion, ThemeColors } from "@/config/config";
 import type { IPictureBook } from "@/types";
 import { computed } from "vue";
 
 interface Props {
   info: IPictureBook;
-  renderOrderType?: string;
+  type: string;
 }
 
 const props = defineProps<Props>();

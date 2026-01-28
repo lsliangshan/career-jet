@@ -48,7 +48,10 @@
           :padding="[0, 12, 0, 12]"
           ref="waterfallRef"
         >
-          <view
+          <view class="w-full" v-for="(pb, index) in pictureBooks" :key="pb.id">
+            <PbCard :renderOrderType="renderOrderType" :info="pb" />
+          </view>
+          <!-- <view
             class="w-full"
             v-for="(pb, index) in pictureBooks"
             :key="pb.id"
@@ -75,9 +78,7 @@
                 class="absolute left-0 top-0 w-full h-full bg-[#e8e8e8] flex flex-row items-center justify-center"
                 v-if="!pb.cover?.url || errorImageIds.has(pb.id)"
               >
-                <!-- <text class="text-[24rpx] text-[#c8c8c8]">{{
-          !pb.cover?.url ? "暂无封面" : "封面加载失败"
-        }}</text> -->
+              
                 <image
                   class="w-full h-full z-[9]"
                   :src="
@@ -181,7 +182,7 @@
                 </view>
               </view>
             </view>
-          </view>
+          </view> -->
         </grid-view>
 
         <view
@@ -228,6 +229,7 @@ import PageLoading from "@/components/page-loading/page-loading.vue";
 import Empty from "@/components/empty/empty.vue";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 import DailyTask from "./DailyTask.vue";
+import PbCard from "@/components/pb-card/pb-card.vue";
 
 interface Props {
   activeIndex: number;

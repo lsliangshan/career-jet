@@ -38,6 +38,8 @@
       <template v-else>
         <view class="w-full h-[24rpx]"></view>
 
+        <DailyTask />
+
         <grid-view
           type="masonry"
           :cross-axis-count="2"
@@ -48,8 +50,8 @@
         >
           <view
             class="w-full"
-            v-for="(pb, index) in Array(20).fill(pictureBooks[0])"
-            :key="index"
+            v-for="(pb, index) in pictureBooks"
+            :key="pb.id"
             :style="{
               height: `${
                 renderImageHeight(pb.config?.ratio) +
@@ -225,6 +227,7 @@ import RefresherSuccess from "@/components/RefresherSuccess.vue";
 import PageLoading from "@/components/page-loading/page-loading.vue";
 import Empty from "@/components/empty/empty.vue";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
+import DailyTask from "./DailyTask.vue";
 
 interface Props {
   activeIndex: number;

@@ -38,7 +38,7 @@
       <template v-else>
         <view class="w-full h-[24rpx]"></view>
 
-        <DailyTask />
+        <DailyTask v-if="type === 'all'" />
 
         <grid-view
           type="masonry"

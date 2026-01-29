@@ -782,7 +782,7 @@ export const languages = [
 // };
 export const tabs = [
   {
-    name: "全部",
+    name: "最新",
     value: "all",
   },
   {

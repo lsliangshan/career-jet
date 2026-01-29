@@ -35,7 +35,8 @@
           }"
         >
           <view
-            class="w-[128rpx] h-[128rpx] p-[8rpx] box-border bg-white rounded-full shadow-[0_0_30rpx_2rpx_rgba(0,0,0,0.1)] flex flex-row items-center justify-center"
+            class="w-[128rpx] h-[128rpx] p-[8rpx] box-border bg-white rounded-full shadow-[0_0_30rpx_2rpx_rgba(0,0,0,0.1)] flex flex-row items-center justify-center active:scale-95 transition-all duration-300"
+            @click="handleCreatePictureBook"
           >
             <view
               class="w-full h-full rounded-full flex flex-row items-center justify-center"
@@ -93,6 +94,12 @@ const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
 function changeTab(index: number) {
   navStore.changeTab(index);
+}
+
+function handleCreatePictureBook() {
+  uni.navigateTo({
+    url: "/pages/create-picture-book/create-picture-book",
+  });
 }
 </script>
 

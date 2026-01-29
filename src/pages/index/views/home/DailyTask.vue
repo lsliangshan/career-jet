@@ -49,6 +49,7 @@
             :style="{
               backgroundColor: ThemeColors.primary,
             }"
+            @click="handleCreatePictureBook"
           >
             <svg-icon
               class="w-[28rpx] h-[28rpx]"
@@ -65,6 +66,12 @@
 
 <script setup lang="ts">
 import { iconThemeVersion, ThemeColors } from "@/config/config";
+
+function handleCreatePictureBook() {
+  uni.navigateTo({
+    url: "/pages/create-picture-book/create-picture-book",
+  });
+}
 </script>
 
 <style scoped></style>

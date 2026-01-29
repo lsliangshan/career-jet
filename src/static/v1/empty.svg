@@ -1,0 +1,28 @@
+<svg class="w-full h-full relative z-10 drop-shadow-2xl" fill="none" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><style>
+            @keyframes floating {
+              0%, 100% { transform: translateY(0px); }
+              50% { transform: translateY(-10px); }
+            }
+            @keyframes tailWag {
+              0%, 100% { transform: rotate(0deg); }
+              50% { transform: rotate(10deg); }
+            }
+            @keyframes blink {
+              0%, 90%, 100% { transform: scaleY(1); }
+              95% { transform: scaleY(0.1); }
+            }
+            @keyframes searchMove {
+              0%, 100% { transform: translate(0, 0) rotate(0deg); }
+              33% { transform: translate(5px, -5px) rotate(5deg); }
+              66% { transform: translate(-3px, 5px) rotate(-3deg); }
+            }
+            @keyframes starSpin {
+              from { transform: rotate(0deg); }
+              to { transform: rotate(360deg); }
+            }
+            .floating { animation: floating 3s ease-in-out infinite; }
+            .tail-wag { animation: tailWag 2s ease-in-out infinite; transform-origin: 260px 240px; }
+            .eye-blink { animation: blink 4s infinite; transform-origin: center; }
+            .magnifier { animation: searchMove 4s ease-in-out infinite; transform-origin: 165px 220px; }
+            .star { animation: starSpin 10s linear infinite; transform-origin: 300px 134px; }
+          </style><g class="floating"><path d="M60 280C60 260 80 250 120 250L200 255L280 250C320 250 340 260 340 280V320C340 330 320 340 280 340L200 335L120 340C80 340 60 330 60 320V280Z" fill="#FFFBF0" stroke="#E5E0D0" stroke-width="1"></path><path d="M200 255V335" stroke="#E5E0D0" stroke-linecap="round" stroke-width="2"></path></g><circle cx="80" cy="150" fill="#f2cc0d" opacity="0.6" r="4" class="animate-pulse"></circle><circle cx="320" cy="180" fill="#ff7b5c" opacity="0.4" r="3" class="animate-bounce" style="animation-delay: 1s;"></circle><g class="star"><path d="M300 120L305 130L315 132L307 138L310 148L300 142L290 148L293 138L285 132L295 130L300 120Z" fill="#f2cc0d" opacity="0.8"></path></g><path class="tail-wag" d="M260 220C280 200 290 220 285 240" stroke="#f2cc0d" stroke-linecap="round" stroke-width="12"></path><ellipse cx="210" cy="235" fill="#f2cc0d" rx="45" ry="50"></ellipse><circle cx="210" cy="170" fill="#f2cc0d" r="42"></circle><path d="M175 145L165 105L200 135Z" fill="#f2cc0d"></path><path d="M245 145L255 105L220 135Z" fill="#f2cc0d"></path><path d="M178 138L172 115L192 132Z" fill="#ff7b5c" opacity="0.3"></path><path d="M242 138L248 115L228 132Z" fill="#ff7b5c" opacity="0.3"></path><g class="eye-blink"><circle cx="190" cy="170" fill="#1c190d" r="6"></circle><circle cx="230" cy="170" fill="#1c190d" r="6"></circle><circle cx="188" cy="167" fill="white" r="2"></circle><circle cx="228" cy="167" fill="white" r="2"></circle></g><path d="M206 182L214 182L210 186L206 182Z" fill="#ff7b5c"></path><path d="M205 192C205 192 208 194 210 194C212 194 215 192 215 192" stroke="#1c190d" stroke-linecap="round" stroke-width="2"></path><circle cx="165" cy="220" fill="#f2cc0d" r="12"></circle><circle cx="140" cy="210" fill="#f2cc0d" r="10"></circle><g class="magnifier"><rect fill="#78350f" height="40" rx="4" transform="rotate(45 110 210)" width="8" x="110" y="210"></rect><circle cx="100" cy="180" r="38" stroke="#f2cc0d" stroke-width="6" fill="white"></circle><circle cx="100" cy="180" fill="#93c5fd" fill-opacity="0.3" r="32"></circle><path d="M85 165C90 160 100 160 105 165" opacity="0.6" stroke="white" stroke-linecap="round" stroke-width="3"></path></g></svg>

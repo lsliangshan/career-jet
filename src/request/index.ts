@@ -382,6 +382,33 @@ export function requestGetMyPictureBooks(params?: {
 }
 
 /**
+ * 获取我点赞的绘本列表
+ * @param params
+ * @param {string} params.userId 用户ID
+ * @param {number} [params.pageIndex=1] 页码
+ * @param {number} [params.pageSize=20] 每页条数
+ */
+export function requestGetMyFavoritePictureBooks(params?: {
+  userId: string;
+  pageIndex?: number;
+  pageSize?: number;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/pb/list-my-favorite-picture-books`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
  * 获取绘本列表
  * @param params
  * @param {string} [params.type] 排序方式

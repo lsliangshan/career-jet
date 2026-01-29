@@ -9,6 +9,7 @@ import {
   requestConfirmScenes,
   requestEditPictureBook,
   requestGetAudiosByPbId,
+  requestGetMyFavoritePictureBooks,
   requestGetMyPictureBooks,
   requestGetPictureBookDetail,
   requestGetPictureBookLikeStatus,
@@ -60,6 +61,30 @@ export const usePictureBookStore = defineStore("picture_book", () => {
       if (res.code === 200) {
         myPictureBooks.value = res.data.list;
       }
+      resolve(res);
+    });
+  }
+
+  function getMyFavoritePictureBooks(params?: {
+    pageIndex?: number;
+    pageSize?: number;
+  }) {
+    return new Promise(async (resolve) => {
+      if (!isLoggedIn.value || !loginInfo.value.id) {
+        uni.showToast({
+          title: "请先登录",
+          icon: "none",
+        });
+        resolve(false);
+        return;
+      }
+      const pageIndex = params?.pageIndex || 1;
+      const pageSize = params?.pageSize || 20;
+      const res = await requestGetMyFavoritePictureBooks({
+        userId: loginInfo.value.id,
+        pageIndex,
+        pageSize,
+      });
       resolve(res);
     });
   }
@@ -221,6 +246,7 @@ export const usePictureBookStore = defineStore("picture_book", () => {
   return {
     myPictureBooks,
     getMyPictureBooks,
+    getMyFavoritePictureBooks,
     getPictureBooks,
     getPictureBookDetail,
     getAudiosByPbId,

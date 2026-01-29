@@ -38,6 +38,9 @@
         <template v-if="type === 'all'">
           <text class="text-[10px] font-bold">{{ info.createAt }}</text>
         </template>
+        <template v-else-if="type === 'favorite'">
+          <text class="text-[10px] font-bold">{{ info.likeTime }}</text>
+        </template>
         <template v-else-if="type === 'like'">
           <svg-icon
             :src="`/static/${iconThemeVersion}/icon_like.svg`"

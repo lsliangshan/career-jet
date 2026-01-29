@@ -139,6 +139,7 @@ export interface IPictureBook {
   title_zh?: string;
   content_zh?: string;
   author?: IAuthorItem;
+  likeTime?: string;
 }
 
 export interface IPBAudioItem {

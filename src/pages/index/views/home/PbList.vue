@@ -51,138 +51,6 @@
           <view class="w-full" v-for="(pb, index) in pictureBooks" :key="pb.id">
             <PbCard :type="type" :info="pb" />
           </view>
-          <!-- <view
-            class="w-full"
-            v-for="(pb, index) in pictureBooks"
-            :key="pb.id"
-            :style="{
-              height: `${
-                renderImageHeight(pb.config?.ratio) +
-                (isHorizontalRatio(pb.config?.ratio) ? 154 : 0)
-              }rpx`,
-            }"
-            @click="handleViewPictureBook(pb)"
-          >
-            <view
-              class="relative w-full rounded-tl-[24rpx] rounded-tr-[24rpx] overflow-hidden flex flex-row items-center justify-center"
-              :class="[
-                isHorizontalRatio(pb.config.ratio)
-                  ? ''
-                  : 'rounded-bl-[24rpx] rounded-br-[24rpx]',
-              ]"
-              :style="{
-                height: `${renderImageHeight(pb.config?.ratio)}rpx`,
-              }"
-            >
-              <view
-                class="absolute left-0 top-0 w-full h-full bg-[#e8e8e8] flex flex-row items-center justify-center"
-                v-if="!pb.cover?.url || errorImageIds.has(pb.id)"
-              >
-              
-                <image
-                  class="w-full h-full z-[9]"
-                  :src="
-                    isHorizontalRatio(pb.config.ratio)
-                      ? 'https://img.liangqy.com/crawlerjet/picture_book/img/pb_default_horizontal.png'
-                      : 'https://img.liangqy.com/crawlerjet/picture_book/img/pb_default_vertical.png'
-                  "
-                  mode="aspectFill"
-                  @error="handleImageError(pb.id)"
-                />
-              </view>
-              <image
-                class="w-full h-full z-[9]"
-                :src="pb.cover?.url"
-                mode="aspectFill"
-                @error="handleImageError(pb.id)"
-              />
-            </view>
-
-            <view
-              class="absolute z-[9] bottom-0 left-0 rounded-bl-[24rpx] rounded-br-[24rpx] p-[16rpx] box-border w-full flex flex-col gap-[8rpx]"
-              :class="[
-                isHorizontalRatio(pb.config.ratio)
-                  ? 'bg-[#fff]'
-                  : 'bg-[rgba(0,0,0,0.2)]',
-              ]"
-            >
-              <view class="w-full h-[32rpx] flex flex-row items-center">
-                <view
-                  class="h-full px-[12rpx] box-border rounded-[12rpx] flex flex-row items-center justify-center"
-                  :style="{
-                    backgroundColor: mainColor,
-                  }"
-                >
-                  <text class="text-[20rpx] text-[#fff]">{{
-                    pb.config.theme
-                  }}</text>
-                </view>
-              </view>
-              <view
-                class="w-full h-[36rpx] mt-[16rpx] flex flex-row items-center"
-              >
-                <text
-                  class="text-[30rpx] font-bold line-clamp-1 overflow-hidden text-ellipsis break-all"
-                  :class="[
-                    isHorizontalRatio(pb.config.ratio)
-                      ? 'text-[#181818]'
-                      : 'text-[#fff]',
-                  ]"
-                  >{{ pb.title }}</text
-                >
-              </view>
-              <view class="w-full h-[30rpx] flex flex-row items-center">
-                <text
-                  class="text-[26rpx]"
-                  :class="[
-                    isHorizontalRatio(pb.config.ratio)
-                      ? 'text-[#958a50]'
-                      : 'text-[rgba(255,255,255,0.7)]',
-                  ]"
-                  v-if="renderOrderType === 'order-by-time'"
-                  >{{ pb.createAt }}</text
-                >
-                <view
-                  class="w-full h-full flex flex-row items-center gap-[12rpx]"
-                  v-else-if="renderOrderType === 'order-by-likes'"
-                >
-                  <svg-icon
-                    :src="`/static/${iconThemeVersion}/icon_like.svg`"
-                    class="w-[28rpx] h-[28rpx]"
-                    :color="ThemeColors.primary"
-                  />
-                  <text
-                    class="text-[26rpx]"
-                    :class="[
-                      isHorizontalRatio(pb.config.ratio)
-                        ? 'text-[#958a50]'
-                        : 'text-[rgba(255,255,255,0.7)]',
-                    ]"
-                    >{{ pb.likes }}</text
-                  >
-                </view>
-                <view
-                  class="w-full h-full flex flex-row items-center gap-[12rpx]"
-                  v-else-if="renderOrderType === 'order-by-views'"
-                >
-                  <svg-icon
-                    :src="`/static/${iconThemeVersion}/icon_eye.svg`"
-                    class="w-[32rpx] h-[32rpx]"
-                    :color="ThemeColors.primary"
-                  />
-                  <text
-                    class="text-[26rpx]"
-                    :class="[
-                      isHorizontalRatio(pb.config.ratio)
-                        ? 'text-[#958a50]'
-                        : 'text-[rgba(255,255,255,0.7)]',
-                    ]"
-                    >{{ pb.views }}</text
-                  >
-                </view>
-              </view>
-            </view>
-          </view> -->
         </grid-view>
 
         <view
@@ -207,7 +75,7 @@
 
         <view
           class="w-full"
-          :style="{ height: `calc(${safeBottom}px + 128rpx)` }"
+          :style="{ height: `calc(${safeBottom}px + 200rpx)` }"
         ></view>
       </template>
     </scroll-view>
@@ -215,12 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  tabs,
-  mainColor,
-  iconThemeVersion,
-  ThemeColors,
-} from "@/config/config";
+import { ThemeColors } from "@/config/config";
 import type { IPictureBook } from "@/types";
 import { computed, nextTick, onMounted, ref } from "vue";
 import { usePictureBookStore } from "@/stores/picture_book";
@@ -259,25 +122,6 @@ const totalPage = ref(1);
 const pictureBooks = ref<IPictureBook[]>([]);
 
 const isLoading = ref(false);
-
-// 加载失败的图片id列表
-const errorImageIds = ref<Set<string>>(new Set());
-
-const isHorizontalRatio = computed(() => {
-  return (ratio: string) => {
-    return Number(ratio.split(":")[0]) > Number(ratio.split(":")[1]);
-  };
-});
-
-const renderImageHeight = computed(() => {
-  return function (ratio: string) {
-    const r = ratio ? ratio.split(":") : ["16", "9"];
-    const width = Number(r[0]);
-    const height = Number(r[1]);
-
-    return (378 * height) / width;
-  };
-});
 
 const renderOrderType = computed(() => {
   if (props.type === "all") {
@@ -365,33 +209,6 @@ async function onScrollToLower() {
   }
   pageIndex.value++;
   await getPictureBooks();
-}
-
-function handleViewPictureBook(pb: IPictureBook) {
-  console.log(">>> 跳转：", pb);
-  if (
-    Number(pb.config.ratio.split(":")[0]) >
-    Number(pb.config.ratio.split(":")[1])
-  ) {
-    uni.navigateTo({
-      url: `/pages/picture-book-detail-horizontal/picture-book-detail-horizontal?id=${pb.id}`,
-      complete: () => {
-        // refresherSuccessVisible.value = false;
-      },
-    });
-  } else {
-    uni.navigateTo({
-      url: `/pages/picture-book-detail/picture-book-detail?id=${pb.id}`,
-      complete: () => {
-        // refresherSuccessVisible.value = false;
-      },
-    });
-  }
-}
-
-function handleImageError(id: string) {
-  console.log(">>>>>> handleImageError: ", id);
-  errorImageIds.value.add(id);
 }
 </script>
 

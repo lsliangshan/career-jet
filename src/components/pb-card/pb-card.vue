@@ -1,16 +1,33 @@
 <template>
   <view
     class="bg-white dark:bg-card-dark p-2.5 rounded-2xl shadow-sm border border-black/5 flex flex-col"
+    @click="handleViewPictureBook(info)"
   >
     <view
-      class="w-full"
+      class="relative w-full"
       :style="{ height: renderImageHeight(info.config?.ratio) + 'rpx' }"
     >
       <image
-        class="w-full h-full rounded-2xl overflow-hidden"
+        class="w-full h-full rounded-xl overflow-hidden"
         :src="info.cover?.url"
         mode="aspectFill"
+        @error="handleImageError"
       />
+      <view
+        class="absolute left-0 top-0 w-full h-full bg-[#e8e8e8] flex flex-row items-center justify-center"
+        v-if="!info.cover?.url || imageLoadError"
+      >
+        <image
+          class="w-full h-full z-[9]"
+          :src="
+            isHorizontalRatio(info.config.ratio)
+              ? 'https://img.liangqy.com/crawlerjet/picture_book/img/pb_default_horizontal.png'
+              : 'https://img.liangqy.com/crawlerjet/picture_book/img/pb_default_vertical.png'
+          "
+          mode="aspectFill"
+          @error="handleImageError"
+        />
+      </view>
     </view>
 
     <view class="px-0.5 mt-2.5">
@@ -44,7 +61,7 @@
 <script setup lang="ts">
 import { iconThemeVersion, ThemeColors } from "@/config/config";
 import type { IPictureBook } from "@/types";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 interface Props {
   info: IPictureBook;
@@ -52,6 +69,14 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const imageLoadError = ref(false);
+
+const isHorizontalRatio = computed(() => {
+  return (ratio: string) => {
+    return Number(ratio.split(":")[0]) > Number(ratio.split(":")[1]);
+  };
+});
 
 const renderMinHeight = computed(() => {
   const r = ["16", "9"];
@@ -82,6 +107,31 @@ const renderImageHeight = computed(() => {
     );
   };
 });
+
+function handleViewPictureBook(pb: IPictureBook) {
+  if (
+    Number(pb.config.ratio.split(":")[0]) >
+    Number(pb.config.ratio.split(":")[1])
+  ) {
+    uni.navigateTo({
+      url: `/pages/picture-book-detail-horizontal/picture-book-detail-horizontal?id=${pb.id}`,
+      complete: () => {
+        // refresherSuccessVisible.value = false;
+      },
+    });
+  } else {
+    uni.navigateTo({
+      url: `/pages/picture-book-detail/picture-book-detail?id=${pb.id}`,
+      complete: () => {
+        // refresherSuccessVisible.value = false;
+      },
+    });
+  }
+}
+
+function handleImageError() {
+  imageLoadError.value = true;
+}
 </script>
 
 <style scoped></style>

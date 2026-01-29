@@ -9,9 +9,12 @@
         <swiper-item>
           <home />
         </swiper-item>
-        <!-- <swiper-item>
-          <game />
-        </swiper-item> -->
+        <swiper-item>
+          <likes />
+        </swiper-item>
+        <swiper-item>
+          <statistics />
+        </swiper-item>
         <swiper-item>
           <profile />
         </swiper-item>
@@ -40,6 +43,8 @@
 import BottomNav from "./components/bottom-nav.vue";
 import home from "./views/home/home.vue";
 import profile from "./views/profile/profile.vue";
+import likes from "./views/likes/likes.vue";
+import statistics from "./views/statistics/statistics.vue";
 import { useNavStore } from "@/stores/nav";
 import { storeToRefs } from "pinia";
 import { onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";

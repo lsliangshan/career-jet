@@ -22,12 +22,16 @@ export const tabbars = [
     label: "发现",
     icon: "/static/tabs/icon_home.svg",
   },
-  // {
-  //   name: "deliver",
-  //   label: "游戏",
-  //   icon: "../../../static/tabs/tab_game_unselect.png",
-  //   activeIcon: "../../../static/tabs/tab_game_select.png",
-  // },
+  {
+    name: "likes",
+    label: "收藏",
+    icon: "/static/tabs/icon_like.svg",
+  },
+  {
+    name: "statistics",
+    label: "统计",
+    icon: "/static/tabs/icon_statistics.svg",
+  },
   {
     name: "profile",
     label: "我的",

@@ -45,7 +45,7 @@
 
         <view class="w-full h-[64rpx] mt-[24rpx] flex flex-row items-center">
           <view
-            class="h-full px-[24rpx] box-border flex flex-row items-center justify-center rounded-[32rpx] active:scale-95 transition-all duration-300"
+            class="h-full px-[24rpx] box-border flex flex-row items-center justify-center gap-[12rpx] rounded-[32rpx] active:scale-95 transition-all duration-300"
             :style="{
               backgroundColor: ThemeColors.primary,
             }"

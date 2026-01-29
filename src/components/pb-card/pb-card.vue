@@ -16,7 +16,7 @@
     <view class="px-0.5 mt-2.5">
       <text class="font-bold text-sm dark:text-white">{{ info.title }}</text>
       <view
-        class="flex items-center gap-1 mt-0.5 opacity-60 dark:text-white/60"
+        class="flex items-center gap-1 mt-0.5 opacity-60 dark:text-white/60 mt-[8rpx]"
       >
         <template v-if="type === 'all'">
           <text class="text-[10px] font-bold">{{ info.createAt }}</text>

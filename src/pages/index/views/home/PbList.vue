@@ -280,12 +280,11 @@ const renderImageHeight = computed(() => {
 });
 
 const renderOrderType = computed(() => {
-  const name = tabs[props.activeIndex].name;
-  if (name === "全部") {
+  if (props.type === "all") {
     return "order-by-time";
-  } else if (name === "点赞最多") {
+  } else if (props.type === "like") {
     return "order-by-likes";
-  } else if (name === "浏览最多") {
+  } else if (props.type === "view") {
     return "order-by-views";
   }
 });

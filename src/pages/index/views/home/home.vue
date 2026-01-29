@@ -12,32 +12,12 @@
         :style="{ width: `calc(${safeTitleWidth}px)` }"
       >
         <MainTabs class="w-full h-[80rpx]" v-model="activeThemeIndex" />
-        <!-- <view
-          class="w-full h-full px-[24rpx] box-border flex flex-row items-center justify-center"
-        >
-          <input
-            type="text"
-            class="w-full h-[72rpx] bg-[rgba(255,255,255,0.8)] dark:bg-[rgba(0,0,0,0.8)] border border-[1rpx] border-[#d8d8d8] rounded-[40rpx] px-[24rpx] box-border"
-            placeholder="搜索绘本故事"
-          />
-        </view> -->
       </view>
-
-      <!-- <view
-        class="absolute left-0 bottom-0 z-[998] w-full h-[116rpx] px-[32rpx] box-border z-[99] flex flex-row items-center justify-center"
-        :class="[
-          tabPinned.includes(activeTheme)
-            ? 'opacity-100 pointer-events-auto'
-            : 'opacity-0 pointer-events-none',
-        ]"
-        v-if="pinnedTabVisible"
-      >
-        <MainTabs class="w-full h-[88rpx]" :type="activeTheme" />
-      </view> -->
     </view>
 
     <Layout :hasHeader="true">
-      <swiper
+      <VipCard></VipCard>
+      <!-- <swiper
         class="w-full h-full"
         :current="activeThemeIndex"
         @change="handleChangeTheme"
@@ -51,33 +31,7 @@
             ></PbList>
           </view>
         </swiper-item>
-      </swiper>
-
-      <!-- <scroll-view
-        type="nested"
-        scroll-x
-        :scroll-into-view="scrollToView"
-        :scroll-with-animation="scrollWithAnimation"
-        :bounces="false"
-        class="w-full h-full whitespace-nowrap"
-        @touchstart="handleDragStart"
-        @touchend="handleDragEnd"
-      >
-        <nested-scroll-body>
-          <view
-            v-for="value in Object.keys(tabs)"
-            :key="value"
-            :id="`tab-${value}`"
-            class="inline-block w-full h-full relative"
-          >
-            <PbList
-              class="overflow-hidden"
-              :type="(value as keyof typeof tabs)"
-              :activeType="activeTheme"
-            ></PbList>
-          </view>
-        </nested-scroll-body>
-      </scroll-view> -->
+      </swiper> -->
     </Layout>
   </view>
 </template>
@@ -88,6 +42,7 @@ import { ref } from "vue";
 import PbList from "./PbList.vue";
 import MainTabs from "./MainTabs.vue";
 import { tabs } from "@/config/config";
+import VipCard from "../profile/vip-card.vue";
 
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
 
@@ -97,7 +52,6 @@ const activeThemeIndex = ref(0);
 
 function handleChangeTheme(e: any) {
   activeThemeIndex.value = e.detail.current;
-  console.log(">>>>>>>", e);
 }
 </script>
 

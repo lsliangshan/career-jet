@@ -1,6 +1,6 @@
 <template>
   <view class="relative w-full h-full">
-    <CustomHeader title="" bgColor="transparent" title-align="start" />
+    <CustomHeader title="我的" title-align="start" />
 
     <Layout hasHeader>
       <view class="relative w-full h-full overflow-hidden">
@@ -29,11 +29,7 @@
             </view>
           </template>
 
-          <BaseInfo @on-logout="handleLogout" />
-
-          <view class="w-full h-[24rpx]"></view>
-
-          <VipCard />
+          <BaseInfo />
 
           <view class="w-full h-[24rpx]"></view>
 
@@ -119,7 +115,6 @@ import GeneralSettings from "./general-settings.vue";
 import { ThemeColors } from "@/config/config";
 import HistorySettings from "./history-settings.vue";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
-import VipCard from "./vip-card.vue";
 
 const userStore = useUserStore();
 const { isLoggedIn, userSummary } = storeToRefs(userStore);

@@ -28,7 +28,9 @@
           账户余额
         </text>
         <view class="flex items-baseline gap-2">
-          <h3 class="text-5xl font-bold chrome-text">{{ points }}</h3>
+          <h3 class="text-5xl font-bold chrome-text">
+            {{ formatNumber(points) }}
+          </h3>
           <text class="text-lg font-[cinzel] chrome-text">积分</text>
         </view>
       </view>
@@ -66,6 +68,7 @@
 <script setup lang="ts">
 import { iconThemeVersion } from "@/config/config";
 import { onBeforeMount, ref } from "vue";
+import { formatNumber } from "@/utils";
 
 defineProps<{
   points: number;

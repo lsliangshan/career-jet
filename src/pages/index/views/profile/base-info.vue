@@ -2,7 +2,7 @@
   <view class="w-full flex flex-col items-center justify-center gap-[24rpx]">
     <view class="w-full flex flex-row items-center justify-center">
       <view
-        class="w-[140rpx] h-[140rpx] border border-[12rpx] border-white box-border bg-white shrink-0 shadow-md rounded-full overflow-hidden"
+        class="w-[180rpx] h-[180rpx] border border-[12rpx] border-white box-border bg-white shrink-0 shadow-md rounded-full overflow-hidden"
       >
         <image
           class="w-full h-full"

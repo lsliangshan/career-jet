@@ -54,7 +54,9 @@
             :src="`/static/${iconThemeVersion}/icon_eye.svg`"
             class="w-[28rpx] h-[28rpx]"
           ></svg-icon>
-          <text class="text-[10px] font-bold">{{ info.views }}</text>
+          <text class="text-[10px] font-bold"
+            >{{ formatReadCount(info.views) }}阅读</text
+          >
         </template>
       </view>
     </view>
@@ -65,6 +67,7 @@
 import { iconThemeVersion, ThemeColors } from "@/config/config";
 import type { IPictureBook } from "@/types";
 import { computed, ref } from "vue";
+import { formatReadCount } from "@/utils";
 
 interface Props {
   info: IPictureBook;

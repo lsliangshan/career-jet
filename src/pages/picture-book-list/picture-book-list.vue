@@ -146,7 +146,7 @@ import Layout from "@/components/layout/layout.vue";
 import { computed, nextTick, onMounted, ref } from "vue";
 import type { IPictureBook } from "@/types";
 import { usePictureBookStore } from "@/stores/picture_book";
-import { iconThemeVersion, mainColor, ThemeColors } from "@/config/config";
+import { iconThemeVersion, ThemeColors } from "@/config/config";
 import { onLoad } from "@dcloudio/uni-app";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 import Empty from "@/components/empty/empty.vue";

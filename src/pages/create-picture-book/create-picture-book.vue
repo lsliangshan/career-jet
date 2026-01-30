@@ -306,7 +306,7 @@
                   <slider
                     class="w-full"
                     block-size="20"
-                    :activeColor="mainColor"
+                    :activeColor="ThemeColors.primary"
                     :min="100"
                     :max="1000"
                     step="1"
@@ -344,7 +344,7 @@
                   <slider
                     class="w-full"
                     block-size="20"
-                    :activeColor="mainColor"
+                    :activeColor="ThemeColors.primary"
                     :min="0"
                     :max="5"
                     step="1"
@@ -379,7 +379,7 @@
                   <slider
                     class="w-full"
                     block-size="20"
-                    :activeColor="mainColor"
+                    :activeColor="ThemeColors.primary"
                     :min="0"
                     :max="20"
                     step="1"
@@ -414,7 +414,7 @@
                     </view>
                     <switch
                       :checked="formData.autoConfirmedStory"
-                      :color="mainColor"
+                      :color="ThemeColors.primary"
                       style="transform: scale(0.6); transform-origin: right"
                       @change="changeAutoConfirmedStory"
                     />
@@ -436,7 +436,7 @@
                     </view>
                     <switch
                       :checked="formData.autoConfirmedRole"
-                      :color="mainColor"
+                      :color="ThemeColors.primary"
                       style="transform: scale(0.6); transform-origin: right"
                       @change="changeAutoConfirmedRole"
                     />
@@ -458,7 +458,7 @@
                     </view>
                     <switch
                       :checked="formData.autoConfirmedScene"
-                      :color="mainColor"
+                      :color="ThemeColors.primary"
                       style="transform: scale(0.6); transform-origin: right"
                       @change="changeAutoConfirmedScene"
                     />
@@ -480,7 +480,7 @@
                     </view>
                     <switch
                       :checked="formData.autoConfirmedCover"
-                      :color="mainColor"
+                      :color="ThemeColors.primary"
                       style="transform: scale(0.6); transform-origin: right"
                       @change="changeAutoConfirmedCover"
                     />
@@ -532,7 +532,7 @@
             >
               <view
                 class="w-full h-full py-[32rpx] box-border rounded-[24rpx] border border-dashed border-[1rpx] bg-[#fff] flex flex-col items-center justify-center gap-[16rpx]"
-                :style="{ borderColor: mainColor }"
+                :style="{ borderColor: ThemeColors.primary }"
               >
                 <div class="spinner">
                   <div class="spinner-inner"></div>
@@ -673,8 +673,8 @@ import {
   authors,
   languages,
   ratios,
-  mainColor,
   iconThemeVersion,
+  ThemeColors,
 } from "@/config/config";
 import { requestGeneratePictureBook } from "@/request";
 import { EModalComponent } from "./modals/types";

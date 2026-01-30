@@ -23,7 +23,7 @@
           <view
             class="h-full px-[16rpx] box-border rounded-[24rpx] flex flex-row items-center justify-center"
             :style="{
-              backgroundColor: mainColor,
+              backgroundColor: ThemeColors.primary,
             }"
           >
             <text class="text-[24rpx] text-[#fff]">{{
@@ -58,7 +58,7 @@
         >
           <view
             class="relative flex w-full h-full items-center justify-center gap-[16rpx] overflow-hidden rounded-full transition-all active:scale-95 shadow-lg shadow-primary/20"
-            :style="{ backgroundColor: mainColor }"
+            :style="{ backgroundColor: ThemeColors.primary }"
             @click="handleStartReading"
           >
             <svg-icon
@@ -103,12 +103,7 @@
 
 <script setup lang="ts">
 import type { IPictureBook } from "@/types";
-import {
-  DEFAULT_AVATAR,
-  iconThemeVersion,
-  mainColor,
-  ThemeColors,
-} from "@/config/config";
+import { DEFAULT_AVATAR, iconThemeVersion, ThemeColors } from "@/config/config";
 import { nextTick, onBeforeMount, ref } from "vue";
 
 interface Props {

@@ -29,7 +29,10 @@
         >
           <text
             class="font-bold"
-            :style="{ color: mainColor, fontSize: `${calcSize(32)}rpx` }"
+            :style="{
+              color: ThemeColors.primary,
+              fontSize: `${calcSize(32)}rpx`,
+            }"
             @click="handleConfirm"
             >确定</text
           >
@@ -109,12 +112,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  voiceTypes,
-  mainColor,
-  ThemeColors,
-  iconThemeVersion,
-} from "@/config/config";
+import { voiceTypes, ThemeColors, iconThemeVersion } from "@/config/config";
 import type { IPBAudio } from "@/types";
 import { computed, onMounted, ref } from "vue";
 

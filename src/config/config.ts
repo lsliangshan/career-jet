@@ -67,8 +67,6 @@ export const supportedLevels = [
   },
 ];
 
-export const mainColor = "#FF7BAC";
-
 export const iconThemeVersion = "v1";
 
 export const ThemeColors = {

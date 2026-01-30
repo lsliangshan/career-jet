@@ -24,7 +24,7 @@
         class="w-full"
           :percent="Math.round((info.index / total) * 100)"
           stroke-width="3"
-          :activeColor="mainColor"
+          :activeColor="ThemeColors.primary"
           active-mode="forwards"
         />
       </view>
@@ -34,7 +34,6 @@
 
 <script setup lang="ts">
 import type { ISceneItem } from "@/types";
-import { mainColor } from "@/config/config";
 
 interface Props {
   info: ISceneItem; // 当前页码

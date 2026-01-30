@@ -104,7 +104,7 @@
                   )
                 "
                 stroke-width="1"
-                :activeColor="mainColor"
+                :activeColor="ThemeColors.primary"
                 active-mode="forwards"
               />
             </view>
@@ -143,7 +143,7 @@
                 : 'opacity-0 pointer-events-none',
             ]"
             :style="{
-              backgroundColor: mainColor,
+              backgroundColor: ThemeColors.primary,
             }"
             @click="handleNext"
           >
@@ -194,7 +194,7 @@ import { computed, nextTick, provide, ref, watch, type Ref } from "vue";
 import PageLoading from "@/components/page-loading/page-loading.vue";
 import PbCover from "./PbCover.vue";
 import PbContent from "./PbContent.vue";
-import { iconThemeVersion, mainColor } from "@/config/config";
+import { iconThemeVersion, ThemeColors } from "@/config/config";
 import PbHeader from "./PbHeader.vue";
 import { navigateBack } from "@/utils";
 import { EModalComponent } from "./types";

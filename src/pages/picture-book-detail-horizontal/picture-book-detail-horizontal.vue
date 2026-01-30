@@ -118,7 +118,7 @@
                 )
               "
               stroke-width="1"
-              :activeColor="mainColor"
+              :activeColor="ThemeColors.primary"
               active-mode="forwards"
             />
           </view>
@@ -175,7 +175,7 @@
               height: `${calcSize(80)}rpx`,
               padding: `0 ${calcSize(32)}rpx`,
               gap: `${calcSize(12)}rpx`,
-              backgroundColor: mainColor,
+              backgroundColor: ThemeColors.primary,
             }"
             :class="[
               currentIndex < pbDetail?.scenes?.length - 1
@@ -239,7 +239,7 @@ import { computed, nextTick, provide, type Ref, ref, watch } from "vue";
 import PageLoading from "@/components/page-loading/page-loading.vue";
 import PbCover from "./PbCover.vue";
 import PbContent from "./PbContent.vue";
-import { iconThemeVersion, mainColor } from "@/config/config";
+import { iconThemeVersion, ThemeColors } from "@/config/config";
 import PbHeader from "./PbHeader.vue";
 import { navigateBack } from "@/utils";
 import { EModalComponent } from "./types";

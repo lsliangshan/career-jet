@@ -69,7 +69,7 @@
                   <view
                     class="w-[56rpx] h-[56rpx] rounded-[12rpx] bg-[#fff] flex flex-row items-center justify-center active:scale-95 transition-all duration-300"
                     :style="{
-                      backgroundColor: mainColor,
+                      backgroundColor: ThemeColors.primary,
                     }"
                   >
                     <svg-icon
@@ -107,7 +107,7 @@
                   : 'opacity-50',
               ]"
               :style="{
-                backgroundColor: mainColor,
+                backgroundColor: ThemeColors.primary,
               }"
               @click="handleConfirmCover"
             >
@@ -171,7 +171,7 @@
                   <text
                     class="text-[32rpx]"
                     :style="{
-                      color: mainColor,
+                      color: ThemeColors.primary,
                     }"
                     >取消</text
                   >
@@ -184,7 +184,7 @@
                       : 'opacity-100 active:scale-95 pointer-events-auto',
                   ]"
                   :style="{
-                    backgroundColor: mainColor,
+                    backgroundColor: ThemeColors.primary,
                   }"
                   @click="handleRegenerateCover"
                 >
@@ -229,7 +229,7 @@ import {
 } from "@/request";
 import { computed, nextTick, onMounted, ref } from "vue";
 import { previewImage } from "@/utils";
-import { iconThemeVersion, mainColor } from "@/config/config";
+import { iconThemeVersion, ThemeColors } from "@/config/config";
 
 interface Props {
   info: IConfirmCoverInfo;
@@ -294,7 +294,7 @@ function closeModal() {
     title: "提示",
     content: "点击关闭会放弃当前故事内容，是否继续？",
     confirmText: "确定",
-    confirmColor: mainColor,
+    confirmColor: ThemeColors.primary,
     cancelText: "取消",
     cancelColor: "#666",
     success: (res) => {

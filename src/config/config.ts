@@ -96,7 +96,7 @@ export const ThemeColors = {
   },
   border: "#f8f8f8",
   bgCard: "#FFFFFF",
-  bg: "#F5F5F5",
+  bg: "rgb(248, 248, 245)",
 };
 
 // export const ThemeColors = {

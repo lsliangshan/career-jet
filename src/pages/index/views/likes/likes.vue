@@ -1,6 +1,6 @@
 <template>
   <view
-    class="w-full fixed top-0 left-0 z-10 bg-[rgba(255,255,255,0.5)] backdrop-blur-md border-none flex flex-col"
+    class="w-full fixed top-0 left-0 z-10 bg-[rgba(248,248,245,0.5)] backdrop-blur-md border-none flex flex-col"
     :style="{
       height: `calc(80rpx +  ${safeTop}px)`,
       paddingTop: `${safeTop}px`,

@@ -1,43 +1,95 @@
 <template>
-  <view class="picture-book-list relative w-full h-full">
-    <CustomHeader
-      :title="type === 'draft' ? '我的草稿' : '我的绘本'"
-      show-back
-      title-align="start"
-    />
+  <view
+    class="w-full fixed top-0 left-0 z-10 bg-[rgba(255,255,255,0.5)] backdrop-blur-md border-none flex flex-row items-center"
+    :style="{
+      height: `calc(80rpx +  ${safeTop}px)`,
+      paddingTop: `${safeTop}px`,
+    }"
+  >
+    <view
+      class="w-[80rpx] h-[80rpx] shrink-0 flex flex-row items-center justify-center"
+      @click="handleBack"
+    >
+      <svg-icon
+        class="w-[32rpx] h-[32rpx]"
+        :src="`/static/${iconThemeVersion}/icon_back.svg`"
+        color="#000"
+      />
+    </view>
+    <view
+      class="z-[999] h-[80rpx] pr-[24rpx] box-border flex flex-row items-center"
+      :style="{ width: `calc(${safeTitleWidth}px - 80rpx)` }"
+    >
+      <view
+        class="w-full h-full box-border flex flex-row items-center justify-start"
+      >
+        <text class="text-[36rpx] font-bold">{{
+          type === "draft" ? "我的草稿" : "我的绘本"
+        }}</text>
+      </view>
+    </view>
+  </view>
+  <Layout :hasHeader="false">
+    <PageLoading v-if="!pageReady" />
 
-    <Layout :hasHeader="true">
-      <PageLoading v-if="!pageReady" />
-
-      <empty v-else-if="pageReady && pictureBooks.length === 0" />
-
-      <view class="relative w-full h-full overflow-hidden" v-else>
-        <refresher-success
-          v-model="refresherSuccessVisible"
-          :text="successTip"
-        />
-        <scroll-view
-          type="custom"
-          class="w-full h-full"
-          scroll-y
-          refresher-enabled
-          refresher-default-style="none"
-          :refresher-triggered="refresherTriggered"
-          @refresherrefresh="refresherrefresh"
-          @scrolltolower="onScrollToLower"
-        >
-          <template #refresher>
+    <template v-else>
+      <refresher-success
+        :offset-y="headerHeight"
+        v-model="refresherSuccessVisible"
+        :text="successTip"
+      />
+      <scroll-view
+        type="custom"
+        class="w-full h-full"
+        scroll-y
+        refresher-enabled
+        refresher-default-style="none"
+        :refresher-triggered="refresherTriggered"
+        @refresherrefresh="refresherrefresh"
+        @refresherpulling="refresherpulling"
+        @refresherrestore="refresherrestore"
+        @refresherabort="refresherabort"
+        @scrolltolower="onScrollToLower"
+      >
+        <template #refresher>
+          <view
+            class="w-full h-[100rpx] pt-[24rpx] box-border flex flex-row items-center justify-center"
+          >
             <view
-              class="w-full h-[100rpx] pt-[24rpx] box-border flex flex-row items-center justify-center"
+              class="w-[100rpx] h-[100rpx] rounded-[8rpx] flex flex-row items-center justify-center transition-opacity duration-300"
+              :class="[refresherVisible ? 'opacity-100' : 'opacity-0']"
+              :style="{
+                marginTop: `${offsetTop}px`,
+              }"
+            >
+              <CustomLoader :size="40" :color="ThemeColors.primary" />
+            </view>
+          </view>
+        </template>
+
+        <empty
+          text="还没有收藏故事哦"
+          description="去探索奇妙的世界并发现你喜爱的故事吧！"
+          v-if="pageReady && pictureBooks.length === 0"
+        >
+          <template #action>
+            <view
+              class="w-full h-[64rpx] mt-[32rpx] flex flex-row items-center justify-center"
             >
               <view
-                class="w-[100rpx] h-[100rpx] rounded-[8rpx] flex flex-row items-center justify-center"
+                class="py-4 px-10 box-border rounded-[16px] shadow-lg shadow-primary/20 transition-transform active:scale-95"
+                :style="{ backgroundColor: ThemeColors.primary }"
               >
-                <CustomLoader :size="40" :color="ThemeColors.primary" />
+                <text class="text-[30rpx] text-[#fff] font-bold"
+                  >去发现故事</text
+                >
               </view>
             </view>
           </template>
+        </empty>
 
+        <template v-else>
+          <view class="w-full" :style="{ height: `${headerHeight}px` }"></view>
           <view class="w-full h-[24rpx]"></view>
 
           <grid-view
@@ -52,93 +104,8 @@
               class="w-full"
               v-for="(pb, index) in pictureBooks"
               :key="pb.id"
-              :style="{
-                height: `${
-                  renderImageHeight(pb.config?.ratio) +
-                  (isHorizontalRatio(pb.config?.ratio) ? 154 : 0)
-                }rpx`,
-              }"
-              @click="handleViewPictureBook(pb)"
             >
-              <view
-                class="relative w-full rounded-tl-[24rpx] rounded-tr-[24rpx] overflow-hidden flex flex-row items-center justify-center"
-                :class="[
-                  isHorizontalRatio(pb.config.ratio)
-                    ? ''
-                    : 'rounded-bl-[24rpx] rounded-br-[24rpx]',
-                ]"
-                :style="{
-                  height: `${renderImageHeight(pb.config?.ratio)}rpx`,
-                }"
-              >
-                <view
-                  class="absolute left-0 top-0 w-full h-full bg-[#e8e8e8] flex flex-row items-center justify-center"
-                  v-if="!pb.cover?.url || errorImageIds.has(pb.id)"
-                >
-                  <image
-                    class="w-full h-full z-[9]"
-                    :src="
-                      isHorizontalRatio(pb.config.ratio)
-                        ? 'https://img.liangqy.com/crawlerjet/picture_book/img/pb_default_horizontal.png'
-                        : 'https://img.liangqy.com/crawlerjet/picture_book/img/pb_default_vertical.png'
-                    "
-                    mode="aspectFill"
-                    @error="handleImageError(pb.id)"
-                  />
-                </view>
-                <image
-                  class="w-full h-full z-[9]"
-                  :src="pb.cover?.url"
-                  mode="aspectFill"
-                  @error="handleImageError(pb.id)"
-                />
-              </view>
-
-              <view
-                class="absolute z-[9] bottom-0 left-0 rounded-bl-[24rpx] rounded-br-[24rpx] p-[16rpx] box-border w-full flex flex-col gap-[8rpx]"
-                :class="[
-                  isHorizontalRatio(pb.config.ratio)
-                    ? 'bg-[#fff]'
-                    : 'bg-[rgba(0,0,0,0.2)]',
-                ]"
-              >
-                <view class="w-full h-[32rpx] flex flex-row items-center">
-                  <view
-                    class="h-full px-[12rpx] box-border rounded-[12rpx] flex flex-row items-center justify-center"
-                    :style="{
-                      backgroundColor: mainColor,
-                    }"
-                  >
-                    <text class="text-[20rpx] text-[#fff]">{{
-                      pb.config.theme
-                    }}</text>
-                  </view>
-                </view>
-                <view
-                  class="w-full h-[36rpx] mt-[16rpx] flex flex-row items-center"
-                >
-                  <text
-                    class="text-[30rpx] font-bold line-clamp-1 overflow-hidden text-ellipsis break-all"
-                    :class="[
-                      isHorizontalRatio(pb.config.ratio)
-                        ? 'text-[#181818]'
-                        : 'text-[#fff]',
-                    ]"
-                    >{{ pb.title }}</text
-                  >
-                </view>
-                <view class="w-full h-[30rpx] flex flex-row items-center">
-                  <text
-                    class="text-[24rpx]"
-                    :class="[
-                      isHorizontalRatio(pb.config.ratio)
-                        ? 'text-[#666]'
-                        : 'text-[rgba(255,255,255,0.7)]',
-                    ]"
-                    >{{ pb.createAt }}</text
-                  >
-                </view>
-              </view>
+              <PbCard type="draft" :info="pb" />
             </view>
           </grid-view>
 
@@ -168,25 +135,29 @@
             class="w-full"
             :style="{ height: `calc(${safeBottom}px)` }"
           ></view>
-        </scroll-view>
-      </view>
-    </Layout>
-  </view>
+        </template>
+      </scroll-view>
+    </template>
+  </Layout>
 </template>
 
 <script setup lang="ts">
-import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import { computed, nextTick, onMounted, ref } from "vue";
 import type { IPictureBook } from "@/types";
 import { usePictureBookStore } from "@/stores/picture_book";
-import { mainColor, ThemeColors } from "@/config/config";
+import { iconThemeVersion, mainColor, ThemeColors } from "@/config/config";
 import { onLoad } from "@dcloudio/uni-app";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 import Empty from "@/components/empty/empty.vue";
 import PageLoading from "@/components/page-loading/page-loading.vue";
+import RefresherSuccess from "@/components/RefresherSuccess.vue";
+import PbCard from "@/components/pb-card/pb-card.vue";
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
+const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
+
+const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
 
 const pictureBookStore = usePictureBookStore();
 
@@ -194,6 +165,8 @@ const refresherSuccessVisible = ref(false);
 const isRefreshing = ref(false);
 const successTip = ref("已更新");
 const refresherTriggered = ref(false);
+
+const refresherVisible = ref(false);
 
 const pageReady = ref(false);
 const isLoading = ref(false);
@@ -209,6 +182,13 @@ const pictureBooks = ref<IPictureBook[]>([]);
 const errorImageIds = ref<Set<string>>(new Set());
 
 const type = ref<"draft" | "final">("final");
+
+const headerHeight = computed(() => {
+  return safeTop + uni.upx2px(80);
+});
+const offsetTop = computed(() => {
+  return safeTop + uni.upx2px(280);
+});
 
 const isHorizontalRatio = computed(() => {
   return (ratio: string) => {
@@ -235,6 +215,18 @@ onMounted(() => {
     await getMyPictureBooks();
   });
 });
+
+function refresherpulling() {
+  refresherVisible.value = true;
+}
+
+function refresherrestore() {
+  refresherVisible.value = false;
+}
+
+function refresherabort() {
+  refresherVisible.value = false;
+}
 
 // 下拉刷新
 async function refresherrefresh() {
@@ -329,6 +321,16 @@ function handleViewPictureBook(pb: IPictureBook) {
 function handleImageError(id: string) {
   console.log(">>>>>> handleImageError: ", id);
   errorImageIds.value.add(id);
+}
+
+function handleBack() {
+  uni.navigateBack({
+    fail: () => {
+      uni.reLaunch({
+        url: "/pages/index/index",
+      });
+    },
+  });
 }
 </script>
 

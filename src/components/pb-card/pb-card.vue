@@ -35,7 +35,7 @@
       <view
         class="flex items-center gap-1 mt-0.5 opacity-60 dark:text-white/60 mt-[8rpx]"
       >
-        <template v-if="type === 'all'">
+        <template v-if="type === 'all' || type === 'draft'">
           <text class="text-[10px] font-bold">{{ info.createAt }}</text>
         </template>
         <template v-else-if="type === 'favorite'">
@@ -112,6 +112,15 @@ const renderImageHeight = computed(() => {
 });
 
 function handleViewPictureBook(pb: IPictureBook) {
+  if (props.type === "draft") {
+    uni.navigateTo({
+      url: `/pages/edit-picture-book/edit-picture-book?id=${pb.id}`,
+      complete: () => {
+        // refresherSuccessVisible.value = false;
+      },
+    });
+    return;
+  }
   if (
     Number(pb.config.ratio.split(":")[0]) >
     Number(pb.config.ratio.split(":")[1])

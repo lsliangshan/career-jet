@@ -141,12 +141,6 @@
 
 <script setup lang="ts">
 import { iconThemeVersion, ThemeColors } from "@/config/config";
-import { useProfileStore } from "@/stores/profile";
-import { storeToRefs } from "pinia";
-import { EModalComponent } from "../../modals/types";
-
-const profileStore = useProfileStore();
-const { level } = storeToRefs(profileStore);
 
 interface Props {
   showHeader?: boolean;
@@ -154,12 +148,6 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   showHeader: true,
 });
-
-function handleEditGameLevel() {
-  uni.$emit("show-modal", {
-    component: EModalComponent.CHOOSE_GAME_LEVEL_MODAL,
-  });
-}
 
 function handleCreatePictureBook() {
   uni.navigateTo({

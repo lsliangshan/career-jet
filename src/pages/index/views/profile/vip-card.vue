@@ -160,12 +160,4 @@ onBeforeMount(async () => {
 .emblem-glow {
   filter: drop-shadow(0 0 8px rgba(230, 175, 46, 0.5));
 }
-
-/* @font-face {
-  font-family: "cinzel";
-  font-style: normal;
-  font-weight: 700;
-  src: url(https://img.liangqy.com/crawlerjet/picture_book/font/cinzel2.woff)
-    format("woff");
-} */
 </style>

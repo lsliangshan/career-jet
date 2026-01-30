@@ -73,10 +73,6 @@
           <GeneralSettings />
 
           <view class="w-full h-[24rpx]"></view>
-
-          <HistorySettings />
-
-          <view class="w-full h-[24rpx]"></view>
         </view>
 
         <view
@@ -93,7 +89,6 @@
 </template>
 
 <script setup lang="ts">
-import CustomHeader from "@/components/custom-header/custom-header.vue";
 import Layout from "@/components/layout/layout.vue";
 import BaseInfo from "./base-info.vue";
 import { useUserStore } from "@/stores/user";
@@ -102,7 +97,6 @@ import { computed, nextTick, ref } from "vue";
 import RefresherSuccess from "@/components/RefresherSuccess.vue";
 import GeneralSettings from "./general-settings.vue";
 import { ThemeColors } from "@/config/config";
-import HistorySettings from "./history-settings.vue";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 import VipCard from "./vip-card.vue";
 import DraftManagement from "./draft-management.vue";

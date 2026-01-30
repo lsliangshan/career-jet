@@ -33,44 +33,16 @@
 
           <view class="w-full h-[24rpx]"></view>
 
-          <VipCard />
+          <VipCard v-if="isLoggedIn" :points="userSummary?.points || 0" />
 
           <view class="w-full h-[24rpx]"></view>
 
-          <view class="w-full p-[24rpx] box-border">
-            <view class="w-full rounded-[8rpx] overflow-hidden flex flex-col">
-              <view class="flex flex-row items-center">
-                <view
-                  class="h-[100rpx] w-full pl-[24rpx] pr-[24rpx] box-border active:bg-[#fafafa] flex flex-row items-center justify-between"
-                  :style="{
-                    backgroundColor: ThemeColors.bgCard,
-                  }"
-                >
-                  <view class="flex flex-row items-center">
-                    <text
-                      class="text-[28rpx]"
-                      :style="{
-                        color: ThemeColors.text.title,
-                      }"
-                      >总积分</text
-                    >
-                  </view>
-                  <view
-                    class="h-full shrink-0 flex flex-row items-center justify-center"
-                  >
-                    <text
-                      class="text-[28rpx] mr-[12rpx]"
-                      :style="{
-                        color: ThemeColors.primary,
-                      }"
-                      >{{ userSummary?.points }}</text
-                    >
-                  </view>
-                </view>
-              </view>
-            </view>
+          <view class="w-full px-[32rpx] py-[24rpx] box-border">
+            <template v-if="isLoggedIn">
+              <DraftManagement />
 
-            <view class="w-full h-[24rpx]"></view>
+              <view class="w-full h-[24rpx]"></view>
+            </template>
 
             <GeneralSettings />
 
@@ -79,18 +51,6 @@
             <HistorySettings />
 
             <view class="w-full h-[24rpx]"></view>
-
-            <view
-              class="w-full px-[12rpx] box-border h-[80rpx] mt-[64rpx] flex flex-row items-center justify-center"
-              v-if="isLoggedIn"
-            >
-              <view
-                class="w-full h-full rounded-[40rpx] overflow-hidden bg-[#ff3333] active:bg-[#e62e2e] flex flex-row items-center justify-center"
-                @click="handleLogout"
-              >
-                <text class="text-[28rpx] text-[#fff]">退出登录</text>
-              </view>
-            </view>
           </view>
 
           <view
@@ -120,6 +80,7 @@ import { ThemeColors } from "@/config/config";
 import HistorySettings from "./history-settings.vue";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 import VipCard from "./vip-card.vue";
+import DraftManagement from "./draft-management.vue";
 
 const userStore = useUserStore();
 const { isLoggedIn, userSummary } = storeToRefs(userStore);

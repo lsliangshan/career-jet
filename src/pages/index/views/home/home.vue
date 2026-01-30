@@ -16,8 +16,7 @@
     </view>
 
     <Layout :hasHeader="true">
-      <VipCard></VipCard>
-      <!-- <swiper
+      <swiper
         class="w-full h-full"
         :current="activeThemeIndex"
         @change="handleChangeTheme"
@@ -31,7 +30,7 @@
             ></PbList>
           </view>
         </swiper-item>
-      </swiper> -->
+      </swiper>
     </Layout>
   </view>
 </template>
@@ -42,7 +41,6 @@ import { ref } from "vue";
 import PbList from "./PbList.vue";
 import MainTabs from "./MainTabs.vue";
 import { tabs } from "@/config/config";
-import VipCard from "../profile/vip-card.vue";
 
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
 

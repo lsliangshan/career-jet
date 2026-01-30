@@ -1,39 +1,38 @@
 <template>
   <view
-    class="w-full px-[32rpx] box-border flex flex-row items-center justify-center"
+    class="w-full px-[32rpx] box-border flex flex-row items-center justify-center transition-opacity duration-300"
+    :class="[isFontLoaded ? 'opacity-100' : 'opacity-0']"
   >
     <view
-      class="ultra-luxury-card w-full relative overflow-hidden rounded-[24px] p-6 border-[0.5px] border-svip-gold/40"
+      class="ultra-luxury-card w-full relative overflow-hidden rounded-[24px] px-6 py-4 border-[0.5px] border-svip-gold/40"
     >
       <view class="absolute inset-0 stardust-overlay"></view>
       <view
         class="absolute inset-0 opacity-20 pointer-events-none"
         style="
-          background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBk_RwWulS4UjHy4DGXQf9vqX3lxNcLmvwMSA3QMEggG1RZdtZJWLPdhGFiQDJJoEVjBglucKHud0w3lOcU6Mu-wWAZqcCiVb9I4ead5DOkFWCyJtyFhgwUDA4hF0aTXR3X0RlzNWITyr-Uv8GY5g2cggkkFDN9DhRvYvcGXVSamCQ-rV1Vuks7AtrMc6Qu4-9Qh8NqC_J8ttrSqVxksmJid2s5Ar4CxmLTqy0OQ66-MxKXru37ewThI_QhF7XBNMOX7EmhiyU0silV');
+          background-image: url('https://img.liangqy.com/crawlerjet/picture_book/img/vip_card_bg.png');
         "
       ></view>
       <view class="relative z-10 flex justify-between items-start mb-[24rpx]">
         <view class="flex flex-col">
           <text
-            class="text-[10px] tracking-[0.2em] text-[rgba(242,204,13,0.6)] font-bold uppercase mb-1"
+            class="text-[10px] tracking-[0.2em] text-[rgba(242,204,13,0.6)] font-[cinzel] font-bold uppercase mb-1"
             >Elite Membership</text
           >
         </view>
       </view>
-      <view class="relative z-10 flex flex-col items-center mb-8">
-        <p
-          class="text-[11px] text-[rgba(242,204,13,0.5)] font-medium tracking-[0.3em] mb-2"
+      <view class="relative z-10 flex flex-col items-center mb-4">
+        <text
+          class="text-[11px] text-[rgba(242,204,13,0.7)] font-medium tracking-[0.3em] mb-2"
         >
-          当前积分
-        </p>
+          账户余额
+        </text>
         <view class="flex items-baseline gap-2">
-          <h3 class="text-5xl font-serif-elegant font-bold chrome-text">
-            2,500
-          </h3>
-          <text class="text-lg font-serif-elegant chrome-text">积分</text>
+          <h3 class="text-5xl font-bold chrome-text">{{ points }}</h3>
+          <text class="text-lg font-[cinzel] chrome-text">积分</text>
         </view>
       </view>
-      <view class="relative z-10 px-8 mb-8">
+      <view class="relative z-10 px-8 mb-4">
         <view class="flex items-center gap-4">
           <view class="luxury-viewider flex-1"></view>
           <view
@@ -66,6 +65,28 @@
 
 <script setup lang="ts">
 import { iconThemeVersion } from "@/config/config";
+import { onBeforeMount, ref } from "vue";
+
+defineProps<{
+  points: number;
+}>();
+
+const isFontLoaded = ref(true);
+
+onBeforeMount(async () => {
+  // uni.loadFontFace({
+  //   family: "cinzel",
+  //   // global: true,
+  //   source:
+  //     'url("http://img09.zhaopin.com/2012/other/mobile/campus/clive/8vIJ7ww63mVu7gt79mT7PkRXMw.woff2")',
+  //   desc: {
+  //     weight: "700",
+  //   },
+  //   complete: () => {
+  //     isFontLoaded.value = true;
+  //   },
+  // });
+});
 </script>
 
 <style scoped>
@@ -83,6 +104,7 @@ import { iconThemeVersion } from "@/config/config";
   opacity: 0.08;
 }
 .chrome-text {
+  font-family: "cinzel", sans-serif;
   background: linear-gradient(
     to bottom,
     #bf953f,
@@ -136,14 +158,11 @@ import { iconThemeVersion } from "@/config/config";
   filter: drop-shadow(0 0 8px rgba(230, 175, 46, 0.5));
 }
 
-@font-face {
-  font-family: "Cinzel";
+/* @font-face {
+  font-family: "cinzel";
   font-style: normal;
-  font-weight: 400;
-  src: url(https://fonts.gstatic.com/s/cinzel/v26/8vIJ7ww63mVu7gt7-GT7PkRXM8Xx.woff2)
-    format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
-    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
-    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
+  font-weight: 700;
+  src: url(https://img.liangqy.com/crawlerjet/picture_book/font/cinzel2.woff)
+    format("woff");
+} */
 </style>

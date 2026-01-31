@@ -71,7 +71,7 @@ export const iconThemeVersion = "v1";
 
 export const ThemeColors = {
   primary: "#FF7BAC",
-  primary100: "rrgba(255, 123, 172, 0.1)",
+  primary100: "rgba(255, 123, 172, 0.1)",
   primary200: "rgba(255, 123, 172, 0.2)",
   primary300: "rgba(255, 123, 172, 0.3)",
   primary400: "rgba(255, 123, 172, 0.4)",

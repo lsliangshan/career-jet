@@ -104,7 +104,7 @@
 import { iconThemeVersion, ThemeColors } from "@/config/config";
 import { computed, nextTick, onMounted, ref } from "vue";
 import { usePictureBookStore } from "@/stores/picture_book";
-import { IPictureBook } from "@/types";
+import type { IPictureBook } from "@/types";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 
 const pictureBookStore = usePictureBookStore();

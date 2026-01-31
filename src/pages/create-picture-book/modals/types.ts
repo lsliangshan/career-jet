@@ -87,4 +87,9 @@ export enum EModalComponent {
   SELECT_THEME_MODAL = "SelectThemeModal",
   SELECT_LANGUAGE_MODAL = "SelectLanguageModal",
   SELECT_RATIO_MODAL = "SelectRatioModal",
+  CHOOSE_THEME_MODAL = "ChooseThemeModal",
+  CHOOSE_STORY_STYLE_MODAL = "ChooseStoryStyleModal",
+  CHOOSE_PICTURE_STYLE_MODAL = "ChoosePictureStyleModal",
+  CHOOSE_LANGUAGE_MODAL = "ChooseLanguageModal",
+  CHOOSE_RATIO_MODAL = "ChooseRatioModal",
 }

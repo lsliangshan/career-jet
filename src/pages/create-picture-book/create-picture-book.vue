@@ -80,7 +80,17 @@
         v-for="(step, index) in createPictureBookSteps"
         :key="step.value"
       >
-        <Configuration v-if="index === 0" @open-modal="openModal" />
+        <Configuration
+          v-if="index === 0"
+          @open-modal="openModal"
+          @change-custom-theme="changeCustomTheme"
+          @change-custom-story-style="changeCustomStoryStyle"
+          @change-custom-picture-style="changeCustomPictureStyle"
+          @change-story-length="changeStoryLength"
+          @change-role-count="changeRoleCount"
+          @change-scene-count="changeSceneCount"
+          @generate-story="generateStory"
+        />
         <ConfirmStory v-else-if="index === 1" />
         <ConfirmRoles v-else-if="index === 2" />
         <ConfirmScenes v-else-if="index === 3" />
@@ -99,10 +109,32 @@
     @leave="closeModal"
   >
     <ChooseThemeModal
-      :active-index="modalData?.data?.activeIndex"
+      :active-index="modalData?.data?.selectedThemeIndexes"
       v-if="modalData?.component === EModalComponent.CHOOSE_THEME_MODAL"
       @on-close="closeModal"
       @on-confirm="handleThemeChange"
+    />
+    <ChooseRatioModal
+      :active-index="modalData?.data?.selectedRatioIndex"
+      v-else-if="modalData?.component === EModalComponent.CHOOSE_RATIO_MODAL"
+      @on-close="closeModal"
+      @on-confirm="handleRatioChange"
+    />
+    <ChooseStyleModal
+      :active-index="modalData?.data?.selectedStyleIndex"
+      :type="modalData?.data?.type"
+      v-else-if="
+        modalData?.component === EModalComponent.CHOOSE_STORY_STYLE_MODAL ||
+        modalData?.component === EModalComponent.CHOOSE_PICTURE_STYLE_MODAL
+      "
+      @on-close="closeModal"
+      @on-confirm="handleStyleChange"
+    />
+    <ChooseLanguageModal
+      :active-index="modalData?.data?.selectedLanguageIndex"
+      v-else-if="modalData?.component === EModalComponent.CHOOSE_LANGUAGE_MODAL"
+      @on-close="closeModal"
+      @on-confirm="handleLanguageChange"
     />
   </page-container>
 </template>
@@ -127,6 +159,9 @@ import ConfirmAudio from "./views/confirm-audio/confirm-audio.vue";
 import Finished from "./views/finished/finished.vue";
 import ChooseThemeModal from "./modals/ChooseThemeModal.vue";
 import { EModalComponent } from "./modals/types";
+import ChooseRatioModal from "./modals/ChooseRatioModal.vue";
+import ChooseStyleModal from "./modals/ChooseStyleModal.vue";
+import ChooseLanguageModal from "./modals/ChooseLanguageModal.vue";
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
@@ -201,6 +236,11 @@ const selectedLanguageIndex = ref<number>(0);
 const selectedRatioIndex = ref<number>(0);
 
 provide("formData", formData);
+provide("selectedThemeIndexes", selectedThemeIndexes);
+provide("selectedStoryStyleIndex", selectedStoryStyleIndex);
+provide("selectedPictureStyleIndex", selectedPictureStyleIndex);
+provide("selectedLanguageIndex", selectedLanguageIndex);
+provide("selectedRatioIndex", selectedRatioIndex);
 
 const renderStoryStyles = computed(() => {
   return [
@@ -401,7 +441,6 @@ function handleStyleChange(e: any) {
 function handleThemeChange(e: any) {
   selectedThemeIndexes.value = [...e.index];
   formData.value.theme = e.value;
-  console.log(">>>>>", e);
   closeModal();
 }
 
@@ -419,13 +458,13 @@ function handleRatioChange(e: any) {
 
 function changeCustomTheme(e: any) {
   if (selectedThemeIndexes.value[0] === moralities.length) {
-    formData.value.theme = e.detail.value;
+    formData.value.theme = e;
   }
 }
 
 function changeCustomStoryStyle(e: any) {
   if (selectedStoryStyleIndex.value === renderStoryStyles.value.length - 1) {
-    formData.value.storyStyle = e.detail.value;
+    formData.value.storyStyle = e;
   }
 }
 
@@ -434,9 +473,29 @@ function changeCustomPictureStyle(e: any) {
     selectedPictureStyleIndex.value ===
     renderPictureStyles.value.length - 1
   ) {
-    formData.value.pictureStyle = e.detail.value;
+    formData.value.pictureStyle = e;
   }
+}
+
+function changeStoryLength(value: number) {
+  formData.value.length = value;
+}
+
+function changeRoleCount(value: number) {
+  formData.value.roleCount = value;
+}
+
+function changeSceneCount(value: number) {
+  formData.value.sceneCount = value;
+}
+
+function generateStory() {
+  console.log(">>> generateStory: ", formData.value);
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+:deep(.custom-input-placeholder) {
+  color: #c8c8c8;
+}
+</style>

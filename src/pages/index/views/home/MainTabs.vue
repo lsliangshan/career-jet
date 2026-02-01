@@ -1,18 +1,28 @@
 <template>
   <view
-    class="w-full h-full p-[8rpx] bg-white dark:bg-card-dark rounded-full shadow-sm border border-black/5 flex flex-row items-center"
+    class="relative w-full h-full p-[8rpx] bg-white dark:bg-card-dark rounded-full shadow-sm border border-black/5 flex flex-row items-center"
   >
+    <view
+      class="absolute left-0 top-0 w-[33.33%] h-full p-[8rpx] box-border flex flex-row items-center justify-center transition-all duration-300"
+      :style="{
+        transform: `translateX(${modelValue * 100}%)`,
+      }"
+    >
+      <view
+        class="w-full h-full rounded-full"
+        :style="{
+          backgroundColor: ThemeColors.primary,
+        }"
+      ></view>
+    </view>
     <view
       v-for="(tab, index) in tabs"
       :key="index"
-      class="w-full h-full flex flex-row items-center justify-center rounded-full"
-      :style="{
-        backgroundColor: modelValue === index ? ThemeColors.primary : 'white',
-      }"
+      class="w-full h-full z-[9] flex flex-row items-center justify-center"
       @click="handleClick(index)"
     >
       <text
-        class="text-[28rpx] font-medium"
+        class="text-[28rpx] font-medium transition-all duration-300"
         :style="{
           color: modelValue === index ? 'white' : ThemeColors.text.body,
         }"

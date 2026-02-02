@@ -4,14 +4,32 @@
       <view class="w-full" :style="{ height: `${headerHeight}px` }"></view>
 
       <view
-        class="w-full px-[32rpx] py-[24rpx] box-border flex flex-col gap-[24rpx]"
+        class="w-full px-[32rpx] py-[32rpx] box-border flex flex-col gap-[24rpx]"
         :style="{
           minHeight: `calc(100% - ${headerHeight}px - 128rpx - ${safeBottom}px)`,
         }"
       >
-        <view
-          class="w-full min-h-[300rpx] rounded-[24rpx] bg-white p-6 shadow-sm border border-black/[0.03]"
-        ></view>
+        <view class="w-full">
+          <grid-view
+            type="masonry"
+            :cross-axis-count="2"
+            :main-axis-gap="12"
+            :cross-axis-gap="12"
+            :padding="[0, 0, 0, 0]"
+            ref="waterfallRef"
+          >
+            <view class="w-full" v-for="(role, index) in roles" :key="role.id">
+              <ImageCard
+                type="role"
+                :info="role"
+                :ratio="formData!.ratio"
+                :isLoading="!role.url"
+                :title="role.name"
+                :regenerateHandler="() => handleRegenerateRole(role)"
+              />
+            </view>
+          </grid-view>
+        </view>
 
         <view class="w-full flex flex-row items-start gap-[12rpx]">
           <view
@@ -26,7 +44,7 @@
           <view class="w-full flex flex-row items-start justify-start">
             <text class="leading-[40rpx] text-[28rpx] text-[#888]"
               >提示：AI
-              已经根据您的参数生成了精彩的故事内容。您可以直接确认，或进行微调以更符合您的期待。</text
+              已经根据您的故事生成了符合风格的角色形象。如果不满意，可以点击重新生成来获取新的方案。</text
             >
           </view>
         </view>
@@ -63,11 +81,20 @@
 
 <script setup lang="ts">
 import { iconThemeVersion, ThemeColors } from "@/config/config";
-import { computed } from "vue";
+import type { IRoleItem } from "@/types";
+import { computed, inject, ref, type Ref } from "vue";
+import type { ICreatePictureBookFormData } from "../../types";
+import ImageCard from "@/components/image-card/image-card.vue";
 
 const $emit = defineEmits<{
   (e: "confirm-roles"): void;
+  (e: "regenerate-role", params: { role: IRoleItem }): void;
 }>();
+
+const cachedPromises = ref<Map<string, Promise<void>>>(new Map());
+
+const roles = inject<Ref<IRoleItem[]>>("roles");
+const formData = inject<Ref<ICreatePictureBookFormData>>("formData");
 
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
@@ -78,6 +105,20 @@ const headerHeight = computed(() => {
 
 function handleConfirmRoles() {
   $emit("confirm-roles");
+}
+
+function handleRegenerateRole(e: any): Promise<void> {
+  return new Promise((resolve) => {
+    $emit("regenerate-role", { role: e });
+    cachedPromises.value.set(
+      e.id,
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 4000);
+      })
+    );
+  });
 }
 </script>
 

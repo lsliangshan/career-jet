@@ -7,6 +7,7 @@ import {
   requestConfirmCover,
   requestConfirmRoles,
   requestConfirmScenes,
+  requestConfirmStory,
   requestEditPictureBook,
   requestGenerateStory,
   requestGetAudiosByPbId,
@@ -247,6 +248,23 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     });
   }
 
+  function confirmStory(params: {
+    pbId: string;
+    title: string;
+    content: string;
+  }) {
+    return new Promise(async (resolve) => {
+      const userId = ensureLoginStatus();
+      const res = await requestConfirmStory({
+        userId: userId,
+        pbId: params.pbId,
+        title: params.title,
+        content: params.content,
+      });
+      resolve(res);
+    });
+  }
+
   function confirmRoles(params: { pbId: string; confirmed: object[] }) {
     return new Promise(async (resolve) => {
       const userId = ensureLoginStatus();
@@ -296,6 +314,7 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     editPictureBook,
     generateStory,
     regenerateStory,
+    confirmStory,
     confirmRoles,
     confirmScenes,
     confirmCover,

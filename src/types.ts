@@ -106,6 +106,7 @@ export interface IConfigItem {
 }
 
 export interface ICoverItem {
+  id: string;
   url: string;
   prompt: string;
   taskId: string;

@@ -169,7 +169,7 @@ const story = inject<Ref<IStory>>("story");
 const formData = inject<Ref<ICreatePictureBookFormData>>("formData");
 
 const $emit = defineEmits<{
-  (e: "confirm-story"): void;
+  (e: "on-confirmed", params: any): void;
   (e: "regenerate-story", params: { story: IStory }): void;
 }>();
 
@@ -202,8 +202,31 @@ watch(
   }
 );
 
-function handleConfirmStory() {
-  $emit("confirm-story");
+async function handleConfirmStory() {
+  if (isConfirming.value || isRegenerating.value || !story?.value.id) {
+    return;
+  }
+  isConfirming.value = true;
+  const res = await pictureBookStore.confirmStory({
+    pbId: story.value.id,
+    title: renderStoryTitle.value,
+    content: renderStoryContent.value,
+  });
+  if (res.code === 200 && res.data) {
+    uni.showToast({
+      title: "确认成功",
+      icon: "success",
+    });
+    $emit("on-confirmed", res.data);
+  } else {
+    uni.showToast({
+      title: "确认失败，请稍后再试",
+      icon: "none",
+    });
+  }
+  nextTick(() => {
+    isConfirming.value = false;
+  });
 }
 
 async function handleRegenerateStory() {

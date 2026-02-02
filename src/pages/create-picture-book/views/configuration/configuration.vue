@@ -396,18 +396,27 @@
       >
         <view
           class="w-full h-[88rpx] py-4 rounded-[24rpx] shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          :class="[
+            isGenerating ? 'pointer-events-none' : 'pointer-events-auto',
+          ]"
           :style="{
-            backgroundColor: ThemeColors.primary,
-            boxShadow: `0 10px 15px -3px ${ThemeColors.primary300}`,
+            backgroundColor: isGenerating
+              ? ThemeColors.text.disabled
+              : ThemeColors.primary,
+            boxShadow: `0 10px 15px -3px ${
+              isGenerating ? ThemeColors.text.disabled : ThemeColors.primary300
+            }`,
           }"
           @click="handleGenerateStory"
         >
-          <text class="text-[34rpx] text-white font-bold">生成故事</text>
           <svg-icon
             :src="`/static/${iconThemeVersion}/icon_generate.svg`"
             class="w-[32rpx] h-[32rpx]"
             :color="ThemeColors.text.white"
           ></svg-icon>
+          <text class="text-[34rpx] text-white font-bold">{{
+            isGenerating ? "正在生成..." : "生成故事"
+          }}</text>
         </view>
       </view>
     </scroll-view>
@@ -421,8 +430,11 @@ import {
   moralities,
   ThemeColors,
 } from "@/config/config";
-import { computed, inject, onMounted, ref } from "vue";
+import { computed, inject, nextTick, onMounted, ref } from "vue";
 import { EModalComponent } from "../../modals/types";
+import { usePictureBookStore } from "@/stores/picture_book";
+
+const pictureBookStore = usePictureBookStore();
 
 const $emit = defineEmits<{
   (e: "open-modal", params: { component: string; data: any }): void;
@@ -432,7 +444,7 @@ const $emit = defineEmits<{
   (e: "change-story-length", value: number): void;
   (e: "change-role-count", value: number): void;
   (e: "change-scene-count", value: number): void;
-  (e: "generate-story"): void;
+  (e: "on-generated", params: any): void;
 }>();
 
 const formData = inject<any>("formData");
@@ -442,6 +454,9 @@ const selectedPictureStyleIndex = inject<any>("selectedPictureStyleIndex");
 
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
+
+// 生成中
+const isGenerating = ref(false);
 
 const storyLength = ref<number>(1);
 const storyLengthOptions = [
@@ -512,8 +527,24 @@ function handleSceneCountChange(e: any) {
   $emit("change-scene-count", Number(e.detail.value));
 }
 
-function handleGenerateStory() {
-  $emit("generate-story");
+async function handleGenerateStory() {
+  if (isGenerating.value) {
+    return;
+  }
+  isGenerating.value = true;
+  const res = await pictureBookStore.generateStory(formData.value);
+  console.log(">>> generateStory res: ", res);
+  if (res.code === 200 && res.data) {
+    $emit("on-generated", res.data);
+  } else {
+    uni.showToast({
+      title: "生成故事失败，请稍后再试",
+      icon: "none",
+    });
+  }
+  nextTick(() => {
+    isGenerating.value = false;
+  });
 }
 </script>
 

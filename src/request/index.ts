@@ -218,6 +218,8 @@ export function requestRegenerateStory(params?: {
 export function requestConfirmStory(params?: {
   userId: string;
   pbId: string;
+  title: string;
+  content: string;
 }): Promise<any> {
   return new Promise<any>((resolve) => {
     uni.request({

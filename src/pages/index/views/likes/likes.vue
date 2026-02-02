@@ -67,6 +67,7 @@
               <view
                 class="py-4 px-10 box-border rounded-[16px] shadow-lg shadow-primary/20 transition-transform active:scale-95"
                 :style="{ backgroundColor: ThemeColors.primary }"
+                @click="handleDiscoverStory"
               >
                 <text class="text-[30rpx] text-[#fff] font-bold"
                   >去发现故事</text
@@ -141,6 +142,9 @@ import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 import PbCard from "@/components/pb-card/pb-card.vue";
 import empty from "@/components/empty/empty.vue";
 import Layout from "@/components/layout/layout.vue";
+import { useNavStore } from "@/stores/nav";
+
+const navStore = useNavStore();
 
 const pictureBookStore = usePictureBookStore();
 
@@ -249,6 +253,10 @@ async function onScrollToLower() {
   }
   pageIndex.value++;
   await getMyFavoritePictureBooks();
+}
+
+function handleDiscoverStory() {
+  navStore.changeTab(0);
 }
 </script>
 

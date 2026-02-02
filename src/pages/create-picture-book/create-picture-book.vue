@@ -77,13 +77,17 @@
           @change-story-length="changeStoryLength"
           @change-role-count="changeRoleCount"
           @change-scene-count="changeSceneCount"
-          @generate-story="generateStory"
+          @on-generated="handleGeneratedStory"
         />
         <ConfirmStory
           v-else-if="index === 1"
           @regenerate-story="handleRegenerateStory"
+          @on-confirmed="handleConfirmedStory"
         />
-        <ConfirmRoles v-else-if="index === 2" />
+        <ConfirmRoles
+          v-else-if="index === 2"
+          @regenerate-role="handleRegenerateRole"
+        />
         <ConfirmScenes v-else-if="index === 3" />
         <ConfirmCover v-else-if="index === 4" />
         <ConfirmAudio v-else-if="index === 5" />
@@ -127,6 +131,16 @@
       @on-close="closeModal"
       @on-confirm="handleLanguageChange"
     />
+
+    <RegenerateRoleModal
+      :role="modalData.data.role"
+      v-else-if="
+        modalData?.component === EModalComponent.REGENERATE_ROLE_MODAL &&
+        modalData.data.role
+      "
+      @on-close="closeModal"
+      @on-confirm="handleConfirmRegeneratedRole"
+    />
   </page-container>
 </template>
 
@@ -153,9 +167,11 @@ import { EModalComponent } from "./modals/types";
 import ChooseRatioModal from "./modals/ChooseRatioModal.vue";
 import ChooseStyleModal from "./modals/ChooseStyleModal.vue";
 import ChooseLanguageModal from "./modals/ChooseLanguageModal.vue";
+import RegenerateRoleModal from "./modals/RegenerateRoleModal.vue";
 
 import { usePictureBookStore } from "@/stores/picture_book";
 import type { ICreatePictureBookFormData, IStory } from "./types";
+import type { ICoverItem, IRoleItem, ISceneItem } from "@/types";
 
 const pictureBookStore = usePictureBookStore();
 
@@ -208,7 +224,7 @@ const createPictureBookSteps = [
   },
 ];
 
-const currentStepIndex = ref(1);
+const currentStepIndex = ref(2);
 
 const formData = ref<ICreatePictureBookFormData>({
   theme: "诚实与正直",
@@ -222,14 +238,58 @@ const formData = ref<ICreatePictureBookFormData>({
 });
 
 const story = ref<IStory>({
-  id: "83ad5cb679c510fe1f0a17a6",
-  title: "凯凯和闪闪的小石头",
-  content: [
-    "凯凯在森林里玩耍，找到一颗闪着光的蓝色小石头。",
-    "闪闪看到了，说：‘真好看！这是我的。’ 凯凯犹豫了一下。",
-    "晚上，凯凯看着小石头，总觉得心里有什么东西硌着，不太舒服。",
-    "第二天，凯凯找到了闪闪，把石头递过去：‘我想它属于发现它的地方。’",
-  ],
+  id: "",
+  title: "",
+  content: [],
+});
+
+const r = {
+  code: 200,
+  message: "成功",
+  action: "confirm-roles",
+  data: {
+    roles: [
+      {
+        code: 200,
+        msg: "成功",
+        data: {
+          taskId: "35689e9726a06ad5b46d397a13583f9d",
+          recordId: "35689e9726a06ad5b46d397a13583f9d",
+          id: "role_1",
+          name: "乐乐",
+          prompt:
+            "一只可爱的小狐狸，儿童卡通角色，形象Q版，头身比适中，头部较大且圆润。拥有橙红色的蓬松毛发，柔软光滑。面部特征友善，黑色小鼻子，明亮的大眼睛，瞳孔圆润有神，表情温和。身穿一件浅蓝色的背带裤，内搭白色T恤。尾巴毛茸茸的，末端带有一点白色。整体造型简约，色彩柔和明亮，使用纯白色背景。",
+          prompt_en:
+            "An adorable little fox, a children's cartoon character in a Q-style, with a moderate head-to-body ratio, a relatively large and round head. Has fluffy, soft, and smooth orange-red fur. Friendly facial features include a small black nose, bright large eyes with round and expressive pupils, and a gentle expression. Wearing light blue overalls over a white T-shirt. The tail is fluffy with a white tip. The overall design is simple, with soft and bright colors, on a pure white background.",
+        },
+      },
+      {
+        code: 200,
+        msg: "成功",
+        data: {
+          taskId: "bfb7d5b6956801ad9b84b0e3542cd119",
+          recordId: "bfb7d5b6956801ad9b84b0e3542cd119",
+          id: "role_2",
+          name: "诺诺",
+          prompt:
+            "一只可爱的山羊，儿童卡通角色，形象Q版，头身比适中，头部圆润。全身覆盖着柔软的、蓬松的白色卷毛。脸上带着温和友好的表情，有一双大大的、清澈的棕色眼睛。头顶有两根短小、弯曲的羊角，呈浅褐色。耳朵小巧下垂。脖子上戴着一个浅绿色的小铃铛。穿着一条舒适的棕色工装短裤。整体造型圆润可爱，色彩柔和，使用纯白色背景。",
+          prompt_en:
+            "An adorable goat, a children's cartoon character in a Q-style, with a moderate head-to-body ratio and a round head. Covered in soft, fluffy, white curly fur. Has a gentle and friendly expression with large, clear brown eyes. On the head are two short, curved, light brown horns. The ears are small and drooping. Wears a light green small bell around the neck and comfortable brown overall shorts. The overall design is round and cute, with soft colors, on a pure white background.",
+        },
+      },
+    ],
+  },
+};
+
+const roles = ref<IRoleItem[]>(r.data.roles.map((item: any) => item.data));
+const scenes = ref<ISceneItem[]>([]);
+const cover = ref<ICoverItem>({
+  id: "",
+  url: "",
+  prompt: "",
+  taskId: "",
+  recordId: "",
+  prompt_en: "",
 });
 
 const selectedThemeIndexes = ref<number[]>([0, 0]);
@@ -245,6 +305,7 @@ provide("selectedPictureStyleIndex", selectedPictureStyleIndex);
 provide("selectedLanguageIndex", selectedLanguageIndex);
 provide("selectedRatioIndex", selectedRatioIndex);
 provide("story", story);
+provide("roles", roles);
 
 const renderStoryStyles = computed(() => {
   return [
@@ -417,6 +478,24 @@ function showSelectRatioModal() {
   });
 }
 
+function showRegenerateRoleModal(data: any) {
+  modalData.value = {
+    component: EModalComponent.REGENERATE_ROLE_MODAL,
+    data: {
+      role: null,
+    },
+  };
+  nextTick(() => {
+    modalData.value = {
+      component: EModalComponent.REGENERATE_ROLE_MODAL,
+      data: {
+        role: data.role,
+      },
+    };
+    modalVisible.value = true;
+  });
+}
+
 function openModal(params: { component: string; data: any }) {
   if (params.component === EModalComponent.CHOOSE_THEME_MODAL) {
     showSelectThemeModal();
@@ -428,6 +507,8 @@ function openModal(params: { component: string; data: any }) {
     showSelectLanguageModal();
   } else if (params.component === EModalComponent.CHOOSE_RATIO_MODAL) {
     showSelectRatioModal();
+  } else if (params.component === EModalComponent.REGENERATE_ROLE_MODAL) {
+    showRegenerateRoleModal(params.data);
   }
 }
 
@@ -493,32 +574,37 @@ function changeSceneCount(value: number) {
   formData.value.sceneCount = value;
 }
 
-async function generateStory() {
-  const res = await pictureBookStore.generateStory(formData.value);
-  console.log(">>> generateStory res: ", res);
-  if (res.code === 200 && res.data) {
-    story.value = {
-      id: res.data.id,
-      title: res.data.story.title,
-      content: res.data.story.content,
-    };
-    currentStepIndex.value = 1;
-    uni.showToast({
-      title: "生成故事成功",
-      icon: "success",
-    });
-  } else {
-    uni.showToast({
-      title: "生成故事失败，请稍后再试",
-      icon: "none",
-    });
-    currentStepIndex.value = 0;
-  }
+async function handleGeneratedStory(e: any) {
+  story.value = {
+    id: e.id,
+    title: e.story.title,
+    content: e.story.content,
+  };
+  currentStepIndex.value = 1;
 }
 
 function handleRegenerateStory(e: any) {
   story.value = e.story;
   currentStepIndex.value = 1;
+}
+
+function handleConfirmedStory(e: any) {
+  roles.value = e.roles;
+  currentStepIndex.value = 2;
+}
+
+function handleRegenerateRole(e: any) {
+  console.log(".... handleRegenerateRole", e);
+  openModal({
+    component: EModalComponent.REGENERATE_ROLE_MODAL,
+    data: {
+      role: e.role,
+    },
+  });
+}
+
+function handleConfirmRegeneratedRole(e: any) {
+  // 重新生成角色
 }
 </script>
 

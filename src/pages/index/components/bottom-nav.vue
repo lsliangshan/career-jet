@@ -86,6 +86,7 @@
 import { iconThemeVersion, tabbars, ThemeColors } from "@/config/config";
 import { useNavStore } from "@/stores/nav";
 import { storeToRefs } from "pinia";
+import { validateLoggedIn } from "@/utils/user";
 
 const navStore = useNavStore();
 const { currentIndex } = storeToRefs(navStore);
@@ -97,6 +98,7 @@ function changeTab(index: number) {
 }
 
 function handleCreatePictureBook() {
+  validateLoggedIn();
   uni.navigateTo({
     url: "/pages/create-picture-book/create-picture-book",
   });

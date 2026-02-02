@@ -92,4 +92,5 @@ export enum EModalComponent {
   CHOOSE_PICTURE_STYLE_MODAL = "ChoosePictureStyleModal",
   CHOOSE_LANGUAGE_MODAL = "ChooseLanguageModal",
   CHOOSE_RATIO_MODAL = "ChooseRatioModal",
+  REGENERATE_ROLE_MODAL = "RegenerateRoleModal",
 }

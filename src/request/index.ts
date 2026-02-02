@@ -182,6 +182,60 @@ export function requestGenerateStory(params?: {
 }
 
 /**
+ * 步骤1.1：重新生成故事
+ * @param params
+ * @param {string} params.userId 用户ID
+ * @param {string} params.pbId 绘本ID
+ */
+export function requestRegenerateStory(params?: {
+  userId: string;
+  pbId: string;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      // url: `https://wf.qyflows.com/webhook-test/pb/regenerate-story`,
+      url: `${baseUrl}/pb/regenerate-story`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 步骤2：确认故事内容
+ * @param params
+ * @param {string} params.userId 用户ID
+ * @param {string} params.pbId 绘本ID
+ * @param {string} params.title 故事标题
+ * @param {string} params.content 故事内容
+ */
+export function requestConfirmStory(params?: {
+  userId: string;
+  pbId: string;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `https://wf.qyflows.com/webhook-test/pb/confirm-story`,
+      // url: `${baseUrl}/pb/confirm-story`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
  * 步骤2：确认角色
  * @param params
  * @param {string} params.userId 用户ID

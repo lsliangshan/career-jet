@@ -97,10 +97,13 @@
               :color="ThemeColors.primary"
             ></svg-icon>
           </view>
-          <view class="w-full flex flex-row items-start justify-start">
-            <text class="leading-[40rpx] text-[28rpx] text-[#888]"
+          <view class="w-full flex flex-col items-start justify-start">
+            <!-- <text class="leading-[40rpx] text-[28rpx] text-[#888]"
               >提示：AI
               已经根据您的参数生成了精彩的故事内容。您可以直接确认，或进行微调以更符合您的期待。</text
+            > -->
+            <text class="leading-[40rpx] text-[28rpx] text-[#888]"
+              >提示：输入4个连续的"-"，可以作为故事内容分页的分隔符。</text
             >
           </view>
         </view>
@@ -191,7 +194,7 @@ watch(
   (newVal) => {
     renderStoryTitle.value = newVal?.title || "";
     renderStoryContent.value = Array.isArray(newVal?.content)
-      ? newVal?.content.join("\n\n")
+      ? newVal?.content.join("\n----\n")
       : newVal?.content || "";
   },
   {
@@ -204,13 +207,17 @@ function handleConfirmStory() {
 }
 
 async function handleRegenerateStory() {
-  if (isRegenerating.value || isConfirming.value || !formData?.value) {
+  if (isRegenerating.value || isConfirming.value || !story?.value.id) {
     return;
   }
   isRegenerating.value = true;
-  const res = await pictureBookStore.generateStory(formData.value);
+  const res = await pictureBookStore.regenerateStory({ pbId: story.value.id });
 
   if (res.code === 200 && res.data) {
+    uni.showToast({
+      title: "重新生成成功",
+      icon: "success",
+    });
     $emit("regenerate-story", {
       story: {
         id: res.data.id,

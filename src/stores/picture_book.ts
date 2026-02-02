@@ -15,6 +15,7 @@ import {
   requestGetPictureBookDetail,
   requestGetPictureBookLikeStatus,
   requestGetPictureBooks,
+  requestRegenerateStory,
   requestSetPictureBookViews,
   requestTogglePictureBookLikeStatus,
 } from "@/request";
@@ -235,6 +236,17 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     });
   }
 
+  function regenerateStory(params: { pbId: string }) {
+    return new Promise(async (resolve) => {
+      const userId = ensureLoginStatus();
+      const res = await requestRegenerateStory({
+        userId: userId,
+        pbId: params.pbId,
+      });
+      resolve(res);
+    });
+  }
+
   function confirmRoles(params: { pbId: string; confirmed: object[] }) {
     return new Promise(async (resolve) => {
       const userId = ensureLoginStatus();
@@ -283,6 +295,7 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     setPictureBookViews,
     editPictureBook,
     generateStory,
+    regenerateStory,
     confirmRoles,
     confirmScenes,
     confirmCover,

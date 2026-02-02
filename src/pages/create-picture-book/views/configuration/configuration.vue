@@ -6,7 +6,7 @@
       <view
         class="w-full px-[32rpx] py-[24rpx] box-border flex flex-col gap-[24rpx]"
         :style="{
-          minHeight: `calc(100% - ${headerHeight}px - 128rpx)`,
+          minHeight: `calc(100% - ${headerHeight}px - 128rpx - ${safeBottom}px)`,
         }"
       >
         <view
@@ -388,7 +388,11 @@
       </view>
 
       <view
-        class="w-full h-[128rpx] px-[32rpx] box-border sticky left-0 bottom-0 bg-white bg-gradient-to-t from-background-light via-background-light to-transparent dark:from-background-dark dark:via-background-dark/95 z-40 flex flex-row items-center justify-center"
+        class="w-full px-[32rpx] box-border sticky left-0 bottom-0 bg-white bg-gradient-to-t from-background-light via-background-light to-transparent dark:from-background-dark dark:via-background-dark/95 z-40 flex flex-row items-center justify-center"
+        :style="{
+          height: `calc(128rpx + ${safeBottom}px)`,
+          paddingBottom: `${safeBottom}px`,
+        }"
       >
         <view
           class="w-full h-[88rpx] py-4 rounded-[24rpx] shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2"
@@ -437,6 +441,7 @@ const selectedStoryStyleIndex = inject<any>("selectedStoryStyleIndex");
 const selectedPictureStyleIndex = inject<any>("selectedPictureStyleIndex");
 
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
+const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
 const storyLength = ref<number>(1);
 const storyLengthOptions = [

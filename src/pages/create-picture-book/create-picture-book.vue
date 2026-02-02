@@ -2,7 +2,7 @@
   <view
     class="w-full fixed top-0 left-0 z-10 bg-[rgba(248,248,245,0.5)] backdrop-blur-md border-none flex flex-col items-start"
     :style="{
-      height: `calc(80rpx +  ${safeTop}px + 88rpx)`,
+      height: `calc(80rpx +  ${safeTop}px + 108rpx)`,
       paddingTop: `${safeTop}px`,
     }"
   >
@@ -28,33 +28,21 @@
           class="w-full h-full box-border flex flex-row items-center justify-center gap-[8rpx]"
         >
           <text
-            class="text-[32rpx] font-bold text-[#000] line-clamp-1 overflow-hidden text-ellipsis break-all"
+            class="text-[36rpx] font-bold text-[#000] line-clamp-1 overflow-hidden text-ellipsis break-all"
           >
             {{ createPictureBookSteps[currentStepIndex].label }}
           </text>
-          <!-- <view
-            class="h-[16rpx] rounded-full"
-            v-for="(step, index) in createPictureBookSteps"
-            :key="step.value"
-            :style="{
-              width: index === currentStepIndex ? '48rpx' : '16rpx',
-              backgroundColor:
-                index === currentStepIndex
-                  ? ThemeColors.primary
-                  : ThemeColors.text.disabled,
-            }"
-          ></view> -->
         </view>
       </view>
     </view>
 
     <view
-      class="w-full h-[88rpx] flex flex-row items-center justify-start px-[32rpx] box-border"
+      class="w-full h-[108rpx] flex flex-row items-center justify-start px-[32rpx] box-border"
     >
-      <view class="h-full flex flex-col items-start justify-start gap-[8rpx]">
+      <view class="h-full flex flex-col items-start justify-center gap-[12rpx]">
         <view class="w-full h-[40rpx] flex flex-row items-center justify-start">
           <text
-            class="font-bold text-[30rpx]"
+            class="font-bold text-[36rpx]"
             :style="{
               color: ThemeColors.primary,
             }"
@@ -63,7 +51,7 @@
           >
         </view>
         <view class="w-full h-[32rpx] flex flex-row items-center justify-start">
-          <text class="text-[24rpx] font-medium text-[#666]">
+          <text class="text-[30rpx] font-medium text-[#666]">
             {{ createPictureBookSteps[currentStepIndex].desc || " " }}
           </text>
         </view>
@@ -91,7 +79,10 @@
           @change-scene-count="changeSceneCount"
           @generate-story="generateStory"
         />
-        <ConfirmStory v-else-if="index === 1" />
+        <ConfirmStory
+          v-else-if="index === 1"
+          @regenerate-story="handleRegenerateStory"
+        />
         <ConfirmRoles v-else-if="index === 2" />
         <ConfirmScenes v-else-if="index === 3" />
         <ConfirmCover v-else-if="index === 4" />
@@ -163,6 +154,11 @@ import ChooseRatioModal from "./modals/ChooseRatioModal.vue";
 import ChooseStyleModal from "./modals/ChooseStyleModal.vue";
 import ChooseLanguageModal from "./modals/ChooseLanguageModal.vue";
 
+import { usePictureBookStore } from "@/stores/picture_book";
+import type { ICreatePictureBookFormData, IStory } from "./types";
+
+const pictureBookStore = usePictureBookStore();
+
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
 
@@ -212,9 +208,9 @@ const createPictureBookSteps = [
   },
 ];
 
-const currentStepIndex = ref(0);
+const currentStepIndex = ref(1);
 
-const formData = ref({
+const formData = ref<ICreatePictureBookFormData>({
   theme: "诚实与正直",
   storyStyle: "李欧·李奥尼",
   pictureStyle: "李欧·李奥尼",
@@ -223,10 +219,17 @@ const formData = ref({
   roleCount: 0,
   sceneCount: 0,
   ratio: "9:16",
-  autoConfirmedStory: false,
-  autoConfirmedRole: false,
-  autoConfirmedScene: false,
-  autoConfirmedCover: false,
+});
+
+const story = ref<IStory>({
+  id: "83ad5cb679c510fe1f0a17a6",
+  title: "凯凯和闪闪的小石头",
+  content: [
+    "凯凯在森林里玩耍，找到一颗闪着光的蓝色小石头。",
+    "闪闪看到了，说：‘真好看！这是我的。’ 凯凯犹豫了一下。",
+    "晚上，凯凯看着小石头，总觉得心里有什么东西硌着，不太舒服。",
+    "第二天，凯凯找到了闪闪，把石头递过去：‘我想它属于发现它的地方。’",
+  ],
 });
 
 const selectedThemeIndexes = ref<number[]>([0, 0]);
@@ -241,6 +244,7 @@ provide("selectedStoryStyleIndex", selectedStoryStyleIndex);
 provide("selectedPictureStyleIndex", selectedPictureStyleIndex);
 provide("selectedLanguageIndex", selectedLanguageIndex);
 provide("selectedRatioIndex", selectedRatioIndex);
+provide("story", story);
 
 const renderStoryStyles = computed(() => {
   return [
@@ -272,28 +276,28 @@ onMounted(() => {
 
 function initData() {
   selectedLanguageIndex.value = languages.findIndex(
-    (item) => item.name === formData.value.language,
+    (item) => item.name === formData.value.language
   );
   if (selectedLanguageIndex.value === -1) {
     selectedLanguageIndex.value = 0;
   }
 
   selectedStoryStyleIndex.value = renderStoryStyles.value.findIndex(
-    (item) => item.name === formData.value.storyStyle,
+    (item) => item.name === formData.value.storyStyle
   );
   if (selectedStoryStyleIndex.value === -1) {
     selectedStoryStyleIndex.value = 0;
   }
 
   selectedPictureStyleIndex.value = renderPictureStyles.value.findIndex(
-    (item) => item.name === formData.value.pictureStyle,
+    (item) => item.name === formData.value.pictureStyle
   );
   if (selectedPictureStyleIndex.value === -1) {
     selectedPictureStyleIndex.value = 0;
   }
 
   selectedRatioIndex.value = ratios.findIndex(
-    (item) => item === formData.value.ratio,
+    (item) => item === formData.value.ratio
   );
   if (selectedRatioIndex.value === -1) {
     selectedRatioIndex.value = 8;
@@ -489,8 +493,32 @@ function changeSceneCount(value: number) {
   formData.value.sceneCount = value;
 }
 
-function generateStory() {
-  console.log(">>> generateStory: ", formData.value);
+async function generateStory() {
+  const res = await pictureBookStore.generateStory(formData.value);
+  console.log(">>> generateStory res: ", res);
+  if (res.code === 200 && res.data) {
+    story.value = {
+      id: res.data.id,
+      title: res.data.story.title,
+      content: res.data.story.content,
+    };
+    currentStepIndex.value = 1;
+    uni.showToast({
+      title: "生成故事成功",
+      icon: "success",
+    });
+  } else {
+    uni.showToast({
+      title: "生成故事失败，请稍后再试",
+      icon: "none",
+    });
+    currentStepIndex.value = 0;
+  }
+}
+
+function handleRegenerateStory(e: any) {
+  story.value = e.story;
+  currentStepIndex.value = 1;
 }
 </script>
 

@@ -142,7 +142,47 @@ export function requestEditPictureBook(params?: {
 }
 
 /**
- * 确认角色
+ * 步骤1：生成故事
+ * @param params
+ * @param {string} params.userId 用户ID
+ * @param {string} params.theme 主题
+ * @param {string} params.storyStyle 故事风格
+ * @param {string} params.pictureStyle 图画风格
+ * @param {number} params.length 故事长度
+ * @param {string} params.language 语言
+ * @param {number} params.roleCount 角色个数，-1表示不限制
+ * @param {number} params.sceneCount 场景个数，-1表示不限制
+ * @param {string} params.ratio 绘本比例
+ */
+export function requestGenerateStory(params?: {
+  userId: string;
+  theme: string;
+  storyStyle: string;
+  pictureStyle: string;
+  length: number;
+  language: string;
+  roleCount: number;
+  sceneCount?: number;
+  ratio: string;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      // url: `https://wf.qyflows.com/webhook-test/pb/generate-story`,
+      url: `${baseUrl}/pb/generate-story`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 步骤2：确认角色
  * @param params
  * @param {string} params.userId 用户ID
  * @param {string} params.pbId 绘本ID
@@ -170,7 +210,7 @@ export function requestConfirmRoles(params?: {
 }
 
 /**
- * 确认场景
+ * 步骤3：确认场景
  * @param params
  * @param {string} params.userId 用户ID
  * @param {string} params.pbId 绘本ID
@@ -198,7 +238,7 @@ export function requestConfirmScenes(params?: {
 }
 
 /**
- * 确认封面
+ * 步骤4：确认封面
  * @param params
  * @param {string} params.userId 用户ID
  * @param {string} params.pbId 绘本ID

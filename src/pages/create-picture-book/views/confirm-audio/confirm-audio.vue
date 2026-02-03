@@ -9,20 +9,31 @@
           minHeight: `calc(100% - ${headerHeight}px - 128rpx - ${safeBottom}px)`,
         }"
       >
-        <view class="w-full mt-[32rpx] rounded-[24rpx] flex flex-col">
+        <view
+          class="w-full mt-[32rpx] rounded-[24rpx] flex flex-col gap-[24rpx]"
+        >
           <view
-            class="shadow-[0_4rpx_16rpx_rgba(0,0,0,0.03)] flex items-center transition-all"
+            class="rounded-[32rpx] flex items-center transition-all"
             v-for="(voice, index) in voiceTypes"
             :key="`${voice.value}`"
+            :class="[
+              selectedVoiceTypeIndex === index ? 'sticky left-0 bg-white' : '',
+            ]"
+            :style="{
+              top:
+                selectedVoiceTypeIndex === index
+                  ? `${headerHeight + 12}px`
+                  : '0',
+            }"
             @click="handleSelectVoiceType(index)"
           >
             <view
-              class="rounded-[32rpx] p-4 w-full h-full border-2 flex items-center gap-4 mb-3 transition-all"
+              class="rounded-[32rpx] p-4 w-full h-full border-2 flex items-center gap-4 transition-all"
               :style="{
                 backgroundColor:
                   selectedVoiceTypeIndex === index
                     ? ThemeColors.primary100
-                    : 'bg-white',
+                    : '#fff',
                 borderColor:
                   selectedVoiceTypeIndex === index
                     ? ThemeColors.primary

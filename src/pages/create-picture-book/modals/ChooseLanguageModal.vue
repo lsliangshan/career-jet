@@ -103,7 +103,11 @@
     </view>
 
     <view
-      class="w-full h-[108rpx] px-[32rpx] box-border flex flex-row items-center justify-center shrink-0"
+      class="w-full px-[32rpx] box-border flex flex-row items-center justify-center shrink-0"
+      :style="{
+        height: `calc(108rpx + ${safeBottom}px)`,
+        paddingBottom: `${safeBottom}px`,
+      }"
     >
       <view
         class="w-full h-[88rpx] rounded-[16rpx] flex flex-row items-center justify-center active:scale-95 transition-all duration-300"
@@ -129,13 +133,15 @@ interface Props {
 
 const props = defineProps<Props>();
 
+const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
+
 const $emit = defineEmits<{
   (
     e: "on-confirm",
     data: {
       index: number;
       value: string;
-    },
+    }
   ): void;
   (e: "on-close"): void;
 }>();
@@ -149,7 +155,7 @@ watch(
   },
   {
     immediate: true,
-  },
+  }
 );
 
 function handleItemClick(index: number) {

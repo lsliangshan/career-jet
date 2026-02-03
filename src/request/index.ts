@@ -223,7 +223,7 @@ export function requestConfirmStory(params?: {
 }): Promise<any> {
   return new Promise<any>((resolve) => {
     uni.request({
-      url: `https://wf.qyflows.com/webhook-test/pb/confirm-story`,
+      url: `https://wf.qyflows.com/webhook/pb/confirm-story`,
       // url: `${baseUrl}/pb/confirm-story`,
       method: "POST",
       data: { ...params },

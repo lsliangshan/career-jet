@@ -93,4 +93,6 @@ export enum EModalComponent {
   CHOOSE_LANGUAGE_MODAL = "ChooseLanguageModal",
   CHOOSE_RATIO_MODAL = "ChooseRatioModal",
   REGENERATE_ROLE_MODAL = "RegenerateRoleModal",
+  REGENERATE_SCENE_MODAL = "RegenerateSceneModal",
+  REGENERATE_COVER_MODAL = "RegenerateCoverModal",
 }

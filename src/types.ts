@@ -112,6 +112,8 @@ export interface ICoverItem {
   taskId: string;
   recordId: string;
   prompt_en: string;
+  roleIds: string[];
+  roleUrls: string[];
 }
 
 export interface IAuthorItem {
@@ -162,4 +164,24 @@ export enum EConfirmAction {
   CONFIRM_COVER = "confirm-cover",
   CONFIRM_AUDIO = "confirm-audio",
   FINISHED = "finished",
+}
+
+export enum EEmitEvents {
+  OPEN_REGENERATE_ROLE_MODAL = "open-regenerate-role-modal",
+  START_REGENERATE_ROLE = "start-regenerate-role",
+  CANCEL_REGENERATE_ROLE = "cancel-regenerate-role",
+  REGENERATE_ROLE_RESPONSE = "regenerate-role-response",
+  REGENERATE_ROLE_ERROR = "regenerate-role-error",
+
+  OPEN_REGENERATE_SCENE_MODAL = "open-regenerate-scene-modal",
+  START_REGENERATE_SCENE = "start-regenerate-scene",
+  CANCEL_REGENERATE_SCENE = "cancel-regenerate-scene",
+  REGENERATE_SCENE_RESPONSE = "regenerate-scene-response",
+  REGENERATE_SCENE_ERROR = "regenerate-scene-error",
+
+  OPEN_REGENERATE_COVER_MODAL = "open-regenerate-cover-modal",
+  START_REGENERATE_COVER = "start-regenerate-cover",
+  CANCEL_REGENERATE_COVER = "cancel-regenerate-cover",
+  REGENERATE_COVER_RESPONSE = "regenerate-cover-response",
+  REGENERATE_COVER_ERROR = "regenerate-cover-error",
 }

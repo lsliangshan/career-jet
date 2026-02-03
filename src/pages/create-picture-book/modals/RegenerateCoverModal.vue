@@ -3,9 +3,7 @@
     <view
       class="w-full h-[128rpx] px-[32rpx] box-border flex flex-row items-center justify-between border-b border-b-[rgba(230,226,209,0.5)] border-b-[1rpx]"
     >
-      <text class="text-[32rpx] text-[#333] font-bold"
-        >重新生成角色【{{ role?.name }}】</text
-      >
+      <text class="text-[32rpx] text-[#333] font-bold">重新生成封面</text>
       <view
         class="w-[128rpx] h-[128rpx] flex flex-row items-center justify-end active:opacity-80 transition-all duration-300"
         @click="closeModal"
@@ -28,8 +26,8 @@
           class="w-full min-h-full text-[34rpx] text-[#666] px-[24rpx] py-[32rpx] box-border"
           :maxlength="-1"
           auto-height
-          placeholder="请输入角色描述"
-          v-model="role.prompt"
+          placeholder="请输入封面描述"
+          v-model="cover.prompt"
         />
       </scroll-view>
     </view>
@@ -73,14 +71,14 @@
 </template>
 
 <script setup lang="ts">
-import { EEmitEvents, type IRoleItem } from "@/types";
+import { EEmitEvents, type ICoverItem } from "@/types";
 import { iconThemeVersion, ThemeColors } from "@/config/config";
 import { nextTick, ref } from "vue";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 import { requestGenerateRoleOrScene } from "@/request";
 
 interface Props {
-  role: IRoleItem;
+  cover: ICoverItem;
   ratio: string;
   pictureStyle: string;
 }
@@ -89,7 +87,7 @@ const props = defineProps<Props>();
 
 const $emit = defineEmits<{
   (e: "on-close"): void;
-  (e: "on-confirm", params: { role: IRoleItem }): void;
+  (e: "on-confirm", params: { cover: ICoverItem }): void;
 }>();
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
@@ -106,38 +104,39 @@ async function handleConfirm() {
   }
   isRegenerating.value = true;
 
-  uni.$emit(EEmitEvents.START_REGENERATE_ROLE, {
-    role: props.role,
+  uni.$emit(EEmitEvents.START_REGENERATE_COVER, {
+    cover: props.cover,
   });
 
   const res = await requestGenerateRoleOrScene({
-    id: props.role.id,
-    prompt: `a children's book illustation style by ${props.pictureStyle}, ${props.role.prompt}`,
+    id: props.cover.id,
+    prompt: `a children's book illustation style by ${props.pictureStyle}, ${props.cover.prompt}`,
     ratio: props.ratio,
+    imageUrls: props.cover.roleUrls,
   });
 
   if (res.code === 200) {
     closeModal();
 
-    const newRole = {
-      ...props.role,
+    const newCover = {
+      ...props.cover,
       taskId: res.data.taskId,
       url: res.data.url,
     };
 
-    uni.$emit(EEmitEvents.REGENERATE_ROLE_RESPONSE, {
-      role: newRole,
+    uni.$emit(EEmitEvents.REGENERATE_COVER_RESPONSE, {
+      cover: newCover,
     });
 
     $emit("on-confirm", {
-      role: newRole,
+      cover: newCover,
     });
   } else {
-    uni.$emit(EEmitEvents.REGENERATE_ROLE_ERROR, {
-      role: props.role,
+    uni.$emit(EEmitEvents.REGENERATE_COVER_ERROR, {
+      cover: props.cover,
     });
     uni.showToast({
-      title: "生成角色失败，请稍后再试",
+      title: "生成封面失败，请稍后再试",
       icon: "none",
     });
   }

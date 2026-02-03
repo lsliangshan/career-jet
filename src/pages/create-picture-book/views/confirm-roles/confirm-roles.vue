@@ -23,9 +23,8 @@
                 type="role"
                 :info="role"
                 :ratio="formData!.ratio"
-                :isLoading="!role.url"
+                :isLoading="loadingImageIds.has(role.id)"
                 :title="role.name"
-                :regenerateHandler="() => handleRegenerateRole(role)"
               />
             </view>
           </grid-view>
@@ -58,20 +57,44 @@
         }"
       >
         <view
-          class="w-full h-[88rpx] py-4 rounded-[24rpx] shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          class="w-full h-[88rpx] py-4 rounded-[24rpx] shadow-lg transition-all flex items-center justify-center gap-2"
+          :class="[
+            regeneratingImageIds.size === 0 &&
+            loadingImageIds.size === 0 &&
+            !isConfirming
+              ? 'pointer-events-auto active:scale-95'
+              : 'pointer-events-none',
+          ]"
           :style="{
-            backgroundColor: ThemeColors.primary,
-            boxShadow: `0 10px 15px -3px ${ThemeColors.primary300}`,
+            backgroundColor:
+              regeneratingImageIds.size === 0 &&
+              loadingImageIds.size === 0 &&
+              !isConfirming
+                ? ThemeColors.primary
+                : ThemeColors.text.disabled,
+            boxShadow: `0 10px 15px -3px ${
+              regeneratingImageIds.size === 0 &&
+              loadingImageIds.size === 0 &&
+              !isConfirming
+                ? ThemeColors.primary300
+                : ThemeColors.text.disabled
+            }`,
           }"
           @click="handleConfirmRoles"
         >
-          <text class="text-[34rpx] text-white font-bold"
-            >确认角色，下一步</text
-          >
+          <CustomLoader
+            v-if="isConfirming"
+            color="#fff"
+            :size="32"
+          ></CustomLoader>
+          <text class="text-[34rpx] text-white font-bold">{{
+            isConfirming ? "正在确认角色..." : "确认角色，下一步"
+          }}</text>
           <svg-icon
             :src="`/static/${iconThemeVersion}/icon_next.svg`"
             class="w-[32rpx] h-[32rpx]"
             :color="ThemeColors.text.white"
+            v-if="!isConfirming"
           ></svg-icon>
         </view>
       </view>
@@ -81,20 +104,33 @@
 
 <script setup lang="ts">
 import { iconThemeVersion, ThemeColors } from "@/config/config";
-import type { IRoleItem } from "@/types";
-import { computed, inject, ref, type Ref } from "vue";
-import type { ICreatePictureBookFormData } from "../../types";
+import { EEmitEvents, type IRoleItem } from "@/types";
+import { computed, inject, nextTick, onMounted, ref, type Ref } from "vue";
+import { type IStory, type ICreatePictureBookFormData } from "../../types";
 import ImageCard from "@/components/image-card/image-card.vue";
+import { requestGetImageUrls } from "@/request";
+import { usePictureBookStore } from "@/stores/picture_book";
+import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 
 const $emit = defineEmits<{
-  (e: "confirm-roles"): void;
+  (e: "on-confirmed", params: any): void;
   (e: "regenerate-role", params: { role: IRoleItem }): void;
 }>();
 
-const cachedPromises = ref<Map<string, Promise<void>>>(new Map());
+const pictureBookStore = usePictureBookStore();
 
 const roles = inject<Ref<IRoleItem[]>>("roles");
 const formData = inject<Ref<ICreatePictureBookFormData>>("formData");
+const story = inject<Ref<IStory>>("story");
+
+// 正在加载图片的id列表
+const loadingImageIds = ref<Set<string>>(new Set());
+
+// 正在重新生成的图片的id列表
+const regeneratingImageIds = ref<Set<string>>(new Set());
+
+// 是否确认中
+const isConfirming = ref(false);
 
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
@@ -103,21 +139,116 @@ const headerHeight = computed(() => {
   return safeTop + uni.upx2px(168);
 });
 
-function handleConfirmRoles() {
-  $emit("confirm-roles");
+onMounted(() => {
+  uni.$on(EEmitEvents.START_REGENERATE_ROLE, handleStartRegenerateRole);
+  uni.$on(EEmitEvents.REGENERATE_ROLE_RESPONSE, handleRegenerateRoleResponse);
+  uni.$on(EEmitEvents.REGENERATE_ROLE_ERROR, handleRegenerateRoleError);
+  listImageUrls(roles?.value?.map((role: IRoleItem) => role.taskId) ?? []) ??
+    [];
+});
+
+function handleStartRegenerateRole(e: any) {
+  if (!roles?.value) {
+    return;
+  }
+  const index = roles.value.findIndex(
+    (role: IRoleItem) => role.id === e.role.id
+  );
+  if (index === -1) {
+    return;
+  }
+  regeneratingImageIds.value.add(e.role.id);
 }
 
-function handleRegenerateRole(e: any): Promise<void> {
-  return new Promise((resolve) => {
-    $emit("regenerate-role", { role: e });
-    cachedPromises.value.set(
-      e.id,
-      new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 4000);
-      })
-    );
+function handleRegenerateRoleResponse(e: any) {
+  if (!roles?.value) {
+    return;
+  }
+  const index = roles.value.findIndex(
+    (role: IRoleItem) => role.id === e.role.id
+  );
+  if (index === -1) {
+    return;
+  }
+  regeneratingImageIds.value.delete(e.role.id);
+}
+
+function handleRegenerateRoleError(e: any) {
+  if (!roles?.value) {
+    return;
+  }
+  const index = roles.value.findIndex(
+    (role: IRoleItem) => role.id === e.role.id
+  );
+  if (index === -1) {
+    return;
+  }
+  regeneratingImageIds.value.delete(e.role.id);
+}
+
+async function handleConfirmRoles() {
+  if (
+    loadingImageIds.value.size > 0 ||
+    regeneratingImageIds.value.size > 0 ||
+    !roles?.value ||
+    isConfirming.value
+  ) {
+    return;
+  }
+
+  isConfirming.value = true;
+
+  const res = await pictureBookStore.confirmRoles({
+    pbId: story?.value?.id ?? "",
+    confirmed: roles.value,
+  });
+
+  if (res.code !== 200) {
+    uni.showToast({
+      title: "角色确认失败，请重新确认",
+      icon: "none",
+    });
+  } else {
+    $emit("on-confirmed", res.data);
+  }
+
+  nextTick(() => {
+    isConfirming.value = false;
+  });
+}
+
+function getIdByTaskId(taskId: string) {
+  return (
+    roles?.value?.find((role: IRoleItem) => role.taskId === taskId)?.id ?? null
+  );
+}
+
+async function listImageUrls(taskIds: string[]) {
+  loadingImageIds.value.clear();
+  if (!roles?.value) {
+    return;
+  }
+  roles.value.forEach((role: IRoleItem) => {
+    loadingImageIds.value.add(role.id);
+  });
+  const images: Map<string, string> = await requestGetImageUrls({
+    taskIds,
+  });
+
+  images.forEach((url, taskId) => {
+    const id = getIdByTaskId(taskId);
+
+    if (id) {
+      if (loadingImageIds.value.has(id)) {
+        loadingImageIds.value.delete(id);
+      }
+      roles.value = roles.value?.map((role: IRoleItem) => {
+        if (role.id === id) {
+          return { ...role, url };
+        }
+        return role;
+      });
+    }
   });
 }
 </script>

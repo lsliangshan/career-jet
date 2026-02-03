@@ -28,11 +28,10 @@
 
 <script setup lang="ts">
 import { iconThemeVersion, ThemeColors } from "@/config/config";
-import { nextTick, ref } from "vue";
 
 interface Props {
   disabled: boolean;
-  clickHandler: () => Promise<void>;
+  isRegenerating: boolean;
   fontSize?: number;
   iconSize?: number;
 }
@@ -42,16 +41,14 @@ const props = withDefaults(defineProps<Props>(), {
   iconSize: 32,
 });
 
-const isRegenerating = ref(false);
+const $emit = defineEmits<{
+  (e: "on-regenerate"): void;
+}>();
 
 async function handleClick() {
-  if (props.disabled || isRegenerating.value) {
+  if (props.disabled || props.isRegenerating) {
     return;
   }
-  isRegenerating.value = true;
-  await props.clickHandler();
-  nextTick(() => {
-    isRegenerating.value = false;
-  });
+  $emit("on-regenerate");
 }
 </script>

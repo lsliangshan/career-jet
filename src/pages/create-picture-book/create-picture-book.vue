@@ -86,10 +86,16 @@
         />
         <ConfirmRoles
           v-else-if="index === 2"
-          @regenerate-role="handleRegenerateRole"
+          @on-confirmed="handleConfirmedRoles"
         />
-        <ConfirmScenes v-else-if="index === 3" />
-        <ConfirmCover v-else-if="index === 4" />
+        <ConfirmScenes
+          v-else-if="index === 3"
+          @on-confirmed="handleConfirmedScenes"
+        />
+        <ConfirmCover
+          v-else-if="index === 4"
+          @on-confirmed="handleConfirmedCover"
+        />
         <ConfirmAudio v-else-if="index === 5" />
         <Finished v-else-if="index === 6" />
       </swiper-item>
@@ -102,6 +108,7 @@
     round
     custom-style="background-color: transparent;"
     @leave="closeModal"
+    @beforeleave="handleBeforeLeave"
   >
     <ChooseThemeModal
       :active-index="modalData?.data?.selectedThemeIndexes"
@@ -134,12 +141,36 @@
 
     <RegenerateRoleModal
       :role="modalData.data.role"
+      :ratio="formData.ratio"
+      :pictureStyle="formData.pictureStyle"
       v-else-if="
         modalData?.component === EModalComponent.REGENERATE_ROLE_MODAL &&
         modalData.data.role
       "
       @on-close="closeModal"
       @on-confirm="handleConfirmRegeneratedRole"
+    />
+    <RegenerateSceneModal
+      :scene="modalData.data.scene"
+      :ratio="formData.ratio"
+      :pictureStyle="formData.pictureStyle"
+      v-else-if="
+        modalData?.component === EModalComponent.REGENERATE_SCENE_MODAL &&
+        modalData.data.scene
+      "
+      @on-close="closeModal"
+      @on-confirm="handleConfirmRegeneratedScene"
+    />
+    <RegenerateCoverModal
+      :cover="modalData.data.cover"
+      :ratio="formData.ratio"
+      :pictureStyle="formData.pictureStyle"
+      v-else-if="
+        modalData?.component === EModalComponent.REGENERATE_COVER_MODAL &&
+        modalData.data.cover
+      "
+      @on-close="closeModal"
+      @on-confirm="handleConfirmRegeneratedCover"
     />
   </page-container>
 </template>
@@ -168,10 +199,18 @@ import ChooseRatioModal from "./modals/ChooseRatioModal.vue";
 import ChooseStyleModal from "./modals/ChooseStyleModal.vue";
 import ChooseLanguageModal from "./modals/ChooseLanguageModal.vue";
 import RegenerateRoleModal from "./modals/RegenerateRoleModal.vue";
+import RegenerateSceneModal from "./modals/RegenerateSceneModal.vue";
+import RegenerateCoverModal from "./modals/RegenerateCoverModal.vue";
 
 import { usePictureBookStore } from "@/stores/picture_book";
-import type { ICreatePictureBookFormData, IStory } from "./types";
-import type { ICoverItem, IRoleItem, ISceneItem } from "@/types";
+import { type ICreatePictureBookFormData, type IStory } from "./types";
+import {
+  type ICoverItem,
+  type IRoleItem,
+  type ISceneItem,
+  EEmitEvents,
+  type IPictureBook,
+} from "@/types";
 
 const pictureBookStore = usePictureBookStore();
 
@@ -224,7 +263,7 @@ const createPictureBookSteps = [
   },
 ];
 
-const currentStepIndex = ref(2);
+const currentStepIndex = ref(5);
 
 const formData = ref<ICreatePictureBookFormData>({
   theme: "诚实与正直",
@@ -238,7 +277,7 @@ const formData = ref<ICreatePictureBookFormData>({
 });
 
 const story = ref<IStory>({
-  id: "",
+  id: "4b9424874343e19883e489ac",
   title: "",
   content: [],
 });
@@ -253,44 +292,186 @@ const r = {
         code: 200,
         msg: "成功",
         data: {
-          taskId: "35689e9726a06ad5b46d397a13583f9d",
-          recordId: "35689e9726a06ad5b46d397a13583f9d",
+          taskId: "67294d39cd4d68e4fe6326e2f7c4c89b",
+          recordId: "67294d39cd4d68e4fe6326e2f7c4c89b",
           id: "role_1",
-          name: "乐乐",
+          name: "阿灰",
           prompt:
-            "一只可爱的小狐狸，儿童卡通角色，形象Q版，头身比适中，头部较大且圆润。拥有橙红色的蓬松毛发，柔软光滑。面部特征友善，黑色小鼻子，明亮的大眼睛，瞳孔圆润有神，表情温和。身穿一件浅蓝色的背带裤，内搭白色T恤。尾巴毛茸茸的，末端带有一点白色。整体造型简约，色彩柔和明亮，使用纯白色背景。",
+            "一只可爱的雄性松鼠，拥有蓬松柔软的大尾巴和圆圆的脑袋。身体覆盖着浅灰色的柔软毛发，肚皮是白色的。眼睛又大又圆，呈棕色，透着天真和好奇。耳朵尖上有小撮深灰色的毛。穿着浅蓝色的小背心。表情友善温暖。使用纯白色背景。",
           prompt_en:
-            "An adorable little fox, a children's cartoon character in a Q-style, with a moderate head-to-body ratio, a relatively large and round head. Has fluffy, soft, and smooth orange-red fur. Friendly facial features include a small black nose, bright large eyes with round and expressive pupils, and a gentle expression. Wearing light blue overalls over a white T-shirt. The tail is fluffy with a white tip. The overall design is simple, with soft and bright colors, on a pure white background.",
+            "A cute male squirrel with a fluffy and soft large tail and a round head. Body covered in soft light gray fur, with a white belly. Large, round brown eyes, full of innocence and curiosity. The tips of his ears have tufts of dark gray fur. Wearing a light blue vest. Friendly and warm expression. Use a pure white background.",
         },
       },
       {
         code: 200,
         msg: "成功",
         data: {
-          taskId: "bfb7d5b6956801ad9b84b0e3542cd119",
-          recordId: "bfb7d5b6956801ad9b84b0e3542cd119",
+          taskId: "48469da7a7ab9387aec4b706dd3bda8f",
+          recordId: "48469da7a7ab9387aec4b706dd3bda8f",
           id: "role_2",
-          name: "诺诺",
+          name: "小兔",
           prompt:
-            "一只可爱的山羊，儿童卡通角色，形象Q版，头身比适中，头部圆润。全身覆盖着柔软的、蓬松的白色卷毛。脸上带着温和友好的表情，有一双大大的、清澈的棕色眼睛。头顶有两根短小、弯曲的羊角，呈浅褐色。耳朵小巧下垂。脖子上戴着一个浅绿色的小铃铛。穿着一条舒适的棕色工装短裤。整体造型圆润可爱，色彩柔和，使用纯白色背景。",
+            "一只可爱的雌性兔子，长着长长的粉色耳朵和毛茸茸的白色身体。眼睛是明亮的蓝色，像两颗蓝宝石，闪烁着活泼的光芒。鼻子是粉色的，微微抽动着。脖子上系着一个红色的蝴蝶结。体型小巧圆润，看起来非常友善。使用纯白色背景。",
           prompt_en:
-            "An adorable goat, a children's cartoon character in a Q-style, with a moderate head-to-body ratio and a round head. Covered in soft, fluffy, white curly fur. Has a gentle and friendly expression with large, clear brown eyes. On the head are two short, curved, light brown horns. The ears are small and drooping. Wears a light green small bell around the neck and comfortable brown overall shorts. The overall design is round and cute, with soft colors, on a pure white background.",
+            "A cute female rabbit with long pink ears and a fluffy white body. Bright blue eyes, like sapphires, sparkling with liveliness. Pink nose, twitching slightly. Wears a red bow tie around her neck. Small and chubby body shape, appearing very friendly. Use a pure white background.",
         },
       },
     ],
   },
 };
 
+const s = {
+  code: 200,
+  message: "成功",
+  action: "confirm-scenes",
+  data: {
+    scenes: [
+      {
+        code: 200,
+        msg: "成功",
+        data: {
+          taskId: "4b888c693257d992008c10fc880372f5",
+          recordId: "4b888c693257d992008c10fc880372f5",
+          id: "scene_1",
+          index: 1,
+          content: "小松鼠小诚在树下捡到一颗闪亮的星星。",
+          prompt:
+            "特写镜头，阳光透过枝叶缝隙洒下斑驳光点。一只穿着橙红色背带裤和浅蓝色衬衫的可爱拟人小松鼠男孩，他正从森林地面上捡起一颗闪闪发光的、有着几个可爱小角的金色星星。他好奇地歪着头，眼睛睁得大大的，充满了惊喜和好奇。周围是柔软的草地和几片落叶，氛围温馨、奇幻而明亮，色彩柔和。",
+          prompt_en:
+            "A close-up shot with dappled light filtering through the gaps in the leaves. A cute anthropomorphic squirrel boy wearing orange-red overalls and a light blue shirt is picking up a shiny, golden star with several adorable little points from the forest floor. He tilts his head curiously, his eyes wide open, filled with surprise and wonder. The surroundings feature soft grass and a few fallen leaves. The atmosphere is warm, fantastical, and bright, with soft colors.",
+          roleIds: ["role_1"],
+          roleUrls: [
+            "https://tempfile.aiquickdraw.com/workers/nano/image_1770100690097_a65upg.png",
+          ],
+        },
+      },
+      {
+        code: 200,
+        msg: "成功",
+        data: {
+          taskId: "06390bfaac7181dc785afe6821fecd4f",
+          recordId: "06390bfaac7181dc785afe6821fecd4f",
+          id: "scene_2",
+          index: 2,
+          content: "“这是谁的星星呢？”他想，“但它现在是我的了。”",
+          prompt:
+            "小松鼠的近景镜头，他双手小心翼翼地捧着一颗闪闪发光的金色星星，贴近胸前。他微微低头看着星星，表情从困惑转为开心的领悟。背景是模糊的森林树木，突出角色和星星。星星散发出柔和的金色光芒，照亮了小松鼠的脸庞，他脸上带着一丝调皮又满足的笑容，整体氛围温暖、亲切又带点小骄傲。",
+          prompt_en:
+            "A medium close-up shot of the squirrel boy. He holds a shiny golden star carefully with both hands, close to his chest. He looks down slightly at the star, his expression changing from confusion to happy realization. The background is a blurred forest tree, highlighting the character and the star. The star emits a soft golden light, illuminating the squirrel's face. He wears a slightly mischievous and content smile. The overall atmosphere is warm, intimate, and with a hint of pride.",
+          roleIds: ["role_1"],
+          roleUrls: [
+            "https://tempfile.aiquickdraw.com/workers/nano/image_1770100690097_a65upg.png",
+          ],
+        },
+      },
+    ],
+  },
+};
+
+const c = {
+  code: 200,
+  message: "请确认故事封面",
+  action: "confirm-cover",
+  data: {
+    cover: [
+      {
+        code: 200,
+        msg: "成功",
+        data: {
+          id: "cover_1",
+          prompt:
+            "绘本封面风格，可爱的拟人小松鼠男孩‘小诚’位于画面中心，他穿着橙红色背带裤和浅蓝色衬衫，兴奋地举着一颗闪闪发光、有着几个可爱小角的金色星星，脸上洋溢着惊喜和开心的笑容。背景是阳光明媚的森林，有高大的树木、柔软的草地和点点野花。整个画面充满明亮、温暖的色调，氛围奇幻、欢乐，适合儿童观看。",
+          prompt_en:
+            "Picture book cover style. The cute anthropomorphic squirrel boy 'Xiao Cheng' is at the center of the image. He wears orange-red overalls and a light blue shirt, excitedly holding up a shiny, golden star with several adorable little points, with a face full of surprise and happiness. The background is a sunny forest with tall trees, soft grass, and small wildflowers. The entire scene is filled with bright, warm colors. The atmosphere is fantastical and joyful, suitable for children.",
+          roleIds: ["role_1"],
+          roleUrls: [
+            "https://tempfile.aiquickdraw.com/workers/nano/image_1770100690097_a65upg.png",
+            "https://tempfile.aiquickdraw.com/workers/nano/image_1770100690322_j4qgfl.png",
+          ],
+          taskId: "98fc1cea7d5c8f20acb8e856504f1dc6",
+          recordId: "98fc1cea7d5c8f20acb8e856504f1dc6",
+        },
+      },
+    ],
+  },
+};
+
+const p = {
+  code: 200,
+  message: "确认成功",
+  data: {
+    id: "4b9424874343e19883e489ac",
+    title: "星星的秘密",
+    content:
+      "小松鼠小诚在树下捡到一颗闪亮的星星。\n----\n“这是谁的星星呢？”他想，“但它现在是我的了。”",
+    title_zh: "",
+    content_zh: "",
+    authorId: "o_lhg1z2VXxGtPaGnVKpSbFbA70I",
+    roles: [
+      {
+        id: "role_1",
+        url: "https://tempfile.aiquickdraw.com/workers/nano/image_1770100690097_a65upg.png",
+        name: "阿灰",
+        prompt:
+          "一只可爱的雄性松鼠，拥有蓬松柔软的大尾巴和圆圆的脑袋。身体覆盖着浅灰色的柔软毛发，肚皮是白色的。眼睛又大又圆，呈棕色，透着天真和好奇。耳朵尖上有小撮深灰色的毛。穿着浅蓝色的小背心。表情友善温暖。使用纯白色背景。",
+        taskId: "67294d39cd4d68e4fe6326e2f7c4c89b",
+        recordId: "67294d39cd4d68e4fe6326e2f7c4c89b",
+        prompt_en:
+          "A cute male squirrel with a fluffy and soft large tail and a round head. Body covered in soft light gray fur, with a white belly. Large, round brown eyes, full of innocence and curiosity. The tips of his ears have tufts of dark gray fur. Wearing a light blue vest. Friendly and warm expression. Use a pure white background.",
+      },
+      {
+        id: "role_2",
+        url: "https://tempfile.aiquickdraw.com/workers/nano/image_1770100690322_j4qgfl.png",
+        name: "小兔",
+        prompt:
+          "一只可爱的雌性兔子，长着长长的粉色耳朵和毛茸茸的白色身体。眼睛是明亮的蓝色，像两颗蓝宝石，闪烁着活泼的光芒。鼻子是粉色的，微微抽动着。脖子上系着一个红色的蝴蝶结。体型小巧圆润，看起来非常友善。使用纯白色背景。",
+        taskId: "48469da7a7ab9387aec4b706dd3bda8f",
+        recordId: "48469da7a7ab9387aec4b706dd3bda8f",
+        prompt_en:
+          "A cute female rabbit with long pink ears and a fluffy white body. Bright blue eyes, like sapphires, sparkling with liveliness. Pink nose, twitching slightly. Wears a red bow tie around her neck. Small and chubby body shape, appearing very friendly. Use a pure white background.",
+      },
+    ],
+    scenes: [null, null],
+    createAt: "2026-02-03 16:01:21",
+    status: 0,
+    config: {
+      ratio: "9:16",
+      theme: "诚实与正直",
+      length: 100,
+      userId: "o_lhg1z2VXxGtPaGnVKpSbFbA70I",
+      storyId: "4b9424874343e19883e489ac",
+      language: "中文",
+      roleCount: 2,
+      sceneCount: 2,
+      storyStyle: "李欧·李奥尼",
+      pictureStyle: "李欧·李奥尼",
+      redisExpiredTime: 86400,
+    },
+    cover: {
+      id: "cover_1",
+      url: "https://tempfile.aiquickdraw.com/workers/nano/image_1770110988808_5axwhc.png",
+      prompt:
+        "绘本封面风格，可爱的拟人小松鼠男孩‘小诚’位于画面中心，他穿着橙红色背带裤和浅蓝色衬衫，兴奋地举着一颗闪闪发光、有着几个可爱小角的金色星星，脸上洋溢着惊喜和开心的笑容。背景是阳光明媚的森林，有高大的树木、柔软的草地和点点野花。整个画面充满明亮、温暖的色调，氛围奇幻、欢乐，适合儿童观看。",
+      taskId: "98fc1cea7d5c8f20acb8e856504f1dc6",
+      roleIds: ["role_1"],
+      recordId: "98fc1cea7d5c8f20acb8e856504f1dc6",
+      roleUrls: [
+        "https://tempfile.aiquickdraw.com/workers/nano/image_1770100690097_a65upg.png",
+        "https://tempfile.aiquickdraw.com/workers/nano/image_1770100690322_j4qgfl.png",
+      ],
+      prompt_en:
+        "Picture book cover style. The cute anthropomorphic squirrel boy 'Xiao Cheng' is at the center of the image. He wears orange-red overalls and a light blue shirt, excitedly holding up a shiny, golden star with several adorable little points, with a face full of surprise and happiness. The background is a sunny forest with tall trees, soft grass, and small wildflowers. The entire scene is filled with bright, warm colors. The atmosphere is fantastical and joyful, suitable for children.",
+    },
+  },
+};
+
+const pbDetail = ref<IPictureBook | undefined>(
+  p.data as unknown as IPictureBook
+);
+
 const roles = ref<IRoleItem[]>(r.data.roles.map((item: any) => item.data));
-const scenes = ref<ISceneItem[]>([]);
-const cover = ref<ICoverItem>({
-  id: "",
-  url: "",
-  prompt: "",
-  taskId: "",
-  recordId: "",
-  prompt_en: "",
-});
+const scenes = ref<ISceneItem[]>(s.data.scenes.map((item: any) => item.data));
+const cover = ref<ICoverItem[]>(c.data.cover.map((item: any) => item.data));
 
 const selectedThemeIndexes = ref<number[]>([0, 0]);
 const selectedStoryStyleIndex = ref<number>(0);
@@ -306,6 +487,8 @@ provide("selectedLanguageIndex", selectedLanguageIndex);
 provide("selectedRatioIndex", selectedRatioIndex);
 provide("story", story);
 provide("roles", roles);
+provide("scenes", scenes);
+provide("cover", cover);
 
 const renderStoryStyles = computed(() => {
   return [
@@ -333,6 +516,19 @@ const renderPictureStyles = computed(() => {
 
 onMounted(() => {
   initData();
+
+  uni.$on(
+    EEmitEvents.OPEN_REGENERATE_ROLE_MODAL,
+    handleOpenRegenerateRoleModal
+  );
+  uni.$on(
+    EEmitEvents.OPEN_REGENERATE_SCENE_MODAL,
+    handleOpenRegenerateSceneModal
+  );
+  uni.$on(
+    EEmitEvents.OPEN_REGENERATE_COVER_MODAL,
+    handleOpenRegenerateCoverModal
+  );
 });
 
 function initData() {
@@ -382,6 +578,14 @@ function handleBack() {
 
 function closeModal() {
   modalVisible.value = false;
+}
+
+function handleBeforeLeave() {
+  if (modalData.value?.component === EModalComponent.REGENERATE_ROLE_MODAL) {
+    uni.$emit(EEmitEvents.CANCEL_REGENERATE_ROLE, {
+      role: modalData.value.data.role,
+    });
+  }
 }
 
 function showSelectThemeModal() {
@@ -496,6 +700,42 @@ function showRegenerateRoleModal(data: any) {
   });
 }
 
+function showRegenerateSceneModal(data: any) {
+  modalData.value = {
+    component: EModalComponent.REGENERATE_SCENE_MODAL,
+    data: {
+      scene: null,
+    },
+  };
+  nextTick(() => {
+    modalData.value = {
+      component: EModalComponent.REGENERATE_SCENE_MODAL,
+      data: {
+        scene: data.scene,
+      },
+    };
+    modalVisible.value = true;
+  });
+}
+
+function showRegenerateCoverModal(data: any) {
+  modalData.value = {
+    component: EModalComponent.REGENERATE_COVER_MODAL,
+    data: {
+      cover: null,
+    },
+  };
+  nextTick(() => {
+    modalData.value = {
+      component: EModalComponent.REGENERATE_COVER_MODAL,
+      data: {
+        cover: data.cover,
+      },
+    };
+    modalVisible.value = true;
+  });
+}
+
 function openModal(params: { component: string; data: any }) {
   if (params.component === EModalComponent.CHOOSE_THEME_MODAL) {
     showSelectThemeModal();
@@ -509,6 +749,10 @@ function openModal(params: { component: string; data: any }) {
     showSelectRatioModal();
   } else if (params.component === EModalComponent.REGENERATE_ROLE_MODAL) {
     showRegenerateRoleModal(params.data);
+  } else if (params.component === EModalComponent.REGENERATE_SCENE_MODAL) {
+    showRegenerateSceneModal(params.data);
+  } else if (params.component === EModalComponent.REGENERATE_COVER_MODAL) {
+    showRegenerateCoverModal(params.data);
   }
 }
 
@@ -589,12 +833,30 @@ function handleRegenerateStory(e: any) {
 }
 
 function handleConfirmedStory(e: any) {
-  roles.value = e.roles;
+  console.log(">>>>>>> 确认故事 ", e);
+  roles.value = e.roles.map((item: any) => item.data);
   currentStepIndex.value = 2;
 }
 
-function handleRegenerateRole(e: any) {
-  console.log(".... handleRegenerateRole", e);
+function handleConfirmedRoles(e: any) {
+  console.log(">>>>>>> 确认角色 ", e);
+  scenes.value = e.scenes.map((item: any) => item.data);
+  currentStepIndex.value = 3;
+}
+
+function handleConfirmedScenes(e: any) {
+  console.log(">>>>>>> 确认场景 ", e);
+  cover.value = e.cover.map((item: any) => item.data);
+  currentStepIndex.value = 4;
+}
+
+function handleConfirmedCover(e: any) {
+  console.log(">>>>>>> 确认封面 ", e);
+  pbDetail.value = e;
+  currentStepIndex.value = 5;
+}
+
+function handleOpenRegenerateRoleModal(e: any) {
   openModal({
     component: EModalComponent.REGENERATE_ROLE_MODAL,
     data: {
@@ -603,8 +865,52 @@ function handleRegenerateRole(e: any) {
   });
 }
 
+function handleOpenRegenerateSceneModal(e: any) {
+  openModal({
+    component: EModalComponent.REGENERATE_SCENE_MODAL,
+    data: {
+      scene: e.scene,
+    },
+  });
+}
+
+function handleOpenRegenerateCoverModal(e: any) {
+  openModal({
+    component: EModalComponent.REGENERATE_COVER_MODAL,
+    data: {
+      cover: e.cover,
+    },
+  });
+}
+
 function handleConfirmRegeneratedRole(e: any) {
   // 重新生成角色
+  roles.value = roles.value.map((item: IRoleItem) => {
+    if (item.id === e.role.id) {
+      return e.role;
+    }
+    return item;
+  });
+}
+
+function handleConfirmRegeneratedScene(e: any) {
+  // 重新生成场景
+  scenes.value = scenes.value.map((item: ISceneItem) => {
+    if (item.id === e.scene.id) {
+      return e.scene;
+    }
+    return item;
+  });
+}
+
+function handleConfirmRegeneratedCover(e: any) {
+  // 重新生成封面
+  cover.value = cover.value.map((item: ICoverItem) => {
+    if (item.id === e.cover.id) {
+      return e.cover;
+    }
+    return item;
+  });
 }
 </script>
 

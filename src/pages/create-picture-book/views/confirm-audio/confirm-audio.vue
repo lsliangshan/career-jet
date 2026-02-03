@@ -9,9 +9,63 @@
           minHeight: `calc(100% - ${headerHeight}px - 128rpx - ${safeBottom}px)`,
         }"
       >
-        <view
-          class="w-full min-h-[300rpx] rounded-[24rpx] bg-white p-6 shadow-sm border border-black/[0.03]"
-        ></view>
+        <view class="w-full mt-[32rpx] rounded-[24rpx] flex flex-col">
+          <view
+            class="shadow-[0_4rpx_16rpx_rgba(0,0,0,0.03)] flex items-center transition-all"
+            v-for="(voice, index) in voiceTypes"
+            :key="`${voice.value}`"
+            @click="handleSelectVoiceType(index)"
+          >
+            <view
+              class="rounded-[32rpx] p-4 w-full h-full border-2 flex items-center gap-4 mb-3 transition-all"
+              :style="{
+                backgroundColor:
+                  selectedVoiceTypeIndex === index
+                    ? ThemeColors.primary100
+                    : 'bg-white',
+                borderColor:
+                  selectedVoiceTypeIndex === index
+                    ? ThemeColors.primary
+                    : 'transparent',
+              }"
+            >
+              <view
+                class="w-[80rpx] h-[80rpx] flex flex-row items-center justify-center active:scale-95 transition-all duration-300"
+                @click.stop="handlePlayClick(voice)"
+              >
+                <svg-icon
+                  :src="`/static/${iconThemeVersion}/icon_play_circle.svg`"
+                  class="w-full h-full"
+                  :color="
+                    selectedVoiceTypeIndex === index
+                      ? ThemeColors.primary
+                      : ThemeColors.text.disabled
+                  "
+                  v-if="currentPlayVoiceType !== voice.value"
+                />
+                <svg-icon
+                  :src="`/static/${iconThemeVersion}/icon_pause_circle.svg`"
+                  class="w-full h-full"
+                  :color="
+                    selectedVoiceTypeIndex === index
+                      ? ThemeColors.primary
+                      : ThemeColors.text.disabled
+                  "
+                  v-else
+                />
+              </view>
+              <view class="flex-1 flex flex-col items-start">
+                <h3 class="font-bold text-[30rpx]">{{ voice.name }}</h3>
+                <span class="mt-0.5 text-[28rpx] text-[#888]">{{
+                  voice.gender.toLowerCase() === "male" ? "男声" : "女声"
+                }}</span>
+              </view>
+              <view class="radio-outer">
+                <view class="radio-inner"></view>
+              </view>
+            </view>
+          </view>
+        </view>
 
         <view class="w-full flex flex-row items-start gap-[12rpx]">
           <view
@@ -25,8 +79,7 @@
           </view>
           <view class="w-full flex flex-row items-start justify-start">
             <text class="leading-[40rpx] text-[28rpx] text-[#888]"
-              >提示：AI
-              已经根据您的参数生成了精彩的故事内容。您可以直接确认，或进行微调以更符合您的期待。</text
+              >提示：整本绘本将使用同一种音色生成。</text
             >
           </view>
         </view>
@@ -63,7 +116,8 @@
 
 <script setup lang="ts">
 import { iconThemeVersion, ThemeColors } from "@/config/config";
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
+import { voiceTypes } from "@/config/config";
 
 const $emit = defineEmits<{
   (e: "confirm-audio"): void;
@@ -72,12 +126,50 @@ const $emit = defineEmits<{
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
+const selectedVoiceTypeIndex = ref<number>(0);
+
+const currentPlayVoiceType = ref<number>(0);
+
+const audioContext = ref<any>(null);
+
+onMounted(() => {
+  audioContext.value = uni.createInnerAudioContext();
+  audioContext.value.autoplay = true;
+  audioContext.value.onEnded(() => {
+    currentPlayVoiceType.value = 0;
+  });
+});
+
 const headerHeight = computed(() => {
   return safeTop + uni.upx2px(168);
 });
 
 function handleConfirmAudio() {
   $emit("confirm-audio");
+}
+
+function handlePlayAudio(voiceType: number) {
+  currentPlayVoiceType.value = voiceType;
+  audioContext.value.src =
+    voiceTypes.find((v) => v.value === voiceType)?.audio || "";
+  audioContext.value.play();
+}
+
+function handleStopAudio() {
+  audioContext.value.stop();
+  currentPlayVoiceType.value = 0;
+}
+
+function handlePlayClick(voice: any) {
+  if (currentPlayVoiceType.value === voice.value) {
+    handleStopAudio();
+  } else {
+    handlePlayAudio(voice.value);
+  }
+}
+
+function handleSelectVoiceType(index: number) {
+  selectedVoiceTypeIndex.value = index;
 }
 </script>
 

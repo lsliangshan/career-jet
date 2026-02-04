@@ -417,7 +417,7 @@ async function handleRegenerateCover() {
     id: props.info.id,
     prompt: `a children's book illustation style by ${props.pictureStyle}, ${regenerateModalCover.value.prompt}`,
   });
-  console.log(">>> 重新生成返回: ", res);
+
   if (res.code === 200) {
     hideRegenerateModal();
 

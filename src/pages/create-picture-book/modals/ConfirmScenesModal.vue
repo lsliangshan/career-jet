@@ -603,7 +603,7 @@ async function handleRegenerateScene() {
     ratio: props.ratio,
     imageUrls: regenerateModalScene.value.roleUrls,
   });
-  console.log(">>> 重新生成返回: ", res);
+
   if (res.code === 200) {
     hideRegenerateModal();
 

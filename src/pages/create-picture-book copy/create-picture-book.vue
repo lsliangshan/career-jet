@@ -1240,7 +1240,6 @@ function doConfirmFinished(e: any) {
 }
 
 function handleConfirmedRole(e: any) {
-  console.log(">>>>> handleConfirmedRole: ", e);
   if (e.action === EConfirmAction.CONFIRM_SCENES) {
     doConfirmScene(e);
   } else if (e.action === EConfirmAction.CONFIRM_COVER) {
@@ -1265,7 +1264,6 @@ function handleConfirmedCover(e: any) {
 }
 
 function handleConfirmedStory(e: any) {
-  console.log(">>>>> handleConfirmedStory: ", e);
   if (e.action === EConfirmAction.CONFIRM_ROLES) {
     doConfirmRole(e);
   } else if (e.action === EConfirmAction.CONFIRM_SCENES) {

@@ -371,7 +371,7 @@ async function listImageUrls(taskIds: string[]) {
   // await sleep(3000);
   images.forEach((url, taskId) => {
     const id = getIdByTaskId(taskId);
-    console.log(">>>>>>> id: ", stepData.value);
+
     if (id) {
       if (loadingImageIds.value.has(id)) {
         loadingImageIds.value.delete(id);
@@ -484,7 +484,7 @@ async function editPictureBook() {
       renderList.value = [];
       currentStepIndex.value = EStepIndex.AUDIO;
     }
-    console.log(">>>>>>>>> imageTaskIds: ", renderList.value);
+
     if (imageTaskIds.length > 0) {
       listImageUrls(imageTaskIds);
     }
@@ -650,7 +650,6 @@ async function handleConfirmCover() {
 }
 
 async function handleNextStep() {
-  console.log(">>>> handleNextStep: ", stepData.value);
   if (isConfirming.value) {
     return;
   }
@@ -670,7 +669,6 @@ async function handleNextStep() {
 }
 
 function handleAllConfirmed(res: any) {
-  console.log(">>>> handleAllConfirmed: ", res);
   stepData.value = res.data;
   if (res.action === EConfirmAction.CONFIRM_ROLES) {
     currentStepIndex.value = 0;

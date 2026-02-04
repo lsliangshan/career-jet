@@ -298,14 +298,6 @@ async function doConfirmStory() {
   isConfirming.value = true;
 
   const confirmUrl = props.info.confirmUrl;
-  console.log(
-    ">>> confirm: ",
-    JSON.stringify({
-      id: props.info.id,
-      title: renderStoryTitle.value,
-      content: renderStoryContent.value,
-    })
-  );
 
   // 确认故事
   const res = await requestCustomUrl({

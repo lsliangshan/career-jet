@@ -182,7 +182,6 @@ export const useUserStore = defineStore("user", () => {
         ...params,
       }).then((res: any) => {
         if (res.code == 200) {
-          console.log(">>> updateUserInfo: ", res.data);
           loginInfo.value = {
             ...loginInfo.value!,
             ...res.data,

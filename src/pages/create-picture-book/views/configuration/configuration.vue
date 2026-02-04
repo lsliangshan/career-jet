@@ -395,9 +395,11 @@
         }"
       >
         <view
-          class="w-full h-[88rpx] py-4 rounded-[24rpx] shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          class="w-full h-[88rpx] py-4 rounded-[24rpx] shadow-lg transition-all flex items-center justify-center gap-2"
           :class="[
-            isGenerating ? 'pointer-events-none' : 'pointer-events-auto',
+            isGenerating
+              ? 'pointer-events-none'
+              : 'pointer-events-auto active:scale-[0.98]',
           ]"
           :style="{
             backgroundColor: isGenerating
@@ -409,10 +411,15 @@
           }"
           @click="handleGenerateStory"
         >
+          <CustomLoader
+            v-if="isGenerating"
+            color="#fff"
+            :size="32"
+          ></CustomLoader>
           <svg-icon
             :src="`/static/${iconThemeVersion}/icon_generate.svg`"
             class="w-[32rpx] h-[32rpx]"
-            :color="ThemeColors.text.white"
+            v-else
           ></svg-icon>
           <text class="text-[34rpx] text-white font-bold">{{
             isGenerating ? "正在生成..." : "生成故事"
@@ -433,6 +440,7 @@ import {
 import { computed, inject, nextTick, onMounted, ref } from "vue";
 import { EModalComponent } from "../../modals/types";
 import { usePictureBookStore } from "@/stores/picture_book";
+import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 
 const pictureBookStore = usePictureBookStore();
 
@@ -533,7 +541,6 @@ async function handleGenerateStory() {
   }
   isGenerating.value = true;
   const res = await pictureBookStore.generateStory(formData.value);
-  console.log(">>> generateStory res: ", res);
   if (res.code === 200 && res.data) {
     $emit("on-generated", res.data);
   } else {

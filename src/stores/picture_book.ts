@@ -9,6 +9,7 @@ import {
   requestConfirmScenes,
   requestConfirmStory,
   requestEditPictureBook,
+  requestGenerateAudios,
   requestGenerateStory,
   requestGetAudiosByPbId,
   requestGetMyFavoritePictureBooks,
@@ -301,6 +302,25 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     });
   }
 
+  function generateAudios(params: {
+    pbId: string;
+    voiceType: number;
+    speed?: number;
+    volume?: number;
+  }) {
+    return new Promise(async (resolve) => {
+      const userId = ensureLoginStatus();
+      const res = await requestGenerateAudios({
+        userId: userId,
+        pbId: params.pbId,
+        voiceType: params.voiceType,
+        speed: params.speed,
+        volume: params.volume,
+      });
+      resolve(res);
+    });
+  }
+
   return {
     myPictureBooks,
     getMyPictureBooks,
@@ -318,5 +338,6 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     confirmRoles,
     confirmScenes,
     confirmCover,
+    generateAudios,
   };
 });

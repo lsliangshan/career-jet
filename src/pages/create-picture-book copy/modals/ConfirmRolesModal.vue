@@ -592,7 +592,7 @@ async function handleRegenerateRole() {
     prompt: `a children's book illustation style by ${props.pictureStyle}, ${regenerateModalRole.value.prompt}`,
     ratio: props.ratio,
   });
-  console.log(">>> 重新生成返回: ", res);
+
   if (res.code === 200) {
     hideRegenerateModal();
 

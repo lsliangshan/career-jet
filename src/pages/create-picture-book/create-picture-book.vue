@@ -69,7 +69,7 @@
         :key="step.value"
       >
         <Configuration
-          v-if="index === 0"
+          v-if="index === 0 && currentStepIndex === index"
           @open-modal="openModal"
           @change-custom-theme="changeCustomTheme"
           @change-custom-story-style="changeCustomStoryStyle"
@@ -80,24 +80,27 @@
           @on-generated="handleGeneratedStory"
         />
         <ConfirmStory
-          v-else-if="index === 1"
+          v-else-if="index === 1 && currentStepIndex === index"
           @regenerate-story="handleRegenerateStory"
           @on-confirmed="handleConfirmedStory"
         />
         <ConfirmRoles
-          v-else-if="index === 2"
+          v-else-if="index === 2 && currentStepIndex === index"
           @on-confirmed="handleConfirmedRoles"
         />
         <ConfirmScenes
-          v-else-if="index === 3"
+          v-else-if="index === 3 && currentStepIndex === index"
           @on-confirmed="handleConfirmedScenes"
         />
         <ConfirmCover
-          v-else-if="index === 4"
+          v-else-if="index === 4 && currentStepIndex === index"
           @on-confirmed="handleConfirmedCover"
         />
-        <ConfirmAudio v-else-if="index === 5" />
-        <Finished v-else-if="index === 6" />
+        <ConfirmAudio
+          v-else-if="index === 5 && currentStepIndex === index"
+          @on-confirmed="handleConfirmedAudio"
+        />
+        <Finished v-else-if="index === 6 && currentStepIndex === index" />
       </swiper-item>
     </swiper>
   </Layout>
@@ -263,7 +266,7 @@ const createPictureBookSteps = [
   },
 ];
 
-const currentStepIndex = ref(5);
+const currentStepIndex = ref(0);
 
 const formData = ref<ICreatePictureBookFormData>({
   theme: "诚实与正直",
@@ -277,7 +280,7 @@ const formData = ref<ICreatePictureBookFormData>({
 });
 
 const story = ref<IStory>({
-  id: "4b9424874343e19883e489ac",
+  id: "",
   title: "",
   content: [],
 });
@@ -465,13 +468,17 @@ const p = {
   },
 };
 
-const pbDetail = ref<IPictureBook | undefined>(
-  p.data as unknown as IPictureBook
-);
+const pbDetail = ref<IPictureBook | undefined>();
+const roles = ref<IRoleItem[]>([]);
+const scenes = ref<ISceneItem[]>([]);
+const cover = ref<ICoverItem[]>([]);
 
-const roles = ref<IRoleItem[]>(r.data.roles.map((item: any) => item.data));
-const scenes = ref<ISceneItem[]>(s.data.scenes.map((item: any) => item.data));
-const cover = ref<ICoverItem[]>(c.data.cover.map((item: any) => item.data));
+// const pbDetail = ref<IPictureBook | undefined>(
+//   p.data as unknown as IPictureBook
+// );
+// const roles = ref<IRoleItem[]>(r.data.roles.map((item: any) => item.data));
+// const scenes = ref<ISceneItem[]>(s.data.scenes.map((item: any) => item.data));
+// const cover = ref<ICoverItem[]>(c.data.cover.map((item: any) => item.data));
 
 const selectedThemeIndexes = ref<number[]>([0, 0]);
 const selectedStoryStyleIndex = ref<number>(0);
@@ -562,7 +569,6 @@ function initData() {
 }
 
 function handleChange(e: any) {
-  console.log(">>>> handleChange: ", e);
   currentStepIndex.value = e.detail.current;
 }
 
@@ -833,27 +839,27 @@ function handleRegenerateStory(e: any) {
 }
 
 function handleConfirmedStory(e: any) {
-  console.log(">>>>>>> 确认故事 ", e);
   roles.value = e.roles.map((item: any) => item.data);
   currentStepIndex.value = 2;
 }
 
 function handleConfirmedRoles(e: any) {
-  console.log(">>>>>>> 确认角色 ", e);
   scenes.value = e.scenes.map((item: any) => item.data);
   currentStepIndex.value = 3;
 }
 
 function handleConfirmedScenes(e: any) {
-  console.log(">>>>>>> 确认场景 ", e);
   cover.value = e.cover.map((item: any) => item.data);
   currentStepIndex.value = 4;
 }
 
 function handleConfirmedCover(e: any) {
-  console.log(">>>>>>> 确认封面 ", e);
   pbDetail.value = e;
   currentStepIndex.value = 5;
+}
+
+function handleConfirmedAudio(e: any) {
+  currentStepIndex.value = 6;
 }
 
 function handleOpenRegenerateRoleModal(e: any) {

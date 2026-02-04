@@ -143,6 +143,7 @@ onMounted(() => {
   uni.$on(EEmitEvents.START_REGENERATE_ROLE, handleStartRegenerateRole);
   uni.$on(EEmitEvents.REGENERATE_ROLE_RESPONSE, handleRegenerateRoleResponse);
   uni.$on(EEmitEvents.REGENERATE_ROLE_ERROR, handleRegenerateRoleError);
+
   listImageUrls(roles?.value?.map((role: IRoleItem) => role.taskId) ?? []) ??
     [];
 });

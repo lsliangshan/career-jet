@@ -22,7 +22,7 @@
             :style="{
               top:
                 selectedVoiceTypeIndex === index
-                  ? `${headerHeight + 12}px`
+                  ? `${headerHeight + 10}px`
                   : '0',
             }"
             @click="handleSelectVoiceType(index)"
@@ -105,19 +105,34 @@
       >
         <view
           class="w-full h-[88rpx] py-4 rounded-[24rpx] shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          :class="[
+            !isGenerating
+              ? 'pointer-events-auto active:scale-95'
+              : 'pointer-events-none',
+          ]"
           :style="{
-            backgroundColor: ThemeColors.primary,
-            boxShadow: `0 10px 15px -3px ${ThemeColors.primary300}`,
+            backgroundColor: !isGenerating
+              ? ThemeColors.primary
+              : ThemeColors.text.disabled,
+            boxShadow: `0 10px 15px -3px ${
+              !isGenerating ? ThemeColors.primary300 : ThemeColors.text.disabled
+            }`,
           }"
           @click="handleConfirmAudio"
         >
-          <text class="text-[34rpx] text-white font-bold"
-            >确认配音，下一步</text
-          >
+          <CustomLoader
+            v-if="isGenerating"
+            color="#fff"
+            :size="32"
+          ></CustomLoader>
+          <text class="text-[34rpx] text-white font-bold">{{
+            isGenerating ? "正在配音..." : "确认配音，下一步"
+          }}</text>
           <svg-icon
             :src="`/static/${iconThemeVersion}/icon_next.svg`"
             class="w-[32rpx] h-[32rpx]"
             :color="ThemeColors.text.white"
+            v-if="!isGenerating"
           ></svg-icon>
         </view>
       </view>
@@ -126,16 +141,24 @@
 </template>
 
 <script setup lang="ts">
-import { iconThemeVersion, ThemeColors } from "@/config/config";
-import { computed, onMounted, ref } from "vue";
-import { voiceTypes } from "@/config/config";
+import { iconThemeVersion, ThemeColors, voiceTypes } from "@/config/config";
+import { computed, inject, nextTick, onMounted, type Ref, ref } from "vue";
+import CustomLoader from "@/components/custom-loader/custom-loader.vue";
+import { usePictureBookStore } from "@/stores/picture_book";
+import type { IStory } from "../../types";
 
 const $emit = defineEmits<{
-  (e: "confirm-audio"): void;
+  (e: "on-confirmed", params: any): void;
 }>();
+
+const story = inject<Ref<IStory>>("story");
+
+const pictureBookStore = usePictureBookStore();
 
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
+
+const isGenerating = ref(false);
 
 const selectedVoiceTypeIndex = ref<number>(0);
 
@@ -155,8 +178,30 @@ const headerHeight = computed(() => {
   return safeTop + uni.upx2px(168);
 });
 
-function handleConfirmAudio() {
-  $emit("confirm-audio");
+async function handleConfirmAudio() {
+  if (isGenerating.value || !story?.value) {
+    return;
+  }
+  isGenerating.value = true;
+
+  const res = await pictureBookStore.generateAudios({
+    pbId: story.value.id,
+    voiceType: voiceTypes[selectedVoiceTypeIndex.value].value,
+  });
+
+  if (res.code === 200 && res.data) {
+    uni.showToast({
+      title: "配音成功",
+      icon: "success",
+    });
+    isGenerating.value = false;
+    $emit("on-confirmed", res.data);
+  } else {
+    uni.showToast({
+      title: "配音失败，请稍后再试",
+      icon: "none",
+    });
+  }
 }
 
 function handlePlayAudio(voiceType: number) {

@@ -319,7 +319,6 @@ function handleViewPictureBook(pb: IPictureBook) {
 }
 
 function handleImageError(id: string) {
-  console.log(">>>>>> handleImageError: ", id);
   errorImageIds.value.add(id);
 }
 

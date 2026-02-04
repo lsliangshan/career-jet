@@ -322,6 +322,42 @@ export function requestConfirmCover(params?: {
 }
 
 /**
+ * 步骤4：确认封面
+ * @param params
+ * @param {string} params.userId 用户ID
+ * @param {string} params.pbId 绘本ID
+ * @param {number} params.voiceType 音色ID
+ * @param {number} [params.speed=-0.5] 音频速度
+ * @param {number} [params.volume=5] 音频音量
+ */
+export function requestGenerateAudios(params?: {
+  userId: string;
+  pbId: string;
+  voiceType: number;
+  speed?: number;
+  volume?: number;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `https://wf.qyflows.com/webhook-test/pb/generate-audios`,
+      // url: `${baseUrl}/pb/generate-audios`,
+      method: "POST",
+      data: {
+        ...params,
+        speed: params?.speed || -0.5,
+        volume: params?.volume || 5,
+      },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
  * 生成绘本
  * @param params
  * @param {string} params.userId 用户ID
@@ -353,8 +389,8 @@ export function requestGeneratePictureBook(params?: {
 }): Promise<any> {
   return new Promise<any>((resolve) => {
     uni.request({
-      url: `https://wf.qyflows.com/webhook-test/pb/generate`,
-      // url: `${baseUrl}/pb/generate`,
+      // url: `https://wf.qyflows.com/webhook-test/pb/generate`,
+      url: `${baseUrl}/pb/generate`,
       method: "POST",
       data: { ...params },
       success: (res) => {

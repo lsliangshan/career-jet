@@ -105,7 +105,7 @@
               v-for="(pb, index) in pictureBooks"
               :key="pb.id"
             >
-              <PbCard type="draft" :info="pb" />
+              <PbCard :type="type" :info="pb" />
             </view>
           </grid-view>
 
@@ -153,6 +153,7 @@ import Empty from "@/components/empty/empty.vue";
 import PageLoading from "@/components/page-loading/page-loading.vue";
 import RefresherSuccess from "@/components/RefresherSuccess.vue";
 import PbCard from "@/components/pb-card/pb-card.vue";
+import { navigateBack } from "@/utils/router";
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
@@ -178,9 +179,6 @@ const totalPage = ref(1);
 
 const pictureBooks = ref<IPictureBook[]>([]);
 
-// 加载失败的图片id列表
-const errorImageIds = ref<Set<string>>(new Set());
-
 const type = ref<"draft" | "final">("final");
 
 const headerHeight = computed(() => {
@@ -188,22 +186,6 @@ const headerHeight = computed(() => {
 });
 const offsetTop = computed(() => {
   return safeTop + uni.upx2px(280);
-});
-
-const isHorizontalRatio = computed(() => {
-  return (ratio: string) => {
-    return Number(ratio.split(":")[0]) > Number(ratio.split(":")[1]);
-  };
-});
-
-const renderImageHeight = computed(() => {
-  return function (ratio: string) {
-    const r = ratio ? ratio.split(":") : ["16", "9"];
-    const width = Number(r[0]);
-    const height = Number(r[1]);
-
-    return (378 * height) / width;
-  };
 });
 
 onLoad((options: any) => {
@@ -288,48 +270,8 @@ async function getMyPictureBooks() {
   isLoading.value = false;
 }
 
-function handleViewPictureBook(pb: IPictureBook) {
-  if (type.value === "draft") {
-    uni.navigateTo({
-      url: `/pages/edit-picture-book/edit-picture-book?id=${pb.id}`,
-      complete: () => {
-        refresherSuccessVisible.value = false;
-      },
-    });
-    return;
-  }
-  if (
-    Number(pb.config.ratio.split(":")[0]) >
-    Number(pb.config.ratio.split(":")[1])
-  ) {
-    uni.navigateTo({
-      url: `/pages/picture-book-detail-horizontal/picture-book-detail-horizontal?id=${pb.id}`,
-      complete: () => {
-        refresherSuccessVisible.value = false;
-      },
-    });
-  } else {
-    uni.navigateTo({
-      url: `/pages/picture-book-detail/picture-book-detail?id=${pb.id}`,
-      complete: () => {
-        refresherSuccessVisible.value = false;
-      },
-    });
-  }
-}
-
-function handleImageError(id: string) {
-  errorImageIds.value.add(id);
-}
-
 function handleBack() {
-  uni.navigateBack({
-    fail: () => {
-      uni.reLaunch({
-        url: "/pages/index/index",
-      });
-    },
-  });
+  navigateBack();
 }
 </script>
 

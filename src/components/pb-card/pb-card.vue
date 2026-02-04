@@ -68,6 +68,10 @@ import { iconThemeVersion, ThemeColors } from "@/config/config";
 import type { IPictureBook } from "@/types";
 import { computed, ref } from "vue";
 import { formatReadCount } from "@/utils";
+import {
+  navigateToEditPictureBook,
+  navigateToPictureBookDetail,
+} from "@/utils/router";
 
 interface Props {
   info: IPictureBook;
@@ -116,32 +120,10 @@ const renderImageHeight = computed(() => {
 
 function handleViewPictureBook(pb: IPictureBook) {
   if (props.type === "draft") {
-    uni.navigateTo({
-      url: `/pages/edit-picture-book/edit-picture-book?id=${pb.id}`,
-      complete: () => {
-        // refresherSuccessVisible.value = false;
-      },
-    });
+    navigateToEditPictureBook(pb);
     return;
   }
-  if (
-    Number(pb.config.ratio.split(":")[0]) >
-    Number(pb.config.ratio.split(":")[1])
-  ) {
-    uni.navigateTo({
-      url: `/pages/picture-book-detail-horizontal/picture-book-detail-horizontal?id=${pb.id}`,
-      complete: () => {
-        // refresherSuccessVisible.value = false;
-      },
-    });
-  } else {
-    uni.navigateTo({
-      url: `/pages/picture-book-detail/picture-book-detail?id=${pb.id}`,
-      complete: () => {
-        // refresherSuccessVisible.value = false;
-      },
-    });
-  }
+  navigateToPictureBookDetail(pb);
 }
 
 function handleImageError() {

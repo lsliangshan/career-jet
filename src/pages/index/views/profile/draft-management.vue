@@ -106,7 +106,10 @@ import { computed, nextTick, onMounted, ref } from "vue";
 import { usePictureBookStore } from "@/stores/picture_book";
 import type { IPictureBook } from "@/types";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
-import { navigateToEditPictureBook } from "@/utils/router";
+import {
+  navigateToEditPictureBook,
+  navigateToPictureBookDraftList,
+} from "@/utils/router";
 
 const pictureBookStore = usePictureBookStore();
 
@@ -173,9 +176,7 @@ function handleImageError(id: string) {
 }
 
 function handleViewAll() {
-  uni.navigateTo({
-    url: `/pages/picture-book-list/picture-book-list?type=draft`,
-  });
+  navigateToPictureBookDraftList();
 }
 
 function handleViewPictureBook(pb: IPictureBook) {

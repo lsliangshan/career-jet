@@ -342,7 +342,6 @@ const renderPictureStyles = computed(() => {
 });
 
 onLoad(async (options: any) => {
-  console.log(">>>>>>>", options);
   if (options.id) {
     pbId.value = options.id;
   }

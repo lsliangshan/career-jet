@@ -72,9 +72,12 @@ export const useUserStore = defineStore("user", () => {
   );
 
   onMounted(() => {
+    init();
+  });
+
+  function init() {
     try {
       let localLoginInfo = uni.getStorageSync(LOGIN_INFO_KEY);
-
       if (localLoginInfo) {
         if (!localLoginInfo.token) {
           loginInfo.value = undefined;
@@ -98,7 +101,7 @@ export const useUserStore = defineStore("user", () => {
         loginInfo.value = localLoginInfo;
       }
     } catch (e) {}
-  });
+  }
 
   async function getUserSummary() {
     if (!loginInfo.value?.id) {
@@ -209,6 +212,7 @@ export const useUserStore = defineStore("user", () => {
     loginInfo,
     isLoggedIn,
     userSummary,
+    init,
     login,
     logout,
     updateUserInfo,

@@ -44,6 +44,8 @@ function getEditAction(pb: IPictureBook) {
     stepIndex = 2;
   } else if (!pb.cover || Object.keys(pb.cover).length === 0) {
     stepIndex = 3;
+  } else {
+    stepIndex = createPictureBookSteps.length - 1;
   }
   return createPictureBookSteps[stepIndex].value;
 }
@@ -73,4 +75,53 @@ export function navigateToEditPictureBook(
       },
     });
   }
+}
+
+export function navigateToPictureBookDetail(
+  pb: IPictureBook,
+  options?: {
+    method?: "navigateTo" | "redirectTo";
+    complete?: () => void;
+  }
+) {
+  const { method = "navigateTo" } = options || {};
+  const horizontalUrl =
+    "/pages/picture-book-detail-horizontal/picture-book-detail-horizontal";
+  const verticalUrl = "/pages/picture-book-detail/picture-book-detail";
+  let url = "";
+  if (
+    Number(pb.config.ratio.split(":")[0]) >
+    Number(pb.config.ratio.split(":")[1])
+  ) {
+    url = horizontalUrl;
+  } else {
+    url = verticalUrl;
+  }
+  if (method === "navigateTo") {
+    uni.navigateTo({
+      url: `${url}?id=${pb.id}`,
+      complete: () => {
+        options?.complete?.();
+      },
+    });
+  } else {
+    uni.redirectTo({
+      url: `${url}?id=${pb.id}`,
+      complete: () => {
+        options?.complete?.();
+      },
+    });
+  }
+}
+
+export function navigateToPictureBookDraftList() {
+  uni.navigateTo({
+    url: `/pages/picture-book-list/picture-book-list?type=draft`,
+  });
+}
+
+export function navigateToPictureBookList() {
+  uni.navigateTo({
+    url: `/pages/picture-book-list/picture-book-list?type=final`,
+  });
 }

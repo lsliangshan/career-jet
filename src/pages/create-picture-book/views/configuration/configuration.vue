@@ -385,8 +385,6 @@
             </view>
           </view>
         </view>
-
-        <view class="w-full h-[3000rpx] bg-white"></view>
       </view>
 
       <view

@@ -247,6 +247,7 @@ import {
   EEmitEvents,
   type IPictureBook,
 } from "@/types";
+import { onShareAppMessage } from "@dcloudio/uni-app";
 
 const pictureBookStore = usePictureBookStore();
 
@@ -594,6 +595,8 @@ const renderPictureStyles = computed(() => {
 
 onMounted(() => {
   initData();
+
+  uni.hideShareMenu();
 
   uni.$on(
     EEmitEvents.OPEN_REGENERATE_ROLE_MODAL,
@@ -989,6 +992,16 @@ function handleConfirmRegeneratedCover(e: any) {
     return item;
   });
 }
+
+onShareAppMessage(() => {
+  return {
+    title: pbDetail?.value?.title,
+    path:
+      "/pages/picture-book-detail/picture-book-detail?id=" +
+      pbDetail?.value?.id,
+    imageUrl: pbDetail?.value?.cover?.url || "",
+  };
+});
 </script>
 
 <style lang="scss">

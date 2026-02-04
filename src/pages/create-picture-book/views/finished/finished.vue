@@ -63,17 +63,22 @@
                 backgroundColor: ThemeColors.primary100,
               }"
             >
-              <svg-icon
-                :src="`/static/${iconThemeVersion}/icon_share.svg`"
-                class="w-[32rpx] h-[32rpx]"
-                :color="ThemeColors.primary"
-              />
-              <text
-                class="text-[28rpx]"
-                :style="{ color: ThemeColors.primary }"
+              <button
+                open-type="share"
+                class="w-full h-full border-none after:border-none bg-transparent p-0 flex flex-row items-center justify-center"
               >
-                分享给好友
-              </text>
+                <svg-icon
+                  :src="`/static/${iconThemeVersion}/icon_share.svg`"
+                  class="w-[32rpx] h-[32rpx]"
+                  :color="ThemeColors.primary"
+                />
+                <text
+                  class="text-[28rpx]"
+                  :style="{ color: ThemeColors.primary }"
+                >
+                  分享给好友
+                </text>
+              </button>
             </view>
           </view>
         </view>

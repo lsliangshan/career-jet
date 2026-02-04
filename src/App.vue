@@ -12,6 +12,8 @@ onLaunch(() => {
       'url("http://img09.zhaopin.com/2012/other/mobile/campus/clive/8vIJ7ww63mVu7gt79mT7PkRXMw.woff2")',
     desc: {
       weight: "700",
+      style: "normal",
+      variant: "normal",
     },
     complete: () => {},
   });

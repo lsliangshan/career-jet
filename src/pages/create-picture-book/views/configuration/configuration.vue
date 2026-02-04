@@ -385,6 +385,8 @@
             </view>
           </view>
         </view>
+
+        <view class="w-full h-[3000rpx] bg-white"></view>
       </view>
 
       <view
@@ -419,6 +421,7 @@
           <svg-icon
             :src="`/static/${iconThemeVersion}/icon_generate.svg`"
             class="w-[32rpx] h-[32rpx]"
+            color="#fff"
             v-else
           ></svg-icon>
           <text class="text-[34rpx] text-white font-bold">{{

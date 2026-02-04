@@ -59,7 +59,40 @@
     </view>
   </view>
   <Layout :hasHeader="false">
-    <swiper
+    <Configuration
+      v-if="currentStepIndex === 0"
+      @open-modal="openModal"
+      @change-custom-theme="changeCustomTheme"
+      @change-custom-story-style="changeCustomStoryStyle"
+      @change-custom-picture-style="changeCustomPictureStyle"
+      @change-story-length="changeStoryLength"
+      @change-role-count="changeRoleCount"
+      @change-scene-count="changeSceneCount"
+      @on-generated="handleGeneratedStory"
+    />
+    <ConfirmStory
+      v-else-if="currentStepIndex === 1"
+      @regenerate-story="handleRegenerateStory"
+      @on-confirmed="handleConfirmedStory"
+    />
+    <ConfirmRoles
+      v-else-if="currentStepIndex === 2"
+      @on-confirmed="handleConfirmedRoles"
+    />
+    <ConfirmScenes
+      v-else-if="currentStepIndex === 3"
+      @on-confirmed="handleConfirmedScenes"
+    />
+    <ConfirmCover
+      v-else-if="currentStepIndex === 4"
+      @on-confirmed="handleConfirmedCover"
+    />
+    <ConfirmAudio
+      v-else-if="currentStepIndex === 5"
+      @on-confirmed="handleConfirmedAudio"
+    />
+    <Finished v-else-if="currentStepIndex === 6" />
+    <!-- <swiper
       class="w-full h-full"
       :current="currentStepIndex"
       @change="handleChange"
@@ -102,7 +135,7 @@
         />
         <Finished v-else-if="index === 6 && currentStepIndex === index" />
       </swiper-item>
-    </swiper>
+    </swiper> -->
   </Layout>
 
   <page-container
@@ -496,6 +529,7 @@ provide("story", story);
 provide("roles", roles);
 provide("scenes", scenes);
 provide("cover", cover);
+provide("pbDetail", pbDetail);
 
 const renderStoryStyles = computed(() => {
   return [

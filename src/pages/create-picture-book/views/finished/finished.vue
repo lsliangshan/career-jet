@@ -4,14 +4,20 @@
       <view class="w-full" :style="{ height: `${headerHeight}px` }"></view>
 
       <view
-        class="w-full px-[32rpx] py-[24rpx] box-border flex flex-col gap-[24rpx]"
+        class="w-full px-[32rpx] py-[32rpx] box-border flex flex-col gap-[24rpx]"
         :style="{
           minHeight: `calc(100% - ${headerHeight}px - 128rpx - ${safeBottom}px)`,
         }"
       >
-        <view
-          class="w-full min-h-[300rpx] rounded-[24rpx] bg-white p-6 shadow-sm border border-black/[0.03]"
-        ></view>
+        <view class="w-full">
+          <ImageCard
+            type="cover"
+            :info="pbDetail?.cover"
+            :ratio="formData!.ratio"
+            :isLoading="loadingImageIds.has(pbDetail?.cover?.id ?? '')"
+            :content="pbDetail?.cover?.prompt ?? ''"
+          />
+        </view>
 
         <view class="w-full flex flex-row items-start gap-[12rpx]">
           <view
@@ -25,8 +31,7 @@
           </view>
           <view class="w-full flex flex-row items-start justify-start">
             <text class="leading-[40rpx] text-[28rpx] text-[#888]"
-              >提示：AI
-              已经根据您的参数生成了精彩的故事内容。您可以直接确认，或进行微调以更符合您的期待。</text
+              >提示：好的封面能吸引更多小朋友阅读哦。</text
             >
           </view>
         </view>
@@ -40,20 +45,44 @@
         }"
       >
         <view
-          class="w-full h-[88rpx] py-4 rounded-[24rpx] shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          class="w-full h-[88rpx] py-4 rounded-[24rpx] shadow-lg transition-all flex items-center justify-center gap-2"
+          :class="[
+            regeneratingImageIds.size === 0 &&
+            loadingImageIds.size === 0 &&
+            !isConfirming
+              ? 'pointer-events-auto active:scale-95'
+              : 'pointer-events-none',
+          ]"
           :style="{
-            backgroundColor: ThemeColors.primary,
-            boxShadow: `0 10px 15px -3px ${ThemeColors.primary300}`,
+            backgroundColor:
+              regeneratingImageIds.size === 0 &&
+              loadingImageIds.size === 0 &&
+              !isConfirming
+                ? ThemeColors.primary
+                : ThemeColors.text.disabled,
+            boxShadow: `0 10px 15px -3px ${
+              regeneratingImageIds.size === 0 &&
+              loadingImageIds.size === 0 &&
+              !isConfirming
+                ? ThemeColors.primary300
+                : ThemeColors.text.disabled
+            }`,
           }"
-          @click="handleFinished"
+          @click="handleConfirmCover"
         >
-          <text class="text-[34rpx] text-white font-bold"
-            >创作完成，去阅读</text
-          >
+          <CustomLoader
+            v-if="isConfirming"
+            color="#fff"
+            :size="32"
+          ></CustomLoader>
+          <text class="text-[34rpx] text-white font-bold">{{
+            isConfirming ? "正在确认封面..." : "确认封面，下一步"
+          }}</text>
           <svg-icon
             :src="`/static/${iconThemeVersion}/icon_next.svg`"
             class="w-[32rpx] h-[32rpx]"
             :color="ThemeColors.text.white"
+            v-if="!isConfirming"
           ></svg-icon>
         </view>
       </view>
@@ -63,11 +92,33 @@
 
 <script setup lang="ts">
 import { iconThemeVersion, ThemeColors } from "@/config/config";
-import { computed } from "vue";
+import { EEmitEvents, type IPictureBook, type ICoverItem } from "@/types";
+import { computed, inject, nextTick, onMounted, ref, type Ref } from "vue";
+import { type IStory, type ICreatePictureBookFormData } from "../../types";
+import ImageCard from "@/components/image-card/image-card.vue";
+import { requestGetImageUrls } from "@/request";
+import { usePictureBookStore } from "@/stores/picture_book";
+import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 
 const $emit = defineEmits<{
-  (e: "finished"): void;
+  (e: "on-confirmed", params: any): void;
 }>();
+
+const pictureBookStore = usePictureBookStore();
+
+const cover = inject<Ref<ICoverItem[]>>("cover");
+const formData = inject<Ref<ICreatePictureBookFormData>>("formData");
+const story = inject<Ref<IStory>>("story");
+const pbDetail = inject<Ref<IPictureBook>>("pbDetail");
+
+// 正在加载图片的id列表
+const loadingImageIds = ref<Set<string>>(new Set());
+
+// 正在重新生成的图片的id列表
+const regeneratingImageIds = ref<Set<string>>(new Set());
+
+// 是否确认中
+const isConfirming = ref(false);
 
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
@@ -76,8 +127,109 @@ const headerHeight = computed(() => {
   return safeTop + uni.upx2px(168);
 });
 
-function handleFinished() {
-  $emit("finished");
+onMounted(() => {
+  uni.$on(EEmitEvents.START_REGENERATE_COVER, handleStartRegenerateCover);
+  uni.$on(EEmitEvents.REGENERATE_COVER_RESPONSE, handleRegenerateCoverResponse);
+  uni.$on(EEmitEvents.REGENERATE_COVER_ERROR, handleRegenerateCoverError);
+  listImageUrls(cover?.value?.map((cover: ICoverItem) => cover.taskId) ?? []) ??
+    [];
+});
+
+function handleStartRegenerateCover(e: any) {
+  if (!cover?.value) {
+    return;
+  }
+  const index = cover.value.findIndex((c: ICoverItem) => c.id === e.cover.id);
+  if (index === -1) {
+    return;
+  }
+  regeneratingImageIds.value.add(e.cover.id);
+}
+
+function handleRegenerateCoverResponse(e: any) {
+  if (!cover?.value) {
+    return;
+  }
+  const index = cover.value.findIndex((c: ICoverItem) => c.id === e.cover.id);
+  if (index === -1) {
+    return;
+  }
+  regeneratingImageIds.value.delete(e.cover.id);
+}
+
+function handleRegenerateCoverError(e: any) {
+  if (!cover?.value) {
+    return;
+  }
+  const index = cover.value.findIndex((c: ICoverItem) => c.id === e.cover.id);
+  if (index === -1) {
+    return;
+  }
+  regeneratingImageIds.value.delete(e.cover.id);
+}
+
+async function handleConfirmCover() {
+  if (
+    loadingImageIds.value.size > 0 ||
+    regeneratingImageIds.value.size > 0 ||
+    !cover?.value ||
+    isConfirming.value
+  ) {
+    return;
+  }
+
+  isConfirming.value = true;
+
+  const res = await pictureBookStore.confirmCover({
+    pbId: story?.value?.id ?? "",
+    confirmed: cover.value,
+  });
+
+  if (res.code !== 200) {
+    uni.showToast({
+      title: "封面确认失败，请重新确认",
+      icon: "none",
+    });
+  } else {
+    $emit("on-confirmed", res.data);
+  }
+
+  nextTick(() => {
+    isConfirming.value = false;
+  });
+}
+
+function getIdByTaskId(taskId: string) {
+  return cover?.value?.find((c: ICoverItem) => c.taskId === taskId)?.id ?? null;
+}
+
+async function listImageUrls(taskIds: string[]) {
+  loadingImageIds.value.clear();
+  if (!cover?.value) {
+    return;
+  }
+  cover.value.forEach((c: ICoverItem) => {
+    loadingImageIds.value.add(c.id);
+  });
+  const images: Map<string, string> = await requestGetImageUrls({
+    taskIds,
+  });
+
+  images.forEach((url, taskId) => {
+    const id = getIdByTaskId(taskId);
+
+    if (id) {
+      if (loadingImageIds.value.has(id)) {
+        loadingImageIds.value.delete(id);
+      }
+      cover.value = cover.value?.map((c: ICoverItem) => {
+        if (c.id === id) {
+          return { ...c, url };
+        }
+        return c;
+      });
+    }
+  });
 }
 </script>
 

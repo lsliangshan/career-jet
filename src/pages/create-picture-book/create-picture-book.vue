@@ -1,98 +1,106 @@
 <template>
-  <view
-    class="w-full fixed top-0 left-0 z-10 bg-[rgba(248,248,245,0.5)] backdrop-blur-md border-none flex flex-col items-start"
-    :style="{
-      height: `calc(80rpx +  ${safeTop}px + 108rpx)`,
-      paddingTop: `${safeTop}px`,
-    }"
-  >
+  <page-loading v-if="!pageReady" />
+  <template v-else>
     <view
-      class="h-[80rpx] flex flex-row items-center justify-center"
-      :style="{ width: `calc(${safeTitleWidth}px)` }"
+      class="w-full fixed top-0 left-0 z-10 bg-[rgba(248,248,245,0.5)] backdrop-blur-md border-none flex flex-col items-start"
+      :style="{
+        height: `calc(80rpx +  ${safeTop}px + 108rpx)`,
+        paddingTop: `${safeTop}px`,
+      }"
     >
       <view
-        class="w-[80rpx] h-[80rpx] shrink-0 flex flex-row items-center justify-center"
-        @click="handleBack"
-      >
-        <svg-icon
-          class="w-[32rpx] h-[32rpx]"
-          :src="`/static/${iconThemeVersion}/icon_back.svg`"
-          color="#000"
-        />
-      </view>
-      <view
-        class="z-[999] h-[80rpx] pr-[24rpx] box-border flex flex-row items-center"
-        :style="{ width: `calc(${safeTitleWidth}px - 80rpx)` }"
+        class="h-[80rpx] flex flex-row items-center justify-center"
+        :style="{ width: `calc(${safeTitleWidth}px)` }"
       >
         <view
-          class="w-full h-full box-border flex flex-row items-center justify-center gap-[8rpx]"
+          class="w-[80rpx] h-[80rpx] shrink-0 flex flex-row items-center justify-center"
+          @click="handleBack"
         >
-          <text
-            class="text-[36rpx] font-bold text-[#000] line-clamp-1 overflow-hidden text-ellipsis break-all"
+          <svg-icon
+            class="w-[32rpx] h-[32rpx]"
+            :src="`/static/${iconThemeVersion}/icon_back.svg`"
+            color="#000"
+          />
+        </view>
+        <view
+          class="z-[999] h-[80rpx] pr-[24rpx] box-border flex flex-row items-center"
+          :style="{ width: `calc(${safeTitleWidth}px - 80rpx)` }"
+        >
+          <view
+            class="w-full h-full box-border flex flex-row items-center justify-center gap-[8rpx]"
           >
-            {{ createPictureBookSteps[currentStepIndex].label }}
-          </text>
+            <text
+              class="text-[36rpx] font-bold text-[#000] line-clamp-1 overflow-hidden text-ellipsis break-all"
+            >
+              {{ createPictureBookSteps[currentStepIndex].label }}
+            </text>
+          </view>
         </view>
       </view>
-    </view>
 
-    <view
-      class="w-full h-[108rpx] flex flex-row items-center justify-start px-[32rpx] box-border"
-    >
-      <view class="h-full flex flex-col items-start justify-center gap-[12rpx]">
-        <view class="w-full h-[40rpx] flex flex-row items-center justify-start">
-          <text
-            class="font-bold text-[36rpx]"
-            :style="{
-              color: ThemeColors.primary,
-            }"
-            >步骤 {{ currentStepIndex + 1 }} /
-            {{ createPictureBookSteps.length }}</text
+      <view
+        class="w-full h-[108rpx] flex flex-row items-center justify-start px-[32rpx] box-border"
+      >
+        <view
+          class="h-full flex flex-col items-start justify-center gap-[12rpx]"
+        >
+          <view
+            class="w-full h-[40rpx] flex flex-row items-center justify-start"
           >
-        </view>
-        <view class="w-full h-[32rpx] flex flex-row items-center justify-start">
-          <text class="text-[30rpx] font-medium text-[#666]">
-            {{ createPictureBookSteps[currentStepIndex].desc || " " }}
-          </text>
+            <text
+              class="font-bold text-[36rpx]"
+              :style="{
+                color: ThemeColors.primary,
+              }"
+              >步骤 {{ currentStepIndex + 1 }} /
+              {{ createPictureBookSteps.length }}</text
+            >
+          </view>
+          <view
+            class="w-full h-[32rpx] flex flex-row items-center justify-start"
+          >
+            <text class="text-[30rpx] font-medium text-[#666]">
+              {{ createPictureBookSteps[currentStepIndex].desc || " " }}
+            </text>
+          </view>
         </view>
       </view>
     </view>
-  </view>
-  <Layout :hasHeader="false">
-    <Configuration
-      v-if="currentStepIndex === 0"
-      @open-modal="openModal"
-      @change-custom-theme="changeCustomTheme"
-      @change-custom-story-style="changeCustomStoryStyle"
-      @change-custom-picture-style="changeCustomPictureStyle"
-      @change-story-length="changeStoryLength"
-      @change-role-count="changeRoleCount"
-      @change-scene-count="changeSceneCount"
-      @on-generated="handleGeneratedStory"
-    />
-    <ConfirmStory
-      v-else-if="currentStepIndex === 1"
-      @regenerate-story="handleRegenerateStory"
-      @on-confirmed="handleConfirmedStory"
-    />
-    <ConfirmRoles
-      v-else-if="currentStepIndex === 2"
-      @on-confirmed="handleConfirmedRoles"
-    />
-    <ConfirmScenes
-      v-else-if="currentStepIndex === 3"
-      @on-confirmed="handleConfirmedScenes"
-    />
-    <ConfirmCover
-      v-else-if="currentStepIndex === 4"
-      @on-confirmed="handleConfirmedCover"
-    />
-    <ConfirmAudio
-      v-else-if="currentStepIndex === 5"
-      @on-confirmed="handleConfirmedAudio"
-    />
-    <Finished v-else-if="currentStepIndex === 6" />
-    <!-- <swiper
+    <Layout :hasHeader="false">
+      <Configuration
+        v-if="currentStepIndex === 0"
+        @open-modal="openModal"
+        @change-custom-theme="changeCustomTheme"
+        @change-custom-story-style="changeCustomStoryStyle"
+        @change-custom-picture-style="changeCustomPictureStyle"
+        @change-story-length="changeStoryLength"
+        @change-role-count="changeRoleCount"
+        @change-scene-count="changeSceneCount"
+        @on-generated="handleGeneratedStory"
+      />
+      <ConfirmStory
+        v-else-if="currentStepIndex === 1"
+        @regenerate-story="handleRegenerateStory"
+        @on-confirmed="handleConfirmedStory"
+      />
+      <ConfirmRoles
+        v-else-if="currentStepIndex === 2"
+        @on-confirmed="handleConfirmedRoles"
+      />
+      <ConfirmScenes
+        v-else-if="currentStepIndex === 3"
+        @on-confirmed="handleConfirmedScenes"
+      />
+      <ConfirmCover
+        v-else-if="currentStepIndex === 4"
+        @on-confirmed="handleConfirmedCover"
+      />
+      <ConfirmAudio
+        v-else-if="currentStepIndex === 5"
+        @on-confirmed="handleConfirmedAudio"
+      />
+      <Finished v-else-if="currentStepIndex === 6" />
+      <!-- <swiper
       class="w-full h-full"
       :current="currentStepIndex"
       @change="handleChange"
@@ -136,7 +144,8 @@
         <Finished v-else-if="index === 6 && currentStepIndex === index" />
       </swiper-item>
     </swiper> -->
-  </Layout>
+    </Layout>
+  </template>
 
   <page-container
     :show="modalVisible"
@@ -220,6 +229,7 @@ import {
   moralities,
   ratios,
   ThemeColors,
+  createPictureBookSteps,
 } from "@/config/config";
 import { computed, nextTick, onMounted, provide, ref } from "vue";
 import Configuration from "./views/configuration/configuration.vue";
@@ -245,55 +255,23 @@ import {
   EEmitEvents,
   type IPictureBook,
 } from "@/types";
-import { onShareAppMessage } from "@dcloudio/uni-app";
+import { onLoad, onShareAppMessage } from "@dcloudio/uni-app";
+import { usePictureBookStore } from "@/stores/picture_book";
+import { navigateBack } from "@/utils/router";
+
+const pictureBookStore = usePictureBookStore();
 
 const safeTop = uni.getWindowInfo().safeAreaInsets?.top || 0;
 
 const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
+
+const pageReady = ref(false);
 
 const modalVisible = ref(false);
 const modalData = ref<{
   component?: string;
   [key: string]: any;
 }>();
-
-const createPictureBookSteps = [
-  {
-    label: "参数设置",
-    value: "config",
-    desc: "在这里，你可以设置绘本的各种参数。",
-  },
-  {
-    label: "确认绘本故事",
-    value: "confirm-story",
-    desc: "确认绘本故事，确保故事内容符合你的预期。",
-  },
-  {
-    label: "确认绘本角色",
-    value: "confirm-roles",
-    desc: "这些是故事里的主角们，满意吗？",
-  },
-  {
-    label: "确认绘本场景",
-    value: "confirm-scenes",
-    desc: "这是绘本里的奇妙世界，满意吗？",
-  },
-  {
-    label: "确认绘本封面",
-    value: "confirm-cover",
-    desc: "为你的故事选一个最漂亮的封面吧！",
-  },
-  {
-    label: "确认绘本音频",
-    value: "confirm-audio",
-    desc: "为你的故事挑选一个好听的声音吧！",
-  },
-  {
-    label: "创作完成",
-    value: "finished",
-    desc: "绘本创作完成，你可以分享给你的朋友了！",
-  },
-];
 
 const currentStepIndex = ref(0);
 
@@ -313,6 +291,8 @@ const story = ref<IStory>({
   title: "",
   content: [],
 });
+
+const pbId = ref<string>("");
 
 const pbDetail = ref<IPictureBook | undefined>();
 const roles = ref<IRoleItem[]>([]);
@@ -361,6 +341,29 @@ const renderPictureStyles = computed(() => {
   ];
 });
 
+onLoad(async (options: any) => {
+  console.log(">>>>>>>", options);
+  if (options.id) {
+    pbId.value = options.id;
+  }
+  if (pbId.value) {
+    await initPbDetail();
+  }
+
+  if (options.action) {
+    const stepIndex = createPictureBookSteps.findIndex(
+      (item) => item.value === options.action
+    );
+    if (stepIndex !== -1) {
+      currentStepIndex.value = stepIndex;
+    }
+  }
+
+  nextTick(() => {
+    pageReady.value = true;
+  });
+});
+
 onMounted(() => {
   initData();
 
@@ -381,6 +384,33 @@ onMounted(() => {
     handleOpenRegenerateCoverModal
   );
 });
+
+async function initPbDetail() {
+  const res = await pictureBookStore.getPictureBookDetail({
+    id: pbId.value,
+  });
+
+  if (res.code !== 200) {
+    uni.showToast({
+      title: res.message || "获取绘本详情失败",
+      icon: "none",
+    });
+    navigateBack();
+    return;
+  }
+
+  pbDetail.value = res.data as IPictureBook;
+
+  story.value = {
+    id: pbDetail.value?.id || "",
+    title: pbDetail.value?.title || "",
+    content: pbDetail.value?.content || "",
+  };
+
+  roles.value = pbDetail.value?.roles || [];
+  scenes.value = pbDetail.value?.scenes || [];
+  cover.value = pbDetail.value?.cover ? [pbDetail.value.cover] : [];
+}
 
 function initData() {
   selectedLanguageIndex.value = languages.findIndex(
@@ -413,13 +443,7 @@ function initData() {
 }
 
 function handleBack() {
-  uni.navigateBack({
-    fail: () => {
-      uni.reLaunch({
-        url: "/pages/index/index",
-      });
-    },
-  });
+  navigateBack();
 }
 
 function closeModal() {

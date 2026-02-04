@@ -106,6 +106,7 @@ import { computed, nextTick, onMounted, ref } from "vue";
 import { usePictureBookStore } from "@/stores/picture_book";
 import type { IPictureBook } from "@/types";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
+import { navigateToEditPictureBook } from "@/utils/router";
 
 const pictureBookStore = usePictureBookStore();
 
@@ -178,9 +179,7 @@ function handleViewAll() {
 }
 
 function handleViewPictureBook(pb: IPictureBook) {
-  uni.navigateTo({
-    url: `/pages/edit-picture-book/edit-picture-book?id=${pb.id}`,
-  });
+  navigateToEditPictureBook(pb);
 }
 </script>
 

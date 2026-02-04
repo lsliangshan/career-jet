@@ -241,7 +241,7 @@ import PbCover from "./PbCover.vue";
 import PbContent from "./PbContent.vue";
 import { iconThemeVersion, ThemeColors } from "@/config/config";
 import PbHeader from "./PbHeader.vue";
-import { navigateBack } from "@/utils";
+import { navigateBack } from "@/utils/router";
 import { EModalComponent } from "./types";
 import VoiceTypeModal from "./modals/VoiceTypeModal.vue";
 

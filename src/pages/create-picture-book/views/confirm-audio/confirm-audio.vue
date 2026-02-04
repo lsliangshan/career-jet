@@ -194,7 +194,7 @@ async function handleConfirmAudio() {
       title: "配音成功",
       icon: "success",
     });
-    isGenerating.value = false;
+
     $emit("on-confirmed", res.data);
   } else {
     uni.showToast({
@@ -202,6 +202,9 @@ async function handleConfirmAudio() {
       icon: "none",
     });
   }
+  nextTick(() => {
+    isGenerating.value = false;
+  });
 }
 
 function handlePlayAudio(voiceType: number) {

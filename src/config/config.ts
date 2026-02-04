@@ -900,3 +900,41 @@ export const voiceTypes = [
       "https://img.liangqy.com/crawlerjet/picture_book/audios/sample/603005.wav",
   },
 ];
+
+export const createPictureBookSteps = [
+  {
+    label: "参数设置",
+    value: "config",
+    desc: "在这里，你可以设置绘本的各种参数。",
+  },
+  {
+    label: "确认绘本故事",
+    value: "confirm-story",
+    desc: "确认绘本故事，确保故事内容符合你的预期。",
+  },
+  {
+    label: "确认绘本角色",
+    value: "confirm-roles",
+    desc: "这些是故事里的主角们，满意吗？",
+  },
+  {
+    label: "确认绘本场景",
+    value: "confirm-scenes",
+    desc: "这是绘本里的奇妙世界，满意吗？",
+  },
+  {
+    label: "确认绘本封面",
+    value: "confirm-cover",
+    desc: "为你的故事选一个最漂亮的封面吧！",
+  },
+  {
+    label: "确认绘本音频",
+    value: "confirm-audio",
+    desc: "为你的故事挑选一个好听的声音吧！",
+  },
+  {
+    label: "创作完成",
+    value: "finished",
+    desc: "绘本创作完成，你可以分享给你的朋友了！",
+  },
+];

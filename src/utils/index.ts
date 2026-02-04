@@ -30,16 +30,6 @@ export function uuid(): string {
   return uuidstr;
 }
 
-export function navigateBack() {
-  uni.navigateBack({
-    fail: () => {
-      uni.reLaunch({
-        url: "/pages/index/index",
-      });
-    },
-  });
-}
-
 export function formatNumber(num: number): string {
   if (num === null || num === undefined || isNaN(num)) {
     return "0";

@@ -44,6 +44,7 @@ import { onLoad } from "@dcloudio/uni-app";
 import { ProfileDetailType, useUserStore } from "@/stores/user";
 import { computed, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
+import { navigateBack } from "@/utils/router";
 
 const userStore = useUserStore();
 const { loginInfo } = storeToRefs(userStore);
@@ -107,7 +108,7 @@ watch(
 onLoad((options) => {
   const type = options?.type as ProfileDetailType | undefined;
   if (!type) {
-    uni.navigateBack();
+    navigateBack();
     return;
   }
   profileDetailType.value = type;
@@ -138,7 +139,7 @@ function handleSave() {
       email: renderValue.value,
     });
   }
-  uni.navigateBack({
+  navigateBack({
     complete: () => {
       uni.showToast({
         title: "保存成功",

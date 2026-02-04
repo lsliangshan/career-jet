@@ -362,13 +362,7 @@ function initPbDetail() {
     })
     .then((res: any) => {
       if (res.code !== 200) {
-        uni.navigateBack({
-          fail: () => {
-            uni.reLaunch({
-              url: "/pages/index/index",
-            });
-          },
-        });
+        navigateBack();
         uni.showToast({
           title: res.message || "获取绘本详情失败",
           icon: "none",

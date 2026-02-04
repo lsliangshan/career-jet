@@ -141,6 +141,10 @@
 
 <script setup lang="ts">
 import { iconThemeVersion, ThemeColors } from "@/config/config";
+import {
+  navigateToCreatePictureBook,
+  navigateToPictureBookList,
+} from "@/utils/router";
 
 interface Props {
   showHeader?: boolean;
@@ -150,15 +154,11 @@ withDefaults(defineProps<Props>(), {
 });
 
 function handleCreatePictureBook() {
-  uni.navigateTo({
-    url: "/pages/create-picture-book/create-picture-book",
-  });
+  navigateToCreatePictureBook();
 }
 
 function handleViewMyPictureBooks(type: "draft" | "final") {
-  uni.navigateTo({
-    url: `/pages/picture-book-list/picture-book-list?type=${type}`,
-  });
+  navigateToPictureBookList(type);
 }
 </script>
 

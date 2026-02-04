@@ -232,6 +232,7 @@ import { requestCustomUrl, requestGetImageUrls } from "@/request";
 import CustomLoading from "@/components/custom-loader/custom-loader.vue";
 import RegenerateModal from "./modals/RegenerateModal.vue";
 import { EModalComponent, EStepIndex } from "./modals/types";
+import { navigateBack } from "@/utils/router";
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
@@ -686,13 +687,7 @@ function initPbDetail() {
     })
     .then((res: any) => {
       if (res.code !== 200) {
-        uni.navigateBack({
-          fail: () => {
-            uni.reLaunch({
-              url: "/pages/index/index",
-            });
-          },
-        });
+        navigateBack();
         uni.showToast({
           title: res.message || "获取绘本详情失败",
           icon: "none",

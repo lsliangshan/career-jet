@@ -213,6 +213,7 @@ import { ProfileDetailType, useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { computed, onMounted, ref } from "vue";
 import { iconThemeVersion, ThemeColors } from "@/config/config";
+import { navigateToEditProfileDetail } from "@/utils/router";
 
 const userStore = useUserStore();
 const { loginInfo } = storeToRefs(userStore);
@@ -312,9 +313,7 @@ function handleChooseAvatar(e: any) {
 }
 
 function handleEditProfileDetail(type: ProfileDetailType) {
-  uni.navigateTo({
-    url: `/pages/edit-profile-detail/edit-profile-detail?type=${type}`,
-  });
+  navigateToEditProfileDetail(type);
 }
 </script>
 

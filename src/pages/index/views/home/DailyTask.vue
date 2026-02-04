@@ -66,13 +66,12 @@
 
 <script setup lang="ts">
 import { iconThemeVersion, ThemeColors } from "@/config/config";
+import { navigateToCreatePictureBook } from "@/utils/router";
 import { validateLoggedIn } from "@/utils/user";
 
 function handleCreatePictureBook() {
   validateLoggedIn();
-  uni.navigateTo({
-    url: "/pages/create-picture-book/create-picture-book",
-  });
+  navigateToCreatePictureBook();
 }
 </script>
 

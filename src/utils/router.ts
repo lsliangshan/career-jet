@@ -1,8 +1,12 @@
 import { type IPictureBook } from "@/types";
 import { createPictureBookSteps } from "@/config/config";
+import { ProfileDetailType } from "@/stores/user";
 
-export function navigateBack() {
+export function navigateBack(options?: { complete?: () => void }) {
   uni.navigateBack({
+    complete: () => {
+      options?.complete?.();
+    },
     fail: () => {
       uni.reLaunch({
         url: "/pages/index/index",
@@ -120,8 +124,70 @@ export function navigateToPictureBookDraftList() {
   });
 }
 
-export function navigateToPictureBookList() {
-  uni.navigateTo({
-    url: `/pages/picture-book-list/picture-book-list?type=final`,
-  });
+export function navigateToPictureBookList(
+  type: "draft" | "final",
+  options?: {
+    method?: "navigateTo" | "redirectTo";
+    complete?: () => void;
+  }
+) {
+  const { method = "navigateTo" } = options || {};
+  const url = `/pages/picture-book-list/picture-book-list?type=${type}`;
+  if (method === "navigateTo") {
+    uni.navigateTo({
+      url,
+      complete: () => {
+        options?.complete?.();
+      },
+    });
+  }
+}
+
+export function navigateToProfileDetail(options?: {
+  method?: "navigateTo" | "redirectTo";
+  complete?: () => void;
+}) {
+  const { method = "navigateTo" } = options || {};
+  const url = "/pages/profile-detail/profile-detail";
+  if (method === "navigateTo") {
+    uni.navigateTo({
+      url,
+      complete: () => {
+        options?.complete?.();
+      },
+    });
+  } else {
+    uni.redirectTo({
+      url,
+      complete: () => {
+        options?.complete?.();
+      },
+    });
+  }
+}
+
+export function navigateToEditProfileDetail(
+  type: ProfileDetailType,
+  options?: {
+    method?: "navigateTo" | "redirectTo";
+    complete?: () => void;
+  }
+) {
+  const { method = "navigateTo" } = options || {};
+  const url = "/pages/edit-profile-detail/edit-profile-detail";
+  if (method === "navigateTo") {
+    uni.navigateTo({
+      url: `${url}?type=${type}`,
+      complete: () => {
+        options?.complete?.();
+      },
+    });
+  } else {
+    uni.redirectTo({
+      url: `${url}?type=${type}`,
+      complete: () => {
+        options?.complete?.();
+      },
+    });
+  }
 }

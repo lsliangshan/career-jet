@@ -46,6 +46,7 @@
 
 <script setup lang="ts">
 import { iconThemeVersion } from "@/config/config";
+import { navigateBack } from "@/utils/router";
 import { nextTick, onMounted, ref } from "vue";
 
 interface Props {
@@ -73,13 +74,7 @@ onMounted(() => {
 });
 
 function handleBack() {
-  uni.navigateBack({
-    fail: () => {
-      uni.reLaunch({
-        url: "/pages/index/index",
-      });
-    },
-  });
+  navigateBack();
 }
 </script>
 

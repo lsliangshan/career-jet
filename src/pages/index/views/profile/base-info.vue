@@ -108,6 +108,7 @@ import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
+import { navigateToProfileDetail } from "@/utils/router";
 
 const $emit = defineEmits<{
   (e: "on-logout"): void;
@@ -156,9 +157,7 @@ function handleEditProfile() {
   if (!isLoggedIn.value) {
     return;
   }
-  uni.navigateTo({
-    url: "/pages/profile-detail/profile-detail",
-  });
+  navigateToProfileDetail();
 }
 
 function previewImage() {

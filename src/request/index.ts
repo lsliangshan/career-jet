@@ -707,7 +707,8 @@ export function requestGetImageUrls(params: {
     while (remainingTaskIds.length > 0) {
       attemptCount++;
       const result: any = await uni.request({
-        url: `${baseUrl}/pb/get-image-urls`,
+        url: `https://wf.qyflows.com/webhook-test/pb/get-image-urls`,
+        // url: `${baseUrl}/pb/get-image-urls`,
         method: "POST",
         data: { taskIds: remainingTaskIds },
         timeout: 60 * 60 * 1000,

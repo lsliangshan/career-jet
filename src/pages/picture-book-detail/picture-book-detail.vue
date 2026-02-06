@@ -13,11 +13,14 @@
       <PbHeader
         :scene-id="currentIndex > -1 ? pbDetail.scenes?.[currentIndex]?.id : ''"
         :pb-id="pbDetail?.id"
+        :pb-status="pbDetail?.status"
         :playing-scene-id="isPlayingAudioSceneId"
         :author-id="pbDetail?.authorId"
         :has-audio="pbAudios.length > 0"
         v-if="pbDetail && pbDetail.scenes"
         @on-back="handleBack"
+        @on-play-audio="handlePlayAudio"
+        @on-publish="handlePublish"
       />
     </template>
 
@@ -167,10 +170,12 @@
               currentIndex > -1 ? pbDetail.scenes?.[currentIndex]?.id : ''
             "
             :pb-id="pbDetail?.id"
+            :pb-status="pbDetail?.status"
             :playing-scene-id="isPlayingAudioSceneId"
             :has-audio="pbAudios.length > 0"
             @on-back="handleLeave"
             @on-play-audio="handlePlayAudio"
+            @on-publish="handlePublish"
             v-if="pbDetail && pbDetail.scenes && currentIndex !== -1"
           />
         </view>
@@ -450,6 +455,20 @@ function handlePlayAudio(sceneId: string) {
 
   // 播放音频
   audioContext.value.play();
+}
+
+function handlePublish() {
+  uni.showModal({
+    title: "提示",
+    content: "确定要发布绘本吗？",
+    success: function (res) {
+      if (res.confirm) {
+        console.log("用户点击确定");
+      } else if (res.cancel) {
+        console.log("用户点击取消");
+      }
+    },
+  });
 }
 
 function handleStopAudio() {

@@ -121,6 +121,43 @@
         </view>
       </view>
 
+      <view
+        class="flex flex-row items-center border-t border-t-[1rpx] border-t-[#f8f8f8]"
+        v-if="loginInfo?.role === UserRole.SUPER_ADMIN"
+      >
+        <view
+          class="h-[100rpx] w-full pl-[24rpx] pr-[24rpx] box-border active:bg-[#fafafa] flex flex-row items-center justify-between"
+          :style="{
+            backgroundColor: ThemeColors.bgCard,
+          }"
+          @click="handleViewMyPictureBooks('final')"
+        >
+          <view class="flex flex-row items-center gap-[12rpx]">
+            <svg-icon
+              :src="`/static/${iconThemeVersion}/icon_pb_list.svg`"
+              class="w-[26rpx] h-[26rpx]"
+              color="#000"
+            />
+            <text
+              class="text-[28rpx]"
+              :style="{
+                color: ThemeColors.text.title,
+              }"
+              >审核列表</text
+            >
+          </view>
+          <view
+            class="h-full shrink-0 flex flex-row items-center justify-center"
+          >
+            <svg-icon
+              :src="`/static/${iconThemeVersion}/icon_arrow_right.svg`"
+              class="w-[30rpx] h-[30rpx]"
+              :color="ThemeColors.text.disabled"
+            />
+          </view>
+        </view>
+      </view>
+
       <!-- <view
         class="w-full h-[1rpx] flex flex-row items-center justify-center"
         :style="{
@@ -145,6 +182,8 @@ import {
   navigateToCreatePictureBook,
   navigateToPictureBookList,
 } from "@/utils/router";
+import { useUserStore, UserRole } from "@/stores/user";
+import { storeToRefs } from "pinia";
 
 interface Props {
   showHeader?: boolean;
@@ -152,6 +191,9 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   showHeader: true,
 });
+
+const userStore = useUserStore();
+const { loginInfo } = storeToRefs(userStore);
 
 function handleCreatePictureBook() {
   navigateToCreatePictureBook();

@@ -13,6 +13,12 @@ export enum ProfileDetailType {
   EMAIL = "email",
 }
 
+export enum UserRole {
+  SUPER_ADMIN = "super_admin",
+  ADMIN = "admin",
+  USER = "user",
+}
+
 export interface LoginInfo {
   id: string;
   avatar: string;
@@ -23,6 +29,7 @@ export interface LoginInfo {
   birthday?: string;
   token?: string;
   email?: string;
+  role?: UserRole;
 }
 
 export interface IUserSummary {

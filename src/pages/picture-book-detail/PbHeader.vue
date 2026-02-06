@@ -21,6 +21,21 @@
       class="h-[80rpx] flex flex-row items-center justify-center gap-[16rpx]"
     >
       <view
+        class="w-[80rpx] h-[80rpx] rounded-full backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center shrink-0"
+        v-if="isMyPictureBook && pbStatus === 0"
+        :style="{
+          backgroundColor: ThemeColors.primary,
+        }"
+        @click="handlePublish"
+      >
+        <svg-icon
+          :src="`/static/${iconThemeVersion}/icon_publish.svg`"
+          class="w-[38rpx] h-[38rpx] mr-[8rpx]"
+          color="#fff"
+        />
+      </view>
+
+      <view
         class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center shrink-0"
         v-if="isMyPictureBook"
       >
@@ -91,6 +106,7 @@ interface Props {
   playingSceneId?: string;
   authorId?: string;
   hasAudio: boolean;
+  pbStatus: number;
 }
 
 const props = defineProps<Props>();
@@ -98,6 +114,7 @@ const props = defineProps<Props>();
 const $emit = defineEmits<{
   (e: "on-back"): void;
   (e: "on-play-audio", sceneId: string): void;
+  (e: "on-publish"): void;
 }>();
 
 const autoplayWithAudio = inject<Ref<boolean>>("autoplayWithAudio");
@@ -139,6 +156,10 @@ function handleBack() {
 
 function handlePlayAudio() {
   $emit("on-play-audio", props.sceneId);
+}
+
+function handlePublish() {
+  $emit("on-publish");
 }
 
 function toggleLike() {

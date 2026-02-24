@@ -804,7 +804,7 @@ export function requestReviewPictureBook(params?: {
  */
 export function requestSubmitReview(params?: {
   userId: string;
-  pbId: boolean;
+  pbId: string;
 }): Promise<any> {
   return new Promise<any>((resolve) => {
     uni.request({

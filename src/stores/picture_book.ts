@@ -20,6 +20,7 @@ import {
   requestGetReviewPictureBooks,
   requestRegenerateStory,
   requestSetPictureBookViews,
+  requestSubmitReview,
   requestTogglePictureBookLikeStatus,
 } from "@/request";
 
@@ -97,6 +98,25 @@ export const usePictureBookStore = defineStore("picture_book", () => {
         reviewStatus,
         pageIndex,
         pageSize,
+      });
+
+      resolve(res);
+    });
+  }
+
+  function submitReviewPictureBooks(params: { pbId: string }) {
+    return new Promise(async (resolve) => {
+      if (!isLoggedIn.value || !loginInfo.value.id) {
+        uni.showToast({
+          title: "请先登录",
+          icon: "none",
+        });
+        resolve(false);
+        return;
+      }
+      const res = await requestSubmitReview({
+        userId: loginInfo.value.id,
+        pbId: params.pbId,
       });
 
       resolve(res);
@@ -359,6 +379,7 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     myPictureBooks,
     getMyPictureBooks,
     getReviewPictureBooks,
+    submitReviewPictureBooks,
     getMyFavoritePictureBooks,
     getPictureBooks,
     getPictureBookDetail,

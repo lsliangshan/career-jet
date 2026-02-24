@@ -6,7 +6,7 @@
       <view
         class="w-full px-[32rpx] py-[32rpx] box-border flex flex-col gap-[24rpx]"
         :style="{
-          minHeight: `calc(100% - ${headerHeight}px - 128rpx - ${safeBottom}px)`,
+          minHeight: `calc(100% - ${headerHeight}px - 128rpx - 96rpx - ${safeBottom}px)`,
         }"
       >
         <view
@@ -89,9 +89,9 @@
       </view>
 
       <view
-        class="w-full px-[32rpx] box-border sticky left-0 bottom-0 bg-white bg-gradient-to-t from-background-light via-background-light to-transparent dark:from-background-dark dark:via-background-dark/95 z-40 flex flex-row items-center justify-center"
+        class="w-full px-[32rpx] box-border sticky left-0 bottom-0 bg-white bg-gradient-to-t from-background-light via-background-light to-transparent dark:from-background-dark dark:via-background-dark/95 z-40 flex flex-col items-center justify-center gap-[32rpx]"
         :style="{
-          height: `calc(128rpx + ${safeBottom}px)`,
+          height: `calc(128rpx + 96rpx + ${safeBottom}px)`,
           paddingBottom: `${safeBottom}px`,
         }"
       >
@@ -102,14 +102,27 @@
             backgroundColor: ThemeColors.primary,
             boxShadow: `0 10px 15px -3px ${ThemeColors.primary300}`,
           }"
-          @click="goToRead"
+          @click="gotoPublish"
         >
           <svg-icon
-            :src="`/static/${iconThemeVersion}/icon_start_read.svg`"
+            :src="`/static/${iconThemeVersion}/icon_publish.svg`"
             class="w-[32rpx] h-[32rpx]"
             :color="ThemeColors.text.white"
           />
-          <text class="text-[34rpx] text-white font-bold">立即阅读</text>
+          <text class="text-[34rpx] text-white font-bold">立即发布</text>
+        </view>
+
+        <view
+          class="w-full h-[56rpx] flex flex-row items-center justify-center active:scale-96 transition-all duration-300"
+          @click="gotoRead"
+        >
+          <text
+            class="text-[28rpx]"
+            :style="{
+              color: ThemeColors.primary,
+            }"
+            >开始阅读</text
+          >
         </view>
       </view>
     </scroll-view>
@@ -124,7 +137,7 @@ import { type ICreatePictureBookFormData } from "../../types";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 
 const $emit = defineEmits<{
-  (e: "on-confirmed", params: any): void;
+  (e: "on-publish", params: any): void;
 }>();
 
 const formData = inject<Ref<ICreatePictureBookFormData>>("formData");
@@ -180,7 +193,7 @@ const renderImageHeight = computed(() => {
 
 onMounted(() => {});
 
-async function goToRead() {
+async function gotoRead() {
   if (!pbDetail?.value) {
     return;
   }
@@ -196,6 +209,10 @@ async function goToRead() {
       url: `/pages/picture-book-detail/picture-book-detail?id=${pbDetail.value.id}`,
     });
   }
+}
+
+function gotoPublish() {
+  console.log(">>>>>> on publish: ", pbDetail?.value);
 }
 
 function handleImageError() {

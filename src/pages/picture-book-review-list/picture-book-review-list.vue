@@ -66,25 +66,10 @@
         </template>
 
         <empty
-          text="还没有收藏故事哦"
-          description="去探索奇妙的世界并发现你喜爱的故事吧！"
+          text="绘本全部审核完成了"
+          description=""
           v-if="pageReady && pictureBooks.length === 0"
         >
-          <template #action>
-            <view
-              class="w-full h-[64rpx] mt-[32rpx] flex flex-row items-center justify-center"
-            >
-              <view
-                class="py-4 px-10 box-border rounded-[16px] transition-transform active:scale-95"
-                :class="defaultTheme.shadow.main"
-                :style="{ backgroundColor: ThemeColors.primary }"
-              >
-                <text class="text-[30rpx] text-[#fff] font-bold"
-                  >去发现故事</text
-                >
-              </view>
-            </view>
-          </template>
         </empty>
 
         <template v-else>

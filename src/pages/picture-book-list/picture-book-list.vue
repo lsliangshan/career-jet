@@ -72,7 +72,7 @@
         </template>
 
         <empty
-          text="还没有收藏故事哦"
+          text="还没有创作故事哦"
           description="去探索奇妙的世界并发现你喜爱的故事吧！"
           v-if="pageReady && pictureBooks.length === 0"
         >
@@ -81,8 +81,8 @@
               class="w-full h-[64rpx] mt-[32rpx] flex flex-row items-center justify-center"
             >
               <view
-                class="py-4 px-10 box-border rounded-[16px] transition-transform active:scale-95"
-                :class="defaultTheme.shadow.main"
+                class="py-4 px-10 box-border transition-transform active:scale-95"
+                :class="[defaultTheme.shadow.main, defaultTheme.rounded.button]"
                 :style="{ backgroundColor: ThemeColors.primary }"
               >
                 <text class="text-[30rpx] text-[#fff] font-bold"

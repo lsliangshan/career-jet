@@ -88,6 +88,7 @@ export function navigateToPictureBookDetail(
     complete?: () => void;
   }
 ) {
+  const pbId = pb.pbId || pb.id;
   const { method = "navigateTo" } = options || {};
   const horizontalUrl =
     "/pages/picture-book-detail-horizontal/picture-book-detail-horizontal";
@@ -103,14 +104,14 @@ export function navigateToPictureBookDetail(
   }
   if (method === "navigateTo") {
     uni.navigateTo({
-      url: `${url}?id=${pb.id}`,
+      url: `${url}?id=${pbId}`,
       complete: () => {
         options?.complete?.();
       },
     });
   } else {
     uni.redirectTo({
-      url: `${url}?id=${pb.id}`,
+      url: `${url}?id=${pbId}`,
       complete: () => {
         options?.complete?.();
       },

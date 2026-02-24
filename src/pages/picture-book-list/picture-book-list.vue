@@ -24,7 +24,11 @@
         class="w-full h-full box-border flex flex-row items-center justify-start"
       >
         <text class="text-[36rpx] font-bold">{{
-          type === "draft" ? "我的草稿" : "我的绘本"
+          type === "draft"
+            ? "我的草稿"
+            : type === "review"
+            ? "待我审核"
+            : "我的绘本"
         }}</text>
       </view>
     </view>
@@ -77,7 +81,8 @@
               class="w-full h-[64rpx] mt-[32rpx] flex flex-row items-center justify-center"
             >
               <view
-                class="py-4 px-10 box-border rounded-[16px] shadow-lg shadow-primary/20 transition-transform active:scale-95"
+                class="py-4 px-10 box-border rounded-[16px] transition-transform active:scale-95"
+                :class="defaultTheme.shadow.main"
                 :style="{ backgroundColor: ThemeColors.primary }"
               >
                 <text class="text-[30rpx] text-[#fff] font-bold"
@@ -146,7 +151,7 @@ import Layout from "@/components/layout/layout.vue";
 import { computed, nextTick, onMounted, ref } from "vue";
 import type { IPictureBook } from "@/types";
 import { usePictureBookStore } from "@/stores/picture_book";
-import { iconThemeVersion, ThemeColors } from "@/config/config";
+import { iconThemeVersion, ThemeColors, defaultTheme } from "@/config/config";
 import { onLoad } from "@dcloudio/uni-app";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 import Empty from "@/components/empty/empty.vue";
@@ -179,7 +184,7 @@ const totalPage = ref(1);
 
 const pictureBooks = ref<IPictureBook[]>([]);
 
-const type = ref<"draft" | "final">("final");
+const type = ref<"draft" | "final" | "review">("final");
 
 const headerHeight = computed(() => {
   return safeTop + uni.upx2px(80);

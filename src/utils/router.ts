@@ -125,7 +125,7 @@ export function navigateToPictureBookDraftList() {
 }
 
 export function navigateToPictureBookList(
-  type: "draft" | "final",
+  type: "draft" | "final" | "review",
   options?: {
     method?: "navigateTo" | "redirectTo";
     complete?: () => void;

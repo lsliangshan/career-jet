@@ -1,6 +1,7 @@
 <template>
   <view
-    class="relative w-full h-full p-[8rpx] bg-white dark:bg-card-dark rounded-full shadow-sm border border-black/5 flex flex-row items-center"
+    class="relative w-full h-full p-[8rpx] bg-white dark:bg-card-dark rounded-full border border-black/5 flex flex-row items-center"
+    :class="defaultTheme.shadow.main"
   >
     <view
       class="absolute left-0 top-0 w-[33.33%] h-full p-[8rpx] box-border flex flex-row items-center justify-center transition-all duration-300"
@@ -33,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { tabs, ThemeColors } from "@/config/config";
+import { tabs, ThemeColors, defaultTheme } from "@/config/config";
 
 interface Props {
   modelValue: number;

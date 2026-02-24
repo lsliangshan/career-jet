@@ -104,11 +104,12 @@
         }"
       >
         <view
-          class="w-full h-[88rpx] py-4 rounded-[24rpx] shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          class="w-full h-[88rpx] py-4 rounded-[24rpx] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
           :class="[
             !isGenerating
               ? 'pointer-events-auto active:scale-95'
               : 'pointer-events-none',
+            defaultTheme.shadow.main,
           ]"
           :style="{
             backgroundColor: !isGenerating
@@ -141,7 +142,12 @@
 </template>
 
 <script setup lang="ts">
-import { iconThemeVersion, ThemeColors, voiceTypes } from "@/config/config";
+import {
+  iconThemeVersion,
+  ThemeColors,
+  voiceTypes,
+  defaultTheme,
+} from "@/config/config";
 import { computed, inject, nextTick, onMounted, type Ref, ref } from "vue";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 import { usePictureBookStore } from "@/stores/picture_book";

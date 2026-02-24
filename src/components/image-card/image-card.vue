@@ -1,6 +1,7 @@
 <template>
   <view
-    class="bg-white dark:bg-card-dark p-2.5 rounded-2xl shadow-sm border border-black/5 flex flex-col"
+    class="bg-white dark:bg-card-dark p-2.5 rounded-2xl border border-black/5 flex flex-col"
+    :class="defaultTheme.shadow.main"
   >
     <view
       class="relative w-full"
@@ -72,7 +73,7 @@ import { computed, onMounted, ref } from "vue";
 import CustomLoader from "../custom-loader/custom-loader.vue";
 import BtnRegenerate from "../btn-regenerate/btn-regenerate.vue";
 import { EEmitEvents } from "@/types";
-import { ThemeColors } from "@/config/config";
+import { ThemeColors, defaultTheme } from "@/config/config";
 
 interface Props {
   type: "role" | "scene" | "cover";

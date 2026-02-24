@@ -463,12 +463,15 @@ function handlePublish() {
     content: "确定要发布绘本吗？",
     success: function (res) {
       if (res.confirm) {
-        console.log("用户点击确定");
+        doPublish();
       } else if (res.cancel) {
-        console.log("用户点击取消");
       }
     },
   });
+}
+
+function doPublish() {
+  console.log("doPublish");
 }
 
 function handleStopAudio() {

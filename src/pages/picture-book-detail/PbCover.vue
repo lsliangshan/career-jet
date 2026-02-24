@@ -17,7 +17,8 @@
       :style="{ bottom: `calc(${safeBottom}px + 88rpx)` }"
     >
       <view
-        class="w-full bg-[rgba(0,0,0,0.2)] backdrop-blur-[12rpx] border border-[2rpx] border-[rgba(255,255,255,0.3)] shadow-2xl rounded-[32rpx] p-[32rpx] box-border flex flex-col"
+        class="w-full bg-[rgba(0,0,0,0.2)] backdrop-blur-[12rpx] border border-[2rpx] border-[rgba(255,255,255,0.3)] rounded-[32rpx] p-[32rpx] box-border flex flex-col"
+        :class="defaultTheme.shadow.main"
       >
         <view class="w-full h-[48rpx] mb-[32rpx] flex flex-row items-center">
           <view
@@ -33,10 +34,9 @@
         </view>
 
         <view class="w-full mb-[12rpx] flex flex-row items-center">
-          <text
-            class="text-2xl leading-tight font-bold text-[#fff] drop-shadow-md"
-            >{{ pbDetail?.title }}</text
-          >
+          <text class="text-2xl leading-tight font-bold text-[#fff]">{{
+            pbDetail?.title
+          }}</text>
         </view>
 
         <view
@@ -48,7 +48,7 @@
             mode="aspectFill"
             @error="handleAvatarError"
           ></image>
-          <text class="text-base text-[rgba(255,255,255,0.8)] drop-shadow-md">{{
+          <text class="text-base text-[rgba(255,255,255,0.8)]">{{
             pbDetail?.author?.nickname
           }}</text>
         </view>
@@ -57,7 +57,8 @@
           class="w-full h-[108rpx] flex flex-row items-center justify-center"
         >
           <view
-            class="relative flex w-full h-full items-center justify-center gap-[16rpx] overflow-hidden rounded-full transition-all active:scale-95 shadow-lg shadow-primary/20"
+            class="relative flex w-full h-full items-center justify-center gap-[16rpx] overflow-hidden rounded-full transition-all active:scale-95"
+            :class="defaultTheme.shadow.main"
             :style="{ backgroundColor: ThemeColors.primary }"
             @click="handleStartReading"
           >
@@ -103,7 +104,12 @@
 
 <script setup lang="ts">
 import type { IPictureBook } from "@/types";
-import { DEFAULT_AVATAR, iconThemeVersion, ThemeColors } from "@/config/config";
+import {
+  DEFAULT_AVATAR,
+  iconThemeVersion,
+  ThemeColors,
+  defaultTheme,
+} from "@/config/config";
 import { nextTick, onBeforeMount, ref } from "vue";
 
 interface Props {

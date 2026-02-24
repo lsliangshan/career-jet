@@ -60,13 +60,14 @@
         }"
       >
         <view
-          class="w-full h-[88rpx] py-4 rounded-[24rpx] shadow-lg transition-all flex items-center justify-center gap-2"
+          class="w-full h-[88rpx] py-4 rounded-[24rpx] transition-all flex items-center justify-center gap-2"
           :class="[
             regeneratingImageIds.size === 0 &&
             loadingImageIds.size === 0 &&
             !isConfirming
               ? 'pointer-events-auto active:scale-95'
               : 'pointer-events-none',
+            defaultTheme.shadow.main,
           ]"
           :style="{
             backgroundColor:
@@ -106,7 +107,7 @@
 </template>
 
 <script setup lang="ts">
-import { iconThemeVersion, ThemeColors } from "@/config/config";
+import { iconThemeVersion, ThemeColors, defaultTheme } from "@/config/config";
 import { EEmitEvents, type ISceneItem } from "@/types";
 import { computed, inject, nextTick, onMounted, ref, type Ref } from "vue";
 import { type IStory, type ICreatePictureBookFormData } from "../../types";

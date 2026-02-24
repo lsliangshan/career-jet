@@ -136,7 +136,7 @@
           v-if="pbDetail?.scenes?.length && !autoplayWithAudio"
         >
           <view
-            class="rounded-full backdrop-blur-md border border-white/20 active:scale-95 transition-all shadow-lg flex items-center justify-center"
+            class="rounded-full backdrop-blur-md border border-white/20 active:scale-95 transition-all flex items-center justify-center"
             :style="{
               height: `${calcSize(80)}rpx`,
               padding: `0 ${calcSize(32)}rpx`,
@@ -147,6 +147,7 @@
               currentIndex > 0
                 ? 'opacity-100 pointer-events-auto'
                 : 'opacity-0 pointer-events-none',
+              defaultTheme.shadow.main,
             ]"
             @click="handlePrevious"
           >
@@ -170,7 +171,7 @@
             >
           </view>
           <view
-            class="rounded-full backdrop-blur-md border border-white/20 active:scale-95 transition-all shadow-lg flex items-center justify-center"
+            class="rounded-full backdrop-blur-md border border-white/20 active:scale-95 transition-all flex items-center justify-center"
             :style="{
               height: `${calcSize(80)}rpx`,
               padding: `0 ${calcSize(32)}rpx`,
@@ -181,6 +182,7 @@
               currentIndex < pbDetail?.scenes?.length - 1
                 ? 'opacity-100 pointer-events-auto'
                 : 'opacity-0 pointer-events-none',
+              defaultTheme.shadow.main,
             ]"
             @click="handleNext"
           >
@@ -239,7 +241,7 @@ import { computed, nextTick, provide, type Ref, ref, watch } from "vue";
 import PageLoading from "@/components/page-loading/page-loading.vue";
 import PbCover from "./PbCover.vue";
 import PbContent from "./PbContent.vue";
-import { iconThemeVersion, ThemeColors } from "@/config/config";
+import { iconThemeVersion, ThemeColors, defaultTheme } from "@/config/config";
 import PbHeader from "./PbHeader.vue";
 import { navigateBack } from "@/utils/router";
 import { EModalComponent } from "./types";

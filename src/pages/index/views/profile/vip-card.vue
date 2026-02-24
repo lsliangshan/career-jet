@@ -56,7 +56,7 @@
               color="#000"
             />
           </view>
-          <text class="drop-shadow-sm flex items-center justify-center gap-2">
+          <text class="flex items-center justify-center gap-2">
             立即充值尊享权益
           </text>
         </button>

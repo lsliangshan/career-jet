@@ -1,7 +1,8 @@
 <template>
   <view class="relative w-full flex flex-row items-center justify-center">
     <view
-      class="w-full rounded-[24rpx] bg-white p-4 inner-radius shadow-sm border border-black/5"
+      class="w-full rounded-[24rpx] bg-white p-4 inner-radius border border-black/5"
+      :class="defaultTheme.shadow.main"
     >
       <view class="flex items-center justify-between mb-4">
         <view class="flex flex-row items-center gap-2">
@@ -45,7 +46,7 @@
               :key="pb.id"
             >
               <view
-                class="relative w-full h-[342rpx] rounded-lg bg-cover opacity-80 bg-center mb-2 shadow-inner border border-black/5 overflow-hidden"
+                class="relative w-full h-[342rpx] rounded-lg bg-cover opacity-80 bg-center mb-2 border border-black/5 overflow-hidden"
               >
                 <view
                   class="absolute left-0 top-0 w-full h-full bg-[#e8e8e8] flex flex-row items-center justify-center"
@@ -101,7 +102,7 @@
 </template>
 
 <script setup lang="ts">
-import { iconThemeVersion, ThemeColors } from "@/config/config";
+import { iconThemeVersion, ThemeColors, defaultTheme } from "@/config/config";
 import { computed, nextTick, onMounted, ref } from "vue";
 import { usePictureBookStore } from "@/stores/picture_book";
 import type { IPictureBook } from "@/types";

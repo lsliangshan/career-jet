@@ -3,7 +3,8 @@
     class="w-full h-[400rpx] px-[32rpx] box-border mb-[48rpx] flex flex-col items-center justify-center"
   >
     <view
-      class="relative w-full h-full rounded-[24rpx] overflow-hidden bg-[#fff] dark:bg-card-dark shadow-xl flex flex-row items-center justify-center"
+      class="relative w-full h-full rounded-[24rpx] overflow-hidden bg-[#fff] dark:bg-card-dark flex flex-row items-center justify-center"
+      :class="defaultTheme.shadow.main"
     >
       <view
         class="absolute left-0 top-0 w-full h-full rounded-[24rpx] overflow-hidden flex flex-row items-center justify-center"
@@ -65,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { iconThemeVersion, ThemeColors } from "@/config/config";
+import { iconThemeVersion, ThemeColors, defaultTheme } from "@/config/config";
 import { navigateToCreatePictureBook } from "@/utils/router";
 import { validateLoggedIn } from "@/utils/user";
 

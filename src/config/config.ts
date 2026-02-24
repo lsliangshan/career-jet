@@ -69,6 +69,13 @@ export const supportedLevels = [
 
 export const iconThemeVersion = "v1";
 
+export const defaultTheme = {
+  shadow: {
+    main: "shadow-none",
+    bottomTab: "shadow-[0_0_30rpx_2rpx_rgba(0,0,0,0.1)]",
+  },
+};
+
 export const ThemeColors = {
   primary: "#FF7BAC",
   primary100: "rgba(255, 123, 172, 0.1)",

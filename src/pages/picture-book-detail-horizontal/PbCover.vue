@@ -19,7 +19,8 @@
       }"
     >
       <view
-        class="w-full bg-[rgba(0,0,0,0.2)] backdrop-blur-[12rpx] border border-[2rpx] border-[rgba(255,255,255,0.3)] shadow-2xl rounded-[32rpx] box-border flex flex-col"
+        class="w-full bg-[rgba(0,0,0,0.2)] backdrop-blur-[12rpx] border border-[2rpx] border-[rgba(255,255,255,0.3)] rounded-[32rpx] box-border flex flex-col"
+        :class="defaultTheme.shadow.main"
         :style="{
           padding: `${calcSize(32)}rpx`,
         }"
@@ -55,7 +56,7 @@
           }"
         >
           <text
-            class="font-bold text-[#fff] drop-shadow-md"
+            class="font-bold text-[#fff]"
             :style="{
               fontSize: `${calcSize(52)}rpx`,
             }"
@@ -82,7 +83,7 @@
             @error="handleAvatarError"
           ></image>
           <text
-            class="text-[rgba(255,255,255,0.8)] drop-shadow-md"
+            class="text-[rgba(255,255,255,0.8)]"
             :style="{
               fontSize: `${calcSize(32)}rpx`,
             }"
@@ -97,7 +98,8 @@
           }"
         >
           <view
-            class="relative flex w-full h-full items-center justify-center overflow-hidden rounded-full transition-all active:scale-95 shadow-lg shadow-primary/20"
+            class="relative flex w-full h-full items-center justify-center overflow-hidden rounded-full transition-all active:scale-95"
+            :class="defaultTheme.shadow.main"
             :style="{
               backgroundColor: ThemeColors.primary,
               gap: `${calcSize(16)}rpx`,
@@ -177,7 +179,12 @@
 
 <script setup lang="ts">
 import type { IPictureBook } from "@/types";
-import { DEFAULT_AVATAR, iconThemeVersion, ThemeColors } from "@/config/config";
+import {
+  DEFAULT_AVATAR,
+  iconThemeVersion,
+  ThemeColors,
+  defaultTheme,
+} from "@/config/config";
 import { computed, nextTick, onBeforeMount, ref } from "vue";
 
 interface Props {

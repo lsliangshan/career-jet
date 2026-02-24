@@ -7,7 +7,7 @@
     }"
   >
     <view
-      class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
+      class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center shrink-0"
       @click="handleBack"
     >
       <svg-icon
@@ -22,7 +22,7 @@
     >
       <view
         class="w-[80rpx] h-[80rpx] rounded-full backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center shrink-0"
-        v-if="isMyPictureBook && pbStatus === 0"
+        v-if="isMyPictureBook && pbStatus === 0 && isSuperAdmin"
         :style="{
           backgroundColor: ThemeColors.primary,
         }"
@@ -35,7 +35,7 @@
         />
       </view>
 
-      <view
+      <!-- <view
         class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center shrink-0"
         v-if="isMyPictureBook"
       >
@@ -44,7 +44,7 @@
           class="w-[42rpx] h-[42rpx]"
           color="#fff"
         />
-      </view>
+      </view> -->
 
       <view
         class="w-[80rpx] h-[80rpx] rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center shrink-0"
@@ -94,7 +94,7 @@
 
 <script setup lang="ts">
 import { computed, inject, onMounted, type Ref, ref } from "vue";
-import { useUserStore } from "@/stores/user";
+import { UserRole, useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { usePictureBookStore } from "@/stores/picture_book";
 import { iconThemeVersion, ThemeColors } from "@/config/config";
@@ -132,6 +132,10 @@ const { left: safeTitleWidth } = uni.getMenuButtonBoundingClientRect();
 
 const isMyPictureBook = computed(() => {
   return props.authorId === loginInfo.value?.id;
+});
+
+const isSuperAdmin = computed(() => {
+  return loginInfo.value?.role == UserRole.SUPER_ADMIN;
 });
 
 onMounted(() => {

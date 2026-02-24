@@ -10,7 +10,8 @@
         }"
       >
         <view
-          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border shadow-sm border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          :class="defaultTheme.shadow.main"
           @click="openModal(EModalComponent.CHOOSE_THEME_MODAL, {})"
         >
           <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
@@ -60,7 +61,8 @@
         </view>
 
         <view
-          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border shadow-sm border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          :class="defaultTheme.shadow.main"
           @click="openModal(EModalComponent.CHOOSE_STORY_STYLE_MODAL, {})"
         >
           <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
@@ -110,7 +112,8 @@
         </view>
 
         <view
-          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border shadow-sm border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          :class="defaultTheme.shadow.main"
           @click="openModal(EModalComponent.CHOOSE_PICTURE_STYLE_MODAL, {})"
         >
           <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
@@ -160,7 +163,8 @@
         </view>
 
         <view
-          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border shadow-sm border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          :class="defaultTheme.shadow.main"
           @click="openModal(EModalComponent.CHOOSE_RATIO_MODAL, {})"
         >
           <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
@@ -200,7 +204,8 @@
         </view>
 
         <view
-          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border shadow-sm border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          :class="defaultTheme.shadow.main"
           @click="openModal(EModalComponent.CHOOSE_LANGUAGE_MODAL, {})"
         >
           <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
@@ -240,7 +245,8 @@
         </view>
 
         <view
-          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border shadow-sm border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          :class="defaultTheme.shadow.main"
         >
           <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
             <view
@@ -293,7 +299,8 @@
         </view>
 
         <view
-          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border shadow-sm border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          :class="defaultTheme.shadow.main"
         >
           <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
             <view
@@ -340,7 +347,8 @@
         </view>
 
         <view
-          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border shadow-sm border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          :class="defaultTheme.shadow.main"
         >
           <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
             <view
@@ -395,7 +403,7 @@
         }"
       >
         <view
-          class="w-full h-[88rpx] py-4 rounded-[24rpx] shadow-lg transition-all flex items-center justify-center gap-2"
+          class="w-full h-[88rpx] py-4 rounded-[24rpx] transition-all flex items-center justify-center gap-2"
           :class="[
             isGenerating
               ? 'pointer-events-none'
@@ -437,6 +445,7 @@ import {
   iconThemeVersion,
   moralities,
   ThemeColors,
+  defaultTheme,
 } from "@/config/config";
 import { computed, inject, nextTick, onMounted, ref } from "vue";
 import { EModalComponent } from "../../modals/types";

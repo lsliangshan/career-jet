@@ -65,7 +65,8 @@
               class="w-full h-[64rpx] mt-[32rpx] flex flex-row items-center justify-center"
             >
               <view
-                class="py-4 px-10 box-border rounded-[16px] shadow-lg shadow-primary/20 transition-transform active:scale-95"
+                class="py-4 px-10 box-border rounded-[16px] transition-transform active:scale-95"
+                :class="defaultTheme.shadow.main"
                 :style="{ backgroundColor: ThemeColors.primary }"
                 @click="handleDiscoverStory"
               >
@@ -131,7 +132,7 @@
 </template>
 
 <script setup lang="ts">
-import { ThemeColors } from "@/config/config";
+import { ThemeColors, defaultTheme } from "@/config/config";
 import type { IPictureBook } from "@/types";
 import { computed, nextTick, onMounted, ref } from "vue";
 import { usePictureBookStore } from "@/stores/picture_book";

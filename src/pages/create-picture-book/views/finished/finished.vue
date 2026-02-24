@@ -10,7 +10,8 @@
         }"
       >
         <view
-          class="w-[500rpx] mx-auto mt-[32rpx] p-[24rpx] box-border bg-white rounded-[24rpx] shadow-sm border border-black/5 flex flex-col gap-[24rpx]"
+          class="w-[500rpx] mx-auto mt-[32rpx] p-[24rpx] box-border bg-white rounded-[24rpx] border border-black/5 flex flex-col gap-[24rpx]"
+          :class="defaultTheme.shadow.main"
         >
           <view
             class="relative w-full"
@@ -92,7 +93,7 @@
         }"
       >
         <view
-          class="w-full h-[88rpx] py-4 rounded-[24rpx] shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
+          class="w-full h-[88rpx] py-4 rounded-[24rpx] active:scale-95 transition-all flex items-center justify-center gap-2"
           :style="{
             backgroundColor: ThemeColors.primary,
             boxShadow: `0 10px 15px -3px ${ThemeColors.primary300}`,
@@ -112,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { iconThemeVersion, ThemeColors } from "@/config/config";
+import { iconThemeVersion, ThemeColors, defaultTheme } from "@/config/config";
 import { type IPictureBook } from "@/types";
 import { computed, inject, onMounted, ref, type Ref } from "vue";
 import { type ICreatePictureBookFormData } from "../../types";

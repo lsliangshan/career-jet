@@ -10,9 +10,10 @@
         }"
       >
         <view
-          class="relative w-full rounded-[24rpx] bg-white p-[32rpx] box-border shadow-sm border border-black/[0.03] flex flex-col gap-[32rpx]"
+          class="relative w-full rounded-[24rpx] bg-white p-[32rpx] box-border border border-black/[0.03] flex flex-col gap-[32rpx]"
           :class="[
             isConfirming ? 'pointer-events-none' : 'pointer-events-auto',
+            defaultTheme.shadow.main,
           ]"
         >
           <view
@@ -117,11 +118,12 @@
         }"
       >
         <view
-          class="w-full h-[88rpx] py-4 rounded-[24rpx] shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          class="w-full h-[88rpx] py-4 rounded-[24rpx] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
           :class="[
             isRegenerating || isConfirming
               ? 'pointer-events-none'
               : 'pointer-events-auto',
+            defaultTheme.shadow.main,
           ]"
           :style="{
             backgroundColor:
@@ -157,7 +159,7 @@
 </template>
 
 <script setup lang="ts">
-import { iconThemeVersion, ThemeColors } from "@/config/config";
+import { iconThemeVersion, ThemeColors, defaultTheme } from "@/config/config";
 import { computed, inject, nextTick, ref, watch, type Ref } from "vue";
 import type { ICreatePictureBookFormData, IStory } from "../../types";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";

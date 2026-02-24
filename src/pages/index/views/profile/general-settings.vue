@@ -130,12 +130,12 @@
           :style="{
             backgroundColor: ThemeColors.bgCard,
           }"
-          @click="handleViewMyPictureBooks('final')"
+          @click="handleViewMyPictureBooks('review')"
         >
           <view class="flex flex-row items-center gap-[12rpx]">
             <svg-icon
-              :src="`/static/${iconThemeVersion}/icon_pb_list.svg`"
-              class="w-[26rpx] h-[26rpx]"
+              :src="`/static/${iconThemeVersion}/icon_review.svg`"
+              class="w-[32rpx] h-[32rpx]"
               color="#000"
             />
             <text
@@ -199,7 +199,7 @@ function handleCreatePictureBook() {
   navigateToCreatePictureBook();
 }
 
-function handleViewMyPictureBooks(type: "draft" | "final") {
+function handleViewMyPictureBooks(type: "draft" | "final" | "review") {
   navigateToPictureBookList(type);
 }
 </script>

@@ -4,7 +4,8 @@
     :style="{ bottom: safeBottom != 0 ? safeBottom + 'px' : '32rpx' }"
   >
     <view
-      class="w-full h-full bg-[rgba(255,255,255,0.5)] backdrop-blur-md rounded-[64rpx] shadow-[0_0_30rpx_2rpx_rgba(0,0,0,0.1)] flex flex-row items-center justify-between"
+      class="w-full h-full bg-[rgba(255,255,255,0.5)] backdrop-blur-md rounded-[64rpx] flex flex-row items-center justify-between"
+      :class="defaultTheme.shadow.bottomTab"
     >
       <view
         class="w-full h-full flex flex-col items-center justify-center gap-[12rpx]"
@@ -35,7 +36,8 @@
           }"
         >
           <view
-            class="w-[128rpx] h-[128rpx] p-[8rpx] box-border bg-white rounded-full shadow-[0_0_30rpx_2rpx_rgba(0,0,0,0.1)] flex flex-row items-center justify-center active:scale-95 transition-all duration-300"
+            class="w-[128rpx] h-[128rpx] p-[8rpx] box-border bg-white rounded-full flex flex-row items-center justify-center active:scale-95 transition-all duration-300"
+            :class="defaultTheme.shadow.bottomTab"
             @click="handleCreatePictureBook"
           >
             <view
@@ -83,7 +85,12 @@
 </template>
 
 <script setup lang="ts">
-import { iconThemeVersion, tabbars, ThemeColors } from "@/config/config";
+import {
+  iconThemeVersion,
+  tabbars,
+  ThemeColors,
+  defaultTheme,
+} from "@/config/config";
 import { useNavStore } from "@/stores/nav";
 import { storeToRefs } from "pinia";
 import { validateLoggedIn } from "@/utils/user";

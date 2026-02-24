@@ -1,6 +1,7 @@
 <template>
   <view
-    class="bg-white dark:bg-card-dark p-2.5 rounded-2xl shadow-sm border border-black/5 flex flex-col"
+    class="bg-white dark:bg-card-dark p-2.5 rounded-2xl border border-black/5 flex flex-col"
+    :class="defaultTheme.shadow.main"
     @click="handleViewPictureBook(info)"
   >
     <view
@@ -64,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import { iconThemeVersion, ThemeColors } from "@/config/config";
+import { iconThemeVersion, ThemeColors, defaultTheme } from "@/config/config";
 import type { IPictureBook } from "@/types";
 import { computed, ref } from "vue";
 import { formatReadCount } from "@/utils";

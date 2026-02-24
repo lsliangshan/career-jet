@@ -735,3 +735,113 @@ export function requestGetImageUrls(params: {
     resolve(urlMap);
   });
 }
+
+/**
+ * 获取绘本审核列表
+ * @param params
+ * @param {string} params.userId 用户ID
+ * @param {-1 | 0 | 1} params.reviewStatus 审核状态 -1: 审核不通过、0: 待审核、1: 审核通过
+ * @param {number} [params.pageIndex=1] 页码
+ * @param {number} [params.pageSize=20] 每页条数
+ */
+export function requestGetReviewPictureBooks(params?: {
+  userId: string;
+  reviewStatus: -1 | 0 | 1;
+  pageIndex?: number;
+  pageSize?: number;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/pb/review/get-review-list`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 审核绘本
+ * @param params
+ * @param {string} params.userId 用户ID
+ * @param {boolean} params.approve 审核状态 true: 审核通过、false: 审核不通过
+ * @param {string} [params.reviewMessage] 审核备注
+ * @param {number} [params.pageIndex=1] 页码
+ * @param {number} [params.pageSize=20] 每页条数
+ */
+export function requestReviewPictureBook(params?: {
+  userId: string;
+  approve: boolean;
+  reviewMessage?: string;
+  pageIndex?: number;
+  pageSize?: number;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/pb/review`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 提交审核绘本
+ * @param params
+ * @param {string} params.userId 用户ID
+ * @param {string} params.pbId 绘本ID
+ */
+export function requestSubmitReview(params?: {
+  userId: string;
+  pbId: boolean;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/pb/review/submit`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}
+
+/**
+ * 获取绘本审核状态
+ * @param params
+ * @param {string} params.userId 用户ID
+ * @param {string} params.pbId 绘本ID
+ */
+export function requestGetReviewStatus(params?: {
+  userId: string;
+  pbId: boolean;
+}): Promise<any> {
+  return new Promise<any>((resolve) => {
+    uni.request({
+      url: `${baseUrl}/pb/review/check-status`,
+      method: "POST",
+      data: { ...params },
+      success: (res) => {
+        resolve(res.data);
+      },
+      fail: (_) => {
+        resolve({});
+      },
+    });
+  });
+}

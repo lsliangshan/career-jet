@@ -143,6 +143,25 @@ export function navigateToPictureBookList(
   }
 }
 
+export function navigateToPictureBookReviewList(
+  type: "approved" | "unapproved" | "default",
+  options?: {
+    method?: "navigateTo" | "redirectTo";
+    complete?: () => void;
+  }
+) {
+  const { method = "navigateTo" } = options || {};
+  const url = `/pages/picture-book-review-list/picture-book-review-list?type=${type}`;
+  if (method === "navigateTo") {
+    uni.navigateTo({
+      url,
+      complete: () => {
+        options?.complete?.();
+      },
+    });
+  }
+}
+
 export function navigateToProfileDetail(options?: {
   method?: "navigateTo" | "redirectTo";
   complete?: () => void;

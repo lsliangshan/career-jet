@@ -133,7 +133,7 @@
           :style="{
             backgroundColor: ThemeColors.bgCard,
           }"
-          @click="handleViewMyPictureBooks('review')"
+          @click="handleReViewMyPictureBooks('default')"
         >
           <view class="flex flex-row items-center gap-[12rpx]">
             <svg-icon
@@ -184,6 +184,7 @@ import { iconThemeVersion, ThemeColors, defaultTheme } from "@/config/config";
 import {
   navigateToCreatePictureBook,
   navigateToPictureBookList,
+  navigateToPictureBookReviewList,
 } from "@/utils/router";
 import { useUserStore, UserRole } from "@/stores/user";
 import { storeToRefs } from "pinia";
@@ -204,6 +205,12 @@ function handleCreatePictureBook() {
 
 function handleViewMyPictureBooks(type: "draft" | "final" | "review") {
   navigateToPictureBookList(type);
+}
+
+function handleReViewMyPictureBooks(
+  type: "approved" | "unapproved" | "default"
+) {
+  navigateToPictureBookReviewList(type);
 }
 </script>
 

@@ -49,6 +49,13 @@
 			}
 		},
 		{
+			"path": "pages/picture-book-review-list/picture-book-review-list",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/picture-book-detail/picture-book-detail",
 			"style": {
 				"navigationBarTitleText": "",

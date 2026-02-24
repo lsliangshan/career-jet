@@ -38,8 +38,10 @@
       <view
         class="flex items-center gap-1 mt-0.5 opacity-60 dark:text-white/60 mt-[8rpx]"
       >
-        <template v-if="type === 'all' || type === 'draft'">
-          <text class="text-[10px] font-bold">{{ info.createAt }}</text>
+        <template
+          v-if="type === 'all' || type === 'draft' || type === 'review'"
+        >
+          <text class="text-[10px] font-bold">{{ info.updateAt }}</text>
         </template>
         <template v-else-if="type === 'favorite'">
           <text class="text-[10px] font-bold">{{ info.likeTime }}</text>
@@ -61,6 +63,17 @@
             >{{ formatReadCount(info.views) }}阅读</text
           >
         </template>
+      </view>
+      <view
+        class="flex items-center gap-1 mt-0.5 opacity-60 dark:text-white/60 mt-[8rpx]"
+        v-if="type === 'review'"
+      >
+        <svg-icon
+          :src="`/static/${iconThemeVersion}/icon_profile.svg`"
+          class="w-[24rpx] h-[24rpx]"
+          :color="ThemeColors.primary"
+        ></svg-icon>
+        <text class="text-[10px] font-bold">{{ info.author?.nickname }}</text>
       </view>
     </view>
   </view>

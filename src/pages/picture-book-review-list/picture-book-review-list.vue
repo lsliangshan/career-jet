@@ -23,13 +23,7 @@
       <view
         class="w-full h-full box-border flex flex-row items-center justify-start"
       >
-        <text class="text-[36rpx] font-bold">{{
-          type === "draft"
-            ? "我的草稿"
-            : type === "review"
-            ? "待我审核"
-            : "我的绘本"
-        }}</text>
+        <text class="text-[36rpx] font-bold">审核列表</text>
       </view>
     </view>
   </view>
@@ -110,7 +104,7 @@
               v-for="(pb, index) in pictureBooks"
               :key="pb.id"
             >
-              <PbCard :type="type" :info="pb" />
+              <PbCard :type="renderType" :info="pb" />
             </view>
           </grid-view>
 
@@ -184,7 +178,7 @@ const totalPage = ref(1);
 
 const pictureBooks = ref<IPictureBook[]>([]);
 
-const type = ref<"draft" | "final" | "review">("final");
+const type = ref<"default">("default");
 
 const headerHeight = computed(() => {
   return safeTop + uni.upx2px(80);
@@ -193,13 +187,20 @@ const offsetTop = computed(() => {
   return safeTop + uni.upx2px(280);
 });
 
+const renderType = computed(() => {
+  if (type.value === "default") {
+    return "review";
+  }
+  return "review";
+});
+
 onLoad((options: any) => {
-  type.value = options.type || "final";
+  type.value = options.type || "default";
 });
 
 onMounted(() => {
   nextTick(async () => {
-    await getMyPictureBooks();
+    await getReviewPictureBooks();
   });
 });
 
@@ -226,7 +227,7 @@ async function refresherrefresh() {
 
   pageIndex.value = 1;
 
-  await getMyPictureBooks();
+  await getReviewPictureBooks();
 
   nextTick(() => {
     const t = setTimeout(() => {
@@ -244,17 +245,17 @@ async function onScrollToLower() {
     return;
   }
   pageIndex.value++;
-  await getMyPictureBooks();
+  await getReviewPictureBooks();
 }
 
-async function getMyPictureBooks() {
+async function getReviewPictureBooks() {
   if (isLoading.value) {
     return;
   }
 
   isLoading.value = true;
 
-  const res = await pictureBookStore.getMyPictureBooks({
+  const res = await pictureBookStore.getReviewPictureBooks({
     type: type.value,
     pageIndex: pageIndex.value,
     pageSize: pageSize.value,

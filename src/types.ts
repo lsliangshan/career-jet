@@ -136,6 +136,7 @@ export interface IPictureBook {
   status: number;
   config: IConfigItem;
   createAt: string;
+  updateAt: string;
   roles?: IRoleItem[];
   scenes?: ISceneItem[];
   cover?: ICoverItem;

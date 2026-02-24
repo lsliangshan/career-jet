@@ -4,7 +4,8 @@
     :class="[isFontLoaded ? 'opacity-100' : 'opacity-0']"
   >
     <view
-      class="ultra-luxury-card w-full relative overflow-hidden rounded-[24px] px-6 py-4 border-[0.5px] border-svip-gold/40"
+      class="ultra-luxury-card w-full relative overflow-hidden px-6 py-4 border-[0.5px] border-svip-gold/40"
+      :class="[defaultTheme.rounded.vipCard]"
     >
       <view class="absolute inset-0 stardust-overlay"></view>
       <view
@@ -66,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { iconThemeVersion } from "@/config/config";
+import { iconThemeVersion, defaultTheme } from "@/config/config";
 import { onBeforeMount, ref } from "vue";
 import { formatNumber } from "@/utils";
 

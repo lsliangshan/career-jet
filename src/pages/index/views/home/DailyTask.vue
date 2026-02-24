@@ -3,11 +3,12 @@
     class="w-full h-[400rpx] px-[32rpx] box-border mb-[48rpx] flex flex-col items-center justify-center"
   >
     <view
-      class="relative w-full h-full rounded-[24rpx] overflow-hidden bg-[#fff] dark:bg-card-dark flex flex-row items-center justify-center"
-      :class="defaultTheme.shadow.main"
+      class="relative w-full h-full overflow-hidden bg-[#fff] dark:bg-card-dark flex flex-row items-center justify-center"
+      :class="[defaultTheme.shadow.main, defaultTheme.rounded.main]"
     >
       <view
-        class="absolute left-0 top-0 w-full h-full rounded-[24rpx] overflow-hidden flex flex-row items-center justify-center"
+        class="absolute left-0 top-0 w-full h-full overflow-hidden flex flex-row items-center justify-center"
+        :class="[defaultTheme.rounded.main]"
       >
         <image
           class="w-full h-full"

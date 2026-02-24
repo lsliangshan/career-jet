@@ -12,7 +12,10 @@
         >通用设置</text
       >
     </view>
-    <view class="w-full rounded-[8rpx] overflow-hidden flex flex-col">
+    <view
+      class="w-full overflow-hidden flex flex-col"
+      :class="[defaultTheme.rounded.main]"
+    >
       <view
         class="flex flex-row items-center border-t border-t-[1rpx] border-t-[#f8f8f8]"
       >
@@ -177,7 +180,7 @@
 </template>
 
 <script setup lang="ts">
-import { iconThemeVersion, ThemeColors } from "@/config/config";
+import { iconThemeVersion, ThemeColors, defaultTheme } from "@/config/config";
 import {
   navigateToCreatePictureBook,
   navigateToPictureBookList,

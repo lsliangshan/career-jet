@@ -5,6 +5,7 @@
 
       <view
         class="w-full px-[32rpx] py-[32rpx] box-border flex flex-col gap-[24rpx]"
+        :class="[defaultTheme.rounded.main]"
         :style="{
           minHeight: `calc(100% - ${headerHeight}px - 128rpx - ${safeBottom}px)`,
         }"
@@ -62,7 +63,7 @@
         }"
       >
         <view
-          class="w-full h-[88rpx] py-4 rounded-[24rpx] transition-all flex items-center justify-center gap-2"
+          class="w-full h-[88rpx] py-4 transition-all flex items-center justify-center gap-2"
           :class="[
             regeneratingImageIds.size === 0 &&
             loadingImageIds.size === 0 &&
@@ -70,6 +71,7 @@
               ? 'pointer-events-auto active:scale-95'
               : 'pointer-events-none',
             defaultTheme.shadow.main,
+            defaultTheme.rounded.button,
           ]"
           :style="{
             backgroundColor:

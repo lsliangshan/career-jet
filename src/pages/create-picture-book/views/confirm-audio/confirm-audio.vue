@@ -9,11 +9,9 @@
           minHeight: `calc(100% - ${headerHeight}px - 128rpx - ${safeBottom}px)`,
         }"
       >
-        <view
-          class="w-full mt-[32rpx] rounded-[24rpx] flex flex-col gap-[24rpx]"
-        >
+        <view class="w-full mt-[32rpx] flex flex-col gap-[24rpx]">
           <view
-            class="rounded-[32rpx] flex items-center transition-all"
+            class="flex items-center transition-all"
             v-for="(voice, index) in voiceTypes"
             :key="`${voice.value}`"
             :class="[
@@ -28,7 +26,8 @@
             @click="handleSelectVoiceType(index)"
           >
             <view
-              class="rounded-[32rpx] p-4 w-full h-full border-2 flex items-center gap-4 transition-all"
+              class="p-4 w-full h-full border-2 flex items-center gap-4 transition-all"
+              :class="[defaultTheme.rounded.audioCard]"
               :style="{
                 backgroundColor:
                   selectedVoiceTypeIndex === index
@@ -104,12 +103,13 @@
         }"
       >
         <view
-          class="w-full h-[88rpx] py-4 rounded-[24rpx] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          class="w-full h-[88rpx] py-4 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
           :class="[
             !isGenerating
               ? 'pointer-events-auto active:scale-95'
               : 'pointer-events-none',
             defaultTheme.shadow.main,
+            defaultTheme.rounded.button,
           ]"
           :style="{
             backgroundColor: !isGenerating

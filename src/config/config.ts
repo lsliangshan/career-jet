@@ -71,8 +71,15 @@ export const iconThemeVersion = "v1";
 
 export const defaultTheme = {
   shadow: {
-    main: "shadow-none",
+    main: "shadow-sm",
     bottomTab: "shadow-[0_0_30rpx_2rpx_rgba(0,0,0,0.1)]",
+  },
+  rounded: {
+    main: "rounded-lg",
+    button: "rounded-md",
+    audioCard: "rounded-md",
+    vipCard: "rounded-xl",
+    draftManagement: "rounded-xl",
   },
 };
 

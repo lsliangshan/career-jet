@@ -1,14 +1,15 @@
 <template>
   <view
-    class="bg-white dark:bg-card-dark p-2.5 rounded-2xl border border-black/5 flex flex-col"
-    :class="defaultTheme.shadow.main"
+    class="bg-white p-2.5 border border-black/5 flex flex-col"
+    :class="[defaultTheme.shadow.main, defaultTheme.rounded.main]"
   >
     <view
       class="relative w-full"
       :style="{ height: renderImageHeight(ratio) + 'rpx' }"
     >
       <image
-        class="w-full h-full rounded-xl overflow-hidden"
+        class="w-full h-full overflow-hidden"
+        :class="[defaultTheme.rounded.main]"
         :src="info.url"
         mode="aspectFill"
         @error="handleImageError"

@@ -10,8 +10,8 @@
         }"
       >
         <view
-          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
-          :class="defaultTheme.shadow.main"
+          class="w-full h-[108rpx] bg-white py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          :class="[defaultTheme.shadow.main, defaultTheme.rounded.main]"
           @click="openModal(EModalComponent.CHOOSE_THEME_MODAL, {})"
         >
           <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
@@ -61,8 +61,8 @@
         </view>
 
         <view
-          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
-          :class="defaultTheme.shadow.main"
+          class="w-full h-[108rpx] bg-white py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          :class="[defaultTheme.shadow.main, defaultTheme.rounded.main]"
           @click="openModal(EModalComponent.CHOOSE_STORY_STYLE_MODAL, {})"
         >
           <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
@@ -112,8 +112,8 @@
         </view>
 
         <view
-          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
-          :class="defaultTheme.shadow.main"
+          class="w-full h-[108rpx] bg-white py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          :class="[defaultTheme.shadow.main, defaultTheme.rounded.main]"
           @click="openModal(EModalComponent.CHOOSE_PICTURE_STYLE_MODAL, {})"
         >
           <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
@@ -163,8 +163,8 @@
         </view>
 
         <view
-          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
-          :class="defaultTheme.shadow.main"
+          class="w-full h-[108rpx] bg-white py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          :class="[defaultTheme.shadow.main, defaultTheme.rounded.main]"
           @click="openModal(EModalComponent.CHOOSE_RATIO_MODAL, {})"
         >
           <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
@@ -204,8 +204,8 @@
         </view>
 
         <view
-          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
-          :class="defaultTheme.shadow.main"
+          class="w-full h-[108rpx] bg-white py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          :class="[defaultTheme.shadow.main, defaultTheme.rounded.main]"
           @click="openModal(EModalComponent.CHOOSE_LANGUAGE_MODAL, {})"
         >
           <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
@@ -245,8 +245,8 @@
         </view>
 
         <view
-          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
-          :class="defaultTheme.shadow.main"
+          class="w-full h-[108rpx] bg-white py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          :class="[defaultTheme.shadow.main, defaultTheme.rounded.main]"
         >
           <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
             <view
@@ -263,7 +263,8 @@
           </view>
 
           <view
-            class="relative w-[330rpx] h-[92rpx] shrink-0 bg-gray-50 rounded-[24rpx] p-[6rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+            class="relative w-[330rpx] h-[92rpx] shrink-0 bg-gray-50 p-[6rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+            :class="[defaultTheme.rounded.main]"
           >
             <view
               class="absolute left-0 top-0 w-[116rpx] h-full p-[8rpx] box-border flex flex-row items-center justify-center transition-all duration-300"
@@ -272,14 +273,16 @@
               }"
             >
               <view
-                class="w-full h-full rounded-[16rpx]"
+                class="w-full h-full"
+                :class="[defaultTheme.rounded.main]"
                 :style="{
                   backgroundColor: ThemeColors.primary,
                 }"
               ></view>
             </view>
             <view
-              class="w-full h-full z-[9] rounded-[16rpx] flex flex-row items-center justify-center"
+              class="w-full h-full z-[9] flex flex-row items-center justify-center"
+              :class="[defaultTheme.rounded.main]"
               v-for="(item, index) in storyLengthOptions"
               :key="index"
               @click="handleStoryLengthClick(item.value)"
@@ -299,8 +302,8 @@
         </view>
 
         <view
-          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
-          :class="defaultTheme.shadow.main"
+          class="w-full h-[108rpx] bg-white py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          :class="[defaultTheme.shadow.main, defaultTheme.rounded.main]"
         >
           <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
             <view
@@ -325,7 +328,8 @@
           </view>
 
           <view
-            class="relative w-[300rpx] h-[92rpx] shrink-0 bg-gray-50 rounded-[24rpx] p-[6rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+            class="relative w-[300rpx] h-[92rpx] shrink-0 bg-gray-50 p-[6rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+            :class="[defaultTheme.rounded.main]"
           >
             <view
               class="w-full h-[88rpx] flex flex-row items-center justify-center"
@@ -347,8 +351,8 @@
         </view>
 
         <view
-          class="w-full h-[108rpx] bg-white rounded-[24rpx] py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
-          :class="defaultTheme.shadow.main"
+          class="w-full h-[108rpx] bg-white py-[24rpx] px-[16rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+          :class="[defaultTheme.shadow.main, defaultTheme.rounded.main]"
         >
           <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
             <view
@@ -373,7 +377,8 @@
           </view>
 
           <view
-            class="relative w-[300rpx] h-[92rpx] shrink-0 bg-gray-50 rounded-[24rpx] p-[6rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+            class="relative w-[300rpx] h-[92rpx] shrink-0 bg-gray-50 p-[6rpx] box-border border border-[rgba(255,255,255,0.03)] flex flex-row items-center justify-between"
+            :class="[defaultTheme.rounded.main]"
           >
             <view
               class="w-full h-[88rpx] flex flex-row items-center justify-center"
@@ -403,11 +408,12 @@
         }"
       >
         <view
-          class="w-full h-[88rpx] py-4 rounded-[24rpx] transition-all flex items-center justify-center gap-2"
+          class="w-full h-[88rpx] py-4 transition-all flex items-center justify-center gap-2"
           :class="[
             isGenerating
               ? 'pointer-events-none'
               : 'pointer-events-auto active:scale-[0.98]',
+            defaultTheme.rounded.button,
           ]"
           :style="{
             backgroundColor: isGenerating

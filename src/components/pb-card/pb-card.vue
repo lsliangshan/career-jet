@@ -1,7 +1,7 @@
 <template>
   <view
-    class="bg-white dark:bg-card-dark p-2.5 rounded-2xl border border-black/5 flex flex-col"
-    :class="defaultTheme.shadow.main"
+    class="bg-white dark:bg-card-dark p-2.5 border border-black/5 flex flex-col"
+    :class="[defaultTheme.shadow.main, defaultTheme.rounded.main]"
     @click="handleViewPictureBook(info)"
   >
     <view
@@ -9,13 +9,15 @@
       :style="{ height: renderImageHeight(info.config?.ratio) + 'rpx' }"
     >
       <image
-        class="w-full h-full rounded-xl overflow-hidden"
+        class="w-full h-full overflow-hidden"
+        :class="[defaultTheme.rounded.main]"
         :src="info.cover?.url"
         mode="aspectFill"
         @error="handleImageError"
       />
       <view
-        class="absolute left-0 top-0 w-full h-full bg-[#e8e8e8] flex flex-row items-center justify-center"
+        class="absolute left-0 top-0 w-full h-full bg-[#e8e8e8] flex flex-row items-center justify-center overflow-hidden"
+        :class="[defaultTheme.rounded.main]"
         v-if="!info.cover?.url || imageLoadError"
       >
         <image

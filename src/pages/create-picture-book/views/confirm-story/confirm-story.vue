@@ -10,10 +10,11 @@
         }"
       >
         <view
-          class="relative w-full rounded-[24rpx] bg-white p-[32rpx] box-border border border-black/[0.03] flex flex-col gap-[32rpx]"
+          class="relative w-full bg-white p-[32rpx] box-border border border-black/[0.03] flex flex-col gap-[32rpx]"
           :class="[
             isConfirming ? 'pointer-events-none' : 'pointer-events-auto',
             defaultTheme.shadow.main,
+            defaultTheme.rounded.main,
           ]"
         >
           <view
@@ -50,11 +51,12 @@
             class="w-full h-[100rpx] flex flex-row items-center justify-center gap-[24rpx]"
           >
             <view
-              class="w-[50%] h-[88rpx] rounded-[24rpx] bg-gray-200 flex flex-row items-center justify-center gap-[12rpx] transition-all duration-300"
+              class="w-[50%] h-[88rpx] bg-gray-200 flex flex-row items-center justify-center gap-[12rpx] transition-all duration-300"
               :class="[
                 isRegenerating || isConfirming
                   ? 'opacity-50 pointer-events-none'
                   : 'opacity-100 active:scale-95 pointer-events-auto',
+                defaultTheme.rounded.button,
               ]"
               @click="handleRegenerateStory"
             >
@@ -78,7 +80,8 @@
           </view>
 
           <view
-            class="absolute left-0 top-0 w-full h-full rounded-[24rpx] bg-white/30 backdrop-blur-sm z-[99] flex flex-row items-center justify-center"
+            class="absolute left-0 top-0 w-full h-full bg-white/30 backdrop-blur-sm z-[99] flex flex-row items-center justify-center"
+            :class="[defaultTheme.rounded.button]"
             :style="{
               height: `calc(100% - 132rpx)`,
             }"
@@ -118,12 +121,13 @@
         }"
       >
         <view
-          class="w-full h-[88rpx] py-4 rounded-[24rpx] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          class="w-full h-[88rpx] py-4 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
           :class="[
             isRegenerating || isConfirming
               ? 'pointer-events-none'
               : 'pointer-events-auto',
             defaultTheme.shadow.main,
+            defaultTheme.rounded.button,
           ]"
           :style="{
             backgroundColor:
@@ -161,14 +165,13 @@
 <script setup lang="ts">
 import { iconThemeVersion, ThemeColors, defaultTheme } from "@/config/config";
 import { computed, inject, nextTick, ref, watch, type Ref } from "vue";
-import type { ICreatePictureBookFormData, IStory } from "../../types";
+import type { IStory } from "../../types";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
 import { usePictureBookStore } from "@/stores/picture_book";
 
 const pictureBookStore = usePictureBookStore();
 
 const story = inject<Ref<IStory>>("story");
-const formData = inject<Ref<ICreatePictureBookFormData>>("formData");
 
 const $emit = defineEmits<{
   (e: "on-confirmed", params: any): void;

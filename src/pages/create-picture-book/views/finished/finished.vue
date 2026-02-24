@@ -10,21 +10,23 @@
         }"
       >
         <view
-          class="w-[500rpx] mx-auto mt-[32rpx] p-[24rpx] box-border bg-white rounded-[24rpx] border border-black/5 flex flex-col gap-[24rpx]"
-          :class="defaultTheme.shadow.main"
+          class="w-[500rpx] mx-auto mt-[32rpx] p-[24rpx] box-border bg-white border border-black/5 flex flex-col gap-[24rpx]"
+          :class="[defaultTheme.shadow.main, defaultTheme.rounded.main]"
         >
           <view
             class="relative w-full"
             :style="{ height: renderImageHeight(formData!.ratio) + 'rpx' }"
           >
             <image
-              class="w-full h-full rounded-[24rpx] overflow-hidden"
+              class="w-full h-full overflow-hidden"
+              :class="[defaultTheme.rounded.main]"
               :src="pbDetail?.cover?.url"
               mode="aspectFill"
               @error="handleImageError"
             />
             <view
-              class="absolute left-0 top-0 w-full h-full bg-[#e8e8e8] flex flex-row items-center justify-center"
+              class="absolute left-0 top-0 w-full h-full bg-[#e8e8e8] flex flex-row items-center justify-center overflow-hidden"
+              :class="[defaultTheme.rounded.main]"
               v-if="!pbDetail?.cover?.url || imageLoadError"
             >
               <image
@@ -58,7 +60,8 @@
             class="w-full h-[80rpx] flex flex-row items-center justify-center"
           >
             <view
-              class="h-full px-[24rpx] rounded-[24rpx] flex flex-row items-center justify-center gap-[12rpx] active:scale-95 transition-all duration-300"
+              class="h-full px-[24rpx] flex flex-row items-center justify-center gap-[12rpx] active:scale-95 transition-all duration-300"
+              :class="[defaultTheme.rounded.button]"
               :style="{
                 border: `1rpx solid ${ThemeColors.primary}`,
                 backgroundColor: ThemeColors.primary100,
@@ -93,7 +96,8 @@
         }"
       >
         <view
-          class="w-full h-[88rpx] py-4 rounded-[24rpx] active:scale-95 transition-all flex items-center justify-center gap-2"
+          class="w-full h-[88rpx] py-4 active:scale-95 transition-all flex items-center justify-center gap-2"
+          :class="[defaultTheme.rounded.button]"
           :style="{
             backgroundColor: ThemeColors.primary,
             boxShadow: `0 10px 15px -3px ${ThemeColors.primary300}`,

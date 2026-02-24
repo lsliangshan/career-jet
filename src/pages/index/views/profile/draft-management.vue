@@ -1,8 +1,8 @@
 <template>
   <view class="relative w-full flex flex-row items-center justify-center">
     <view
-      class="w-full rounded-[24rpx] bg-white p-4 inner-radius border border-black/5"
-      :class="defaultTheme.shadow.main"
+      class="w-full bg-white p-4 inner-radius border border-black/5"
+      :class="[defaultTheme.shadow.main, defaultTheme.rounded.draftManagement]"
     >
       <view class="flex items-center justify-between mb-4">
         <view class="flex flex-row items-center gap-2">

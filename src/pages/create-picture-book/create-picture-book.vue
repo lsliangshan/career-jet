@@ -273,7 +273,7 @@ const modalData = ref<{
   [key: string]: any;
 }>();
 
-const currentStepIndex = ref(0);
+const currentStepIndex = ref(6);
 
 const formData = ref<ICreatePictureBookFormData>({
   theme: "诚实与正直",

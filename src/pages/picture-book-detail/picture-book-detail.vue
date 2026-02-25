@@ -334,11 +334,26 @@ function initPbDetail() {
       }
       pbDetail.value = res.data as IPictureBook;
 
+      if (from.value === "review") {
+        // 查询审核状态
+        initReviewStatus();
+      }
+
       const t = setTimeout(() => {
         clearTimeout(t);
         pageReady.value = true;
       }, 500);
     });
+}
+
+async function initReviewStatus() {
+  const res = await pictureBookStore.getPictureBookReviewStatus({
+    pbId: id.value,
+  });
+  if (res.code === 200 && res.data) {
+    reviewed.value = !res.data.inReview;
+  }
+  console.log(">>>>>>>>>>> initReviewStatus: ", res);
 }
 
 function handleStartReading() {

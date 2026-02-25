@@ -829,7 +829,7 @@ export function requestSubmitReview(params?: {
  */
 export function requestGetReviewStatus(params?: {
   userId: string;
-  pbId: boolean;
+  pbId: string;
 }): Promise<any> {
   return new Promise<any>((resolve) => {
     uni.request({

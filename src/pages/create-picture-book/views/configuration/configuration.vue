@@ -14,7 +14,9 @@
           :class="[defaultTheme.shadow.main, defaultTheme.rounded.main]"
           @click="openModal(EModalComponent.CHOOSE_THEME_MODAL, {})"
         >
-          <view class="w-full h-full flex flex-row items-center gap-[16rpx]">
+          <view
+            class="w-[240rpx] h-full flex flex-row items-center gap-[16rpx] shrink-0"
+          >
             <view
               class="w-[64rpx] h-[64rpx] box-border rounded-full flex flex-row items-center justify-center shrink-0"
               :style="{ backgroundColor: ThemeColors.primary200 }"
@@ -25,11 +27,11 @@
                 :color="ThemeColors.primary"
               ></svg-icon>
             </view>
-            <text class="text-[32rpx] font-bold shrink-0">绘本名称</text>
+            <text class="text-[32rpx] font-bold shrink-0">绘本主题</text>
           </view>
 
           <view
-            class="h-full flex flex-row items-center justify-end gap-[8rpx] shrink-0"
+            class="h-full flex flex-row items-center justify-end gap-[8rpx]"
           >
             <view class="h-full flex flex-row items-center justify-end">
               <text

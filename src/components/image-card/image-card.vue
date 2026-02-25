@@ -255,7 +255,9 @@ function handleImageError() {
 }
 
 function hadnleImageLoaded() {
-  $emit("image-loaded", props.info.id);
+  if (props.info.url) {
+    $emit("image-loaded", props.info.id);
+  }
 }
 
 async function handleRegenerate() {

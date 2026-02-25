@@ -233,6 +233,7 @@ async function listImageUrls(taskIds: string[]) {
   if (!scenes?.value) {
     return;
   }
+
   scenes.value.forEach((scene: ISceneItem) => {
     loadingImageIds.value.add(scene.id);
   });

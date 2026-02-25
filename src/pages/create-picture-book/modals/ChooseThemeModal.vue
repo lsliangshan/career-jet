@@ -1,5 +1,5 @@
 <template>
-  <view class="w-full bg-white flex flex-col">
+  <view class="w-full bg-white flex flex-col max-h-[80vh]">
     <view
       class="w-full h-[128rpx] px-[32rpx] box-border flex flex-row items-center justify-between border-b border-b-[rgba(230,226,209,0.5)] border-b-[1rpx]"
     >
@@ -17,7 +17,7 @@
     </view>
     <view class="w-full flex-1 flex flex-row items-start">
       <view class="w-[275rpx] h-full bg-gray-50">
-        <scroll-view class="w-full h-full" scroll-y>
+        <scroll-view class="w-full" scroll-y>
           <view
             class="w-full h-[100rpx] px-[24rpx] box-border flex flex-row items-center rounded-[4rpx] border-l border-l-[6rpx]"
             v-for="(item, index) in renderMoralities"
@@ -46,7 +46,13 @@
         </scroll-view>
       </view>
       <view class="flex-1 h-full">
-        <scroll-view class="w-full h-full" scroll-y>
+        <scroll-view
+          class="w-full"
+          scroll-y
+          :style="{
+            maxHeight: `calc(80vh - 128rpx - 108rpx - ${safeBottom}px)`,
+          }"
+        >
           <view
             class="w-full py-[24rpx] px-[24rpx] box-border flex flex-col gap-[24rpx]"
           >

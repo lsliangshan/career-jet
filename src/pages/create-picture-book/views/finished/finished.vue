@@ -96,20 +96,33 @@
         }"
       >
         <view
-          class="w-full h-[88rpx] py-4 active:scale-95 transition-all flex items-center justify-center gap-2"
-          :class="[defaultTheme.rounded.button]"
+          class="w-full h-[88rpx] py-4 transition-all flex items-center justify-center gap-2"
+          :class="[
+            defaultTheme.rounded.button,
+            isPublished ? '' : 'active:scale-95',
+          ]"
           :style="{
-            backgroundColor: ThemeColors.primary,
-            boxShadow: `0 10px 15px -3px ${ThemeColors.primary300}`,
+            backgroundColor: isPublished
+              ? ThemeColors.text.disabled
+              : ThemeColors.primary,
+            boxShadow: isPublished
+              ? 'none'
+              : `0 10px 15px -3px ${ThemeColors.primary300}`,
           }"
           @click="gotoPublish"
         >
           <svg-icon
             :src="`/static/${iconThemeVersion}/icon_publish.svg`"
             class="w-[32rpx] h-[32rpx]"
-            :color="ThemeColors.text.white"
+            :color="isPublished ? '#666' : ThemeColors.text.white"
           />
-          <text class="text-[34rpx] text-white font-bold">立即发布</text>
+          <text
+            class="text-[34rpx] font-bold"
+            :style="{
+              color: isPublished ? '#666' : ThemeColors.text.white,
+            }"
+            >{{ isPublished ? "已发布" : "立即发布" }}</text
+          >
         </view>
 
         <view
@@ -148,7 +161,7 @@ const pbDetail = inject<Ref<IPictureBook>>("pbDetail");
 
 const imageLoadError = ref(false);
 
-const pbPublished = ref(false);
+const isPublished = ref(false);
 
 // 正在加载图片的id列表
 const loadingImageIds = ref<Set<string>>(new Set());
@@ -217,6 +230,10 @@ async function gotoRead() {
 }
 
 async function gotoPublish() {
+  if (isPublished.value) {
+    return;
+  }
+
   const res = await pictureBookStore.submitReviewPictureBook({
     pbId: pbDetail?.value.id,
   });
@@ -232,7 +249,7 @@ async function gotoPublish() {
     title: "提审成功",
     icon: "success",
   });
-  pbPublished.value = true;
+  isPublished.value = true;
 }
 
 function handleImageError() {

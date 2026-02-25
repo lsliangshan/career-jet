@@ -22,7 +22,7 @@
     >
       <view
         class="w-[80rpx] h-[80rpx] rounded-full backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center shrink-0"
-        v-if="isMyPictureBook && pbStatus === 0 && isSuperAdmin"
+        v-if="isMyPictureBook && isReview && isSuperAdmin"
         :style="{
           backgroundColor: ThemeColors.primary,
         }"
@@ -106,10 +106,12 @@ interface Props {
   playingSceneId?: string;
   authorId?: string;
   hasAudio: boolean;
-  pbStatus: number;
+  isReview: boolean;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  isReview: false,
+});
 
 const $emit = defineEmits<{
   (e: "on-back"): void;

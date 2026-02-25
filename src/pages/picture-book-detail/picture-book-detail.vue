@@ -13,7 +13,7 @@
       <PbHeader
         :scene-id="currentIndex > -1 ? pbDetail.scenes?.[currentIndex]?.id : ''"
         :pb-id="pbDetail?.id"
-        :pb-status="pbDetail?.status"
+        :is-review="from === 'review' && !reviewed"
         :playing-scene-id="isPlayingAudioSceneId"
         :author-id="pbDetail?.authorId"
         :has-audio="pbAudios.length > 0"
@@ -170,7 +170,7 @@
               currentIndex > -1 ? pbDetail.scenes?.[currentIndex]?.id : ''
             "
             :pb-id="pbDetail?.id"
-            :pb-status="pbDetail?.status"
+            :is-review="from === 'review' && !reviewed"
             :playing-scene-id="isPlayingAudioSceneId"
             :has-audio="pbAudios.length > 0"
             @on-back="handleLeave"
@@ -220,6 +220,9 @@ const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 const pictureBookStore = usePictureBookStore();
 
 const id = ref("");
+const from = ref("");
+
+const reviewed = ref(false);
 
 // 是否自动阅读绘本，播放音频模式
 const autoplayWithAudio = ref(false);
@@ -273,6 +276,7 @@ watch(
 
 onLoad((options: any) => {
   id.value = options.id;
+  from.value = options.from;
   initPbDetail();
 
   nextTick(() => {
@@ -391,6 +395,10 @@ function handleConfirmVoiceType(e: any) {
 
 function handleConfirmReview(e: any) {
   closeModal();
+  if (e.action === "approve") {
+    // 审核通过
+    reviewed.value = true;
+  }
 }
 
 function playPictureBookWithAudio() {

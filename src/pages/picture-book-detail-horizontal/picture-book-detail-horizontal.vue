@@ -15,6 +15,7 @@
         :pb-id="pbDetail?.id"
         :playing-scene-id="isPlayingAudioSceneId"
         :author-id="pbDetail?.authorId"
+        :is-review="from === 'review'"
         :has-audio="pbAudios.length > 0"
         v-if="pbDetail && pbDetail.scenes"
         @on-back="handleBack"
@@ -215,6 +216,7 @@
           "
           :pb-id="pbDetail?.id"
           :playing-scene-id="isPlayingAudioSceneId"
+          :is-review="from === 'review'"
           :has-audio="pbAudios.length > 0"
           @on-back="handleLeave"
           @on-play-audio="handlePlayAudio"
@@ -252,6 +254,7 @@ import VoiceTypeModal from "./modals/VoiceTypeModal.vue";
 const pictureBookStore = usePictureBookStore();
 
 const id = ref("");
+const from = ref("");
 
 // 是否自动阅读绘本，播放音频模式
 const autoplayWithAudio = ref(false);
@@ -316,6 +319,7 @@ watch(
 
 onLoad((options: any) => {
   id.value = options.id;
+  from.value = options.from;
   initPbDetail();
 
   nextTick(() => {

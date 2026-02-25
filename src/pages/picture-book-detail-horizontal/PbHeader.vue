@@ -35,6 +35,23 @@
       }"
     >
       <view
+        class="rounded-full backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center shrink-0"
+        v-if="isMyPictureBook && isReview && isSuperAdmin"
+        :style="{
+          backgroundColor: ThemeColors.primary,
+          width: `${calcSize(80)}rpx`,
+          height: `${calcSize(80)}rpx`,
+        }"
+        @click="handleReview"
+      >
+        <svg-icon
+          :src="`/static/${iconThemeVersion}/icon_review.svg`"
+          class="w-[36rpx] h-[36rpx]"
+          color="#fff"
+        />
+      </view>
+
+      <!-- <view
         class="rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
         :style="{
           width: `${calcSize(80)}rpx`,
@@ -50,7 +67,7 @@
           }"
           color="#fff"
         />
-      </view>
+      </view> -->
 
       <view
         class="rounded-full rounded-full bg-black/20 backdrop-blur-md transition-all active:scale-95 flex flex-row items-center justify-center"
@@ -123,7 +140,7 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, type Ref, ref } from "vue";
 import { usePictureBookStore } from "@/stores/picture_book";
-import { useUserStore } from "@/stores/user";
+import { UserRole, useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { iconThemeVersion, ThemeColors } from "@/config/config";
 
@@ -134,13 +151,17 @@ interface Props {
   playingSceneId?: string;
   authorId?: string;
   hasAudio: boolean;
+  isReview?: boolean;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  isReview: false,
+});
 
 const $emit = defineEmits<{
   (e: "on-back"): void;
   (e: "on-play-audio", sceneId: string): void;
+  (e: "on-review", pbId: string): void;
 }>();
 
 const autoplayWithAudio = inject<Ref<boolean>>("autoplayWithAudio");
@@ -156,6 +177,10 @@ const likeStatus = ref<boolean>(false);
 
 const isMyPictureBook = computed(() => {
   return props.authorId === loginInfo.value?.id;
+});
+
+const isSuperAdmin = computed(() => {
+  return loginInfo.value?.role == UserRole.SUPER_ADMIN;
 });
 
 const calcSize = computed(() => {
@@ -191,6 +216,10 @@ function handleBack() {
 
 function handlePlayAudio() {
   $emit("on-play-audio", props.sceneId);
+}
+
+function handleReview() {
+  $emit("on-review", props.pbId);
 }
 
 function toggleLike() {

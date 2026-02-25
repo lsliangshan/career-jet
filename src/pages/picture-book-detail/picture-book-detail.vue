@@ -20,7 +20,7 @@
         v-if="pbDetail && pbDetail.scenes"
         @on-back="handleBack"
         @on-play-audio="handlePlayAudio"
-        @on-publish="handlePublish"
+        @on-review="handleReview"
       />
     </template>
 
@@ -175,7 +175,7 @@
             :has-audio="pbAudios.length > 0"
             @on-back="handleLeave"
             @on-play-audio="handlePlayAudio"
-            @on-publish="handlePublish"
+            @on-review="handleReview"
             v-if="pbDetail && pbDetail.scenes && currentIndex !== -1"
           />
         </view>
@@ -187,6 +187,13 @@
         v-if="modalData?.component === EModalComponent.VOICE_TYPE_MODAL"
         @on-confirm="handleConfirmVoiceType"
       />
+
+      <ReviewPictureBookModal
+        v-if="
+          modalData?.component === EModalComponent.REVIEW_PICTURE_BOOK_MODAL
+        "
+        @on-confirm="handleConfirmReview"
+      ></ReviewPictureBookModal>
     </page-container>
   </view>
 </template>
@@ -204,6 +211,7 @@ import PbHeader from "./PbHeader.vue";
 import { navigateBack } from "@/utils/router";
 import { EModalComponent } from "./types";
 import VoiceTypeModal from "./modals/VoiceTypeModal.vue";
+import ReviewPictureBookModal from "./modals/ReviewPictureBookModal.vue";
 
 const safeBottom = uni.getWindowInfo().safeAreaInsets?.bottom || 0;
 
@@ -381,6 +389,10 @@ function handleConfirmVoiceType(e: any) {
   }, 500);
 }
 
+function handleConfirmReview(e: any) {
+  closeModal();
+}
+
 function playPictureBookWithAudio() {
   if (
     currentIndex.value === -1 ||
@@ -457,21 +469,11 @@ function handlePlayAudio(sceneId: string) {
   audioContext.value.play();
 }
 
-function handlePublish() {
-  uni.showModal({
-    title: "提示",
-    content: "确定要发布绘本吗？",
-    success: function (res) {
-      if (res.confirm) {
-        doPublish();
-      } else if (res.cancel) {
-      }
-    },
-  });
-}
-
-function doPublish() {
-  console.log("doPublish");
+function handleReview() {
+  modalData.value = {
+    component: EModalComponent.REVIEW_PICTURE_BOOK_MODAL,
+  };
+  modalVisible.value = true;
 }
 
 function handleStopAudio() {

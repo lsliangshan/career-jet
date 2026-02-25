@@ -26,11 +26,11 @@
         :style="{
           backgroundColor: ThemeColors.primary,
         }"
-        @click="handlePublish"
+        @click="handleReview"
       >
         <svg-icon
-          :src="`/static/${iconThemeVersion}/icon_publish.svg`"
-          class="w-[38rpx] h-[38rpx] mr-[8rpx]"
+          :src="`/static/${iconThemeVersion}/icon_review.svg`"
+          class="w-[36rpx] h-[36rpx]"
           color="#fff"
         />
       </view>
@@ -114,7 +114,7 @@ const props = defineProps<Props>();
 const $emit = defineEmits<{
   (e: "on-back"): void;
   (e: "on-play-audio", sceneId: string): void;
-  (e: "on-publish"): void;
+  (e: "on-review", pbId: string): void;
 }>();
 
 const autoplayWithAudio = inject<Ref<boolean>>("autoplayWithAudio");
@@ -162,8 +162,8 @@ function handlePlayAudio() {
   $emit("on-play-audio", props.sceneId);
 }
 
-function handlePublish() {
-  $emit("on-publish");
+function handleReview() {
+  $emit("on-review", props.pbId);
 }
 
 function toggleLike() {

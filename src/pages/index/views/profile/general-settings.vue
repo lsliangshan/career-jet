@@ -137,7 +137,7 @@
         >
           <view class="flex flex-row items-center gap-[12rpx]">
             <svg-icon
-              :src="`/static/${iconThemeVersion}/icon_review.svg`"
+              :src="`/static/${iconThemeVersion}/icon_review_list.svg`"
               class="w-[32rpx] h-[32rpx]"
               color="#000"
             />

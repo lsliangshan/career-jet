@@ -1,10 +1,11 @@
 <template>
   <view
-    class="w-full h-full rounded-[24rpx] bg-gray-200 flex flex-row items-center justify-center gap-[12rpx] transition-all duration-300"
+    class="w-full h-full bg-gray-200 flex flex-row items-center justify-center gap-[12rpx] transition-all duration-300"
     :class="[
       isRegenerating || disabled
         ? 'opacity-50 pointer-events-none'
         : 'opacity-100 active:scale-95 pointer-events-auto',
+      defaultTheme.rounded.button,
     ]"
     @click="handleClick"
   >
@@ -27,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { iconThemeVersion, ThemeColors } from "@/config/config";
+import { defaultTheme, iconThemeVersion, ThemeColors } from "@/config/config";
 
 interface Props {
   disabled: boolean;

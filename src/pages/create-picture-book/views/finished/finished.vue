@@ -135,6 +135,9 @@ import { type IPictureBook } from "@/types";
 import { computed, inject, onMounted, ref, type Ref } from "vue";
 import { type ICreatePictureBookFormData } from "../../types";
 import CustomLoader from "@/components/custom-loader/custom-loader.vue";
+import { usePictureBookStore } from "@/stores/picture_book";
+
+const pictureBookStore = usePictureBookStore();
 
 const $emit = defineEmits<{
   (e: "on-publish", params: any): void;
@@ -144,6 +147,8 @@ const formData = inject<Ref<ICreatePictureBookFormData>>("formData");
 const pbDetail = inject<Ref<IPictureBook>>("pbDetail");
 
 const imageLoadError = ref(false);
+
+const pbPublished = ref(false);
 
 // 正在加载图片的id列表
 const loadingImageIds = ref<Set<string>>(new Set());
@@ -211,8 +216,23 @@ async function gotoRead() {
   }
 }
 
-function gotoPublish() {
-  console.log(">>>>>> on publish: ", pbDetail?.value);
+async function gotoPublish() {
+  const res = await pictureBookStore.submitReviewPictureBook({
+    pbId: pbDetail?.value.id,
+  });
+
+  if (res.code !== 200) {
+    uni.showToast({
+      title: res.message || "提审失败，请稍后再试",
+      icon: "none",
+    });
+    return;
+  }
+  uni.showToast({
+    title: "提审成功",
+    icon: "success",
+  });
+  pbPublished.value = true;
 }
 
 function handleImageError() {

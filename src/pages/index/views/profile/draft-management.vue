@@ -76,7 +76,7 @@
                 {{ pb.title }}
               </text>
               <button
-                class="w-full py-1.5 text-[24rpx] font-bold rounded-full border active:scale-95 transition-all duration-300"
+                class="w-full py-1 text-[24rpx] font-bold rounded-full border active:scale-95 transition-all duration-300"
                 :style="{
                   backgroundColor: ThemeColors.primary100,
                   color: ThemeColors.primary,

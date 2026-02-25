@@ -25,6 +25,7 @@
                 :ratio="formData!.ratio"
                 :isLoading="loadingImageIds.has(role.id)"
                 :title="role.name"
+                @image-loaded="handleImageLoaded"
               />
             </view>
           </grid-view>
@@ -253,6 +254,12 @@ async function listImageUrls(taskIds: string[]) {
       });
     }
   });
+}
+
+function handleImageLoaded(id: string) {
+  if (loadingImageIds.value.has(id)) {
+    loadingImageIds.value.delete(id);
+  }
 }
 </script>
 

@@ -273,7 +273,7 @@ const modalData = ref<{
   [key: string]: any;
 }>();
 
-const currentStepIndex = ref(6);
+const currentStepIndex = ref(0);
 
 const formData = ref<ICreatePictureBookFormData>({
   theme: "诚实与正直",
@@ -570,12 +570,12 @@ function showRegenerateRoleModal(data: any) {
 }
 
 function showRegenerateSceneModal(data: any) {
-  modalData.value = {
-    component: EModalComponent.REGENERATE_SCENE_MODAL,
-    data: {
-      scene: null,
-    },
-  };
+  // modalData.value = {
+  //   component: EModalComponent.REGENERATE_SCENE_MODAL,
+  //   data: {
+  //     scene: null,
+  //   },
+  // };
   nextTick(() => {
     modalData.value = {
       component: EModalComponent.REGENERATE_SCENE_MODAL,
@@ -588,12 +588,12 @@ function showRegenerateSceneModal(data: any) {
 }
 
 function showRegenerateCoverModal(data: any) {
-  modalData.value = {
-    component: EModalComponent.REGENERATE_COVER_MODAL,
-    data: {
-      cover: null,
-    },
-  };
+  // modalData.value = {
+  //   component: EModalComponent.REGENERATE_COVER_MODAL,
+  //   data: {
+  //     cover: null,
+  //   },
+  // };
   nextTick(() => {
     modalData.value = {
       component: EModalComponent.REGENERATE_COVER_MODAL,

@@ -13,6 +13,7 @@
         :src="info.url"
         mode="aspectFill"
         @error="handleImageError"
+        @load="hadnleImageLoaded"
       />
       <view
         class="absolute left-0 top-0 w-full h-full bg-[#e8e8e8] flex flex-row items-center justify-center"
@@ -27,6 +28,7 @@
           "
           mode="aspectFill"
           @error="handleImageError"
+          @load="hadnleImageLoaded"
         />
       </view>
       <view
@@ -56,7 +58,9 @@
       >
     </view>
 
-    <view class="w-full h-[80rpx] mt-2.5 flex flex-row items-center">
+    <view
+      class="w-full h-[80rpx] mt-2.5 flex flex-row items-center justify-center"
+    >
       <BtnRegenerate
         class="w-[240rpx] h-[80rpx]"
         :disabled="false"
@@ -90,6 +94,7 @@ const props = defineProps<Props>();
 
 const $emit = defineEmits<{
   (e: "on-regenerate"): void;
+  (e: "image-loaded", id: string): void;
 }>();
 
 const imageLoadError = ref(false);
@@ -247,6 +252,10 @@ function handleRegenerateCoverError(e: any) {
 
 function handleImageError() {
   imageLoadError.value = true;
+}
+
+function hadnleImageLoaded() {
+  $emit("image-loaded", props.info.id);
 }
 
 async function handleRegenerate() {

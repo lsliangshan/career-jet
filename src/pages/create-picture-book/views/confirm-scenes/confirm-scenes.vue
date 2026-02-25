@@ -28,6 +28,7 @@
                 :ratio="formData!.ratio"
                 :isLoading="loadingImageIds.has(scene.id)"
                 :content="scene.content"
+                @image-loaded="handleImageLoaded"
               />
             </view>
           </grid-view>
@@ -147,9 +148,7 @@ onMounted(() => {
   uni.$on(EEmitEvents.START_REGENERATE_SCENE, handleStartRegenerateScene);
   uni.$on(EEmitEvents.REGENERATE_SCENE_RESPONSE, handleRegenerateSceneResponse);
   uni.$on(EEmitEvents.REGENERATE_SCENE_ERROR, handleRegenerateSceneError);
-  listImageUrls(
-    scenes?.value?.map((scene: ISceneItem) => scene.taskId) ?? []
-  ) ?? [];
+  listImageUrls(scenes?.value?.map((scene: ISceneItem) => scene.taskId) ?? []);
 });
 
 function handleStartRegenerateScene(e: any) {
@@ -256,6 +255,12 @@ async function listImageUrls(taskIds: string[]) {
       });
     }
   });
+}
+
+function handleImageLoaded(id: string) {
+  if (loadingImageIds.value.has(id)) {
+    loadingImageIds.value.delete(id);
+  }
 }
 </script>
 

@@ -104,7 +104,7 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     });
   }
 
-  function submitReviewPictureBooks(params: { pbId: string }) {
+  function submitReviewPictureBook(params: { pbId: string }) {
     return new Promise(async (resolve) => {
       if (!isLoggedIn.value || !loginInfo.value.id) {
         uni.showToast({
@@ -379,7 +379,7 @@ export const usePictureBookStore = defineStore("picture_book", () => {
     myPictureBooks,
     getMyPictureBooks,
     getReviewPictureBooks,
-    submitReviewPictureBooks,
+    submitReviewPictureBook,
     getMyFavoritePictureBooks,
     getPictureBooks,
     getPictureBookDetail,
